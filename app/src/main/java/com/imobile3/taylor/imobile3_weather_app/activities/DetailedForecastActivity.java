@@ -22,6 +22,7 @@ public class DetailedForecastActivity extends AppCompatActivity {
     private static final String CLASS_TAG = DetailedForecastActivity.class.getSimpleName();
 
     private static final boolean DEBUG = true;
+    private static final boolean DEBUG1 = true;
 
     private static final String TAG_DETAIL_FRAGMENT = "detail_fragment";
     private DetailedForecastFragment mDetailedForecastFragment;
