@@ -1,0 +1,92 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:2:1-26:12
+	package
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:3:5-55
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:2:11-69
+	android:versionCode
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:5:5-66
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:5:22-64
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:6:5-81
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:6:22-78
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:7:5-79
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:7:22-76
+application
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:9:5-24:19
+MERGED from [com.android.support:design:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\0ce62c6fe024699b053113a1519150e45a51b426\output\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:appcompat-v7:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\0c1c2b2fae61fd1dd19f21d4480700bf22cee771\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:animated-vector-drawable:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\866c278fd7d30d8f37c1bafa217f4f1257d6f852\output\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-vector-drawable:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\f6f7d1b31d967e342e14bdb1c0d20d66df7b2650\output\AndroidManifest.xml:23:5-20
+MERGED from [com.android.support:support-v4:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\9c21c97cde2e1590c5b8f07eb19fb874c7588090\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-fragment:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\cf10f81c2d307c6249af62f81867d3dbe60f5441\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-core-utils:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\1a9f3b4fc6c309f9cc075d9378ca209da03cc67a\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-media-compat:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\f24e19f2a79d5681f9b16154babd330c8cbe2ede\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-core-ui:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\670f60a636109d1bda4c230934fb8366c69bed87\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-compat:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\ffdef5697d955115443f3f02e137971dca5538e7\output\AndroidManifest.xml:25:5-20
+	android:label
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:12:9-41
+	android:supportsRtl
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:13:9-35
+	android:allowBackup
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:10:9-35
+	android:icon
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:11:9-43
+	android:theme
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:14:9-65
+activity#com.imobile3.taylor.imobile3_weather_app.activities.MainActivity
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:15:9-21:20
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:15:19-58
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:16:13-20:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:17:17-69
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:17:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:19:17-77
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:19:27-74
+activity#com.imobile3.taylor.imobile3_weather_app.activities.SimpleForecastActivity
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:22:9-71
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:22:19-68
+activity#com.imobile3.taylor.imobile3_weather_app.activities.DetailedForecastActivity
+ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:23:9-72
+	android:name
+		ADDED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml:23:19-70
+uses-sdk
+INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [com.android.support:design:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\0ce62c6fe024699b053113a1519150e45a51b426\output\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:appcompat-v7:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\0c1c2b2fae61fd1dd19f21d4480700bf22cee771\output\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:animated-vector-drawable:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\866c278fd7d30d8f37c1bafa217f4f1257d6f852\output\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\f6f7d1b31d967e342e14bdb1c0d20d66df7b2650\output\AndroidManifest.xml:21:5-43
+MERGED from [com.android.support:support-v4:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\9c21c97cde2e1590c5b8f07eb19fb874c7588090\output\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-fragment:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\cf10f81c2d307c6249af62f81867d3dbe60f5441\output\AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-core-utils:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\1a9f3b4fc6c309f9cc075d9378ca209da03cc67a\output\AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:support-media-compat:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\f24e19f2a79d5681f9b16154babd330c8cbe2ede\output\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:recyclerview-v7:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\8abdfa13cd4903316f814d9774e366fdeb53f71d\output\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-core-ui:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\670f60a636109d1bda4c230934fb8366c69bed87\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-compat:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\ffdef5697d955115443f3f02e137971dca5538e7\output\AndroidManifest.xml:21:5-23:58
+	tools:overrideLibrary
+		ADDED from [com.android.support:appcompat-v7:24.2.0] C:\Users\Taylor Parrish\.android\build-cache\0c1c2b2fae61fd1dd19f21d4480700bf22cee771\output\AndroidManifest.xml:23:9-75
+	android:targetSdkVersion
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Taylor Parrish\AndroidStudioProjects\IMobile3_Weather_App\app\src\main\AndroidManifest.xml
