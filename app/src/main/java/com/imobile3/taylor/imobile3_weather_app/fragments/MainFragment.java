@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -37,8 +36,8 @@ import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.models.DetailedWeatherItem;
-import com.imobile3.taylor.imobile3_weather_app.models.LocationData;
-import com.imobile3.taylor.imobile3_weather_app.models.WeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
+import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
 
 import org.json.JSONArray;
@@ -70,7 +69,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     private LocationManager mLocationManager;
     private ProgressDialog mProgressDialog;
     private SharedPreferences mSharedPreferences;
-    private String mLocation;
+    private Location mLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,7 +117,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public void onResume() {
         if (DEBUG) Log.d(CLASS_TAG, "onResume()");
         super.onResume();
-        setUpPastLocationListView(getView());
+
     }
 
     @Override
@@ -139,34 +138,45 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     @Override
-    public void onTaskFinished(ArrayList<WeatherItem> weatherItems) {
-
-    }
-
-    @Override
-    public void onTaskFinished(LocationData locationData) {
+    public void onTaskFinished(ArrayList<WeatherForecast> weatherForecasts) {
         if (DEBUG) Log.d(CLASS_TAG, "onTaskFinished()");
+
+        String test = weatherForecasts.get(0).toString();
+        Log.i("TEST", test);
 
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         mIsTaskRunning = false;
-        setupLocationValidationDialog(locationData);
+        setUpPastLocationListView(getView());
+
+        //saveWeatherItems.putParcelableArrayList(TAG_WEATHER_ITEM_BUNDLE, weatherForecasts);
+
+        //Sets items in the WeatherForecast listviews on click function
+        //setupWeatherItemListView(weatherForecasts);
     }
 
-    private void setupLocationValidationDialog(LocationData locationData) {
-        final String latitude = locationData.getLatitude();
-        final String longitude = locationData.getLongitude();
-        final String formatted_address = locationData.getFormattedAddress();
-        final String city = locationData.getCity();
-        final String location = latitude + "," + longitude;
+    @Override
+    public void onTaskFinished(Location location) {
+        if (DEBUG) Log.d(CLASS_TAG, "onTaskFinished()");
+
+        //This is a temporary fix.
+        //Find out how to avoid global class later.
         mLocation = location;
 
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+        mIsTaskRunning = false;
+        setupLocationValidationDialog(location);
+    }
+
+    private void setupLocationValidationDialog(Location location) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-               new JSONParser(MainFragment.this).execute();
+                new JSONParser(MainFragment.this).execute(mLocation);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -177,7 +187,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
 
         AlertDialog locationConfirmationDialog = builder.create();
         locationConfirmationDialog.setTitle("Is the information below correct?");
-        locationConfirmationDialog.setMessage(formatted_address);
+        locationConfirmationDialog.setMessage(location.getFormatted_address());
         locationConfirmationDialog.show();
     }
 
@@ -281,7 +291,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                     return;
                 }
                 mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
-                Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                android.location.Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 location = loc.getLatitude() + "," + loc.getLongitude();
             }
             new LocationResponse(MainFragment.this).execute(location);
@@ -289,7 +299,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     };
 
     // Using the user input location string to verify and respond with more detailed location data
-    private class LocationResponse extends AsyncTask<String, String, LocationData> {
+    private class LocationResponse extends AsyncTask<String, String, Location> {
         private final LocationDataTaskListener listener;
 
         public LocationResponse(LocationDataTaskListener mListener) {
@@ -303,20 +313,21 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
 
         @Override
-        public LocationData doInBackground(String... args) {
+        public Location doInBackground(String... args) {
             //Use user set location string and return geocode location data object model
             String locationString = args[0];
             return new LocationLookup(locationString).invoke();
         }
 
         @Override
-        public void onPostExecute(LocationData locationData) {
-            listener.onTaskFinished(locationData);
+        public void onPostExecute(Location location) {
+            listener.onTaskFinished(location);
         }
     }
 
-    private class JSONParser extends AsyncTask<String, String, JSONObject> {
+    private class JSONParser extends AsyncTask<Location, String, JSONObject> {
         private WeatherDataTaskListener mListener;
+        Location location;
 
         public JSONParser(WeatherDataTaskListener listener) {
             this.mListener = listener;
@@ -329,12 +340,15 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
 
         @Override
-        public JSONObject doInBackground(String... args) {
+        public JSONObject doInBackground(Location... args) {
+            //Put this somewhere else later3
             final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
+
+            location = args[0];
 
             //URL for WUnderground API Call
             String url = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                    + "/forecast/q/" + mLocation + ".json";
+                    + "/forecast/q/" + location.getCoordinates() + ".json";
 
             try {
                 return new HttpJSONRequest().getJSONFromUrl(url);
@@ -343,18 +357,20 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 e.printStackTrace();
                 revertToMainPage();
             }
+            //This causes app to crash. Find a way to handle this.
+            //Need to add new exception above?
             return null;
         }
 
         @Override
         public void onPostExecute(JSONObject JSONWeatherData) {
-            ArrayList<WeatherItem> weatherItems = parseJSONWeatherData(JSONWeatherData);
-            mListener.onTaskFinished(weatherItems);
+            ArrayList<WeatherForecast> weatherForecasts = parseJSONWeatherData(JSONWeatherData);
+            mListener.onTaskFinished(weatherForecasts);
         }
 
         //Parses JSON Data into its respective model objects
-        private ArrayList<WeatherItem> parseJSONWeatherData(JSONObject JSONWeatherData) {
-            ArrayList<WeatherItem> weatherItems = new ArrayList<>();
+        private ArrayList<WeatherForecast> parseJSONWeatherData(JSONObject JSONWeatherData) {
+            ArrayList<WeatherForecast> weatherForecasts = new ArrayList<>();
             ArrayList<DetailedWeatherItem> detailWeatherItems = new ArrayList<>();
 
             try {
@@ -365,27 +381,27 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 JSONArray detailforecastData = JSONWeatherData.getJSONObject("forecast")
                         .getJSONObject("txt_forecast").getJSONArray("forecastday");
 
-                //Parse the corresponding data into WeatherItem object model
-                parseSimpleForecastDataModel(weatherItems, simpleforecastData);
-                //Parse the corresponding data into WeatherItem object model
+                //Parse the corresponding data into WeatherForecast object model
+                parseSimpleForecastDataModel(weatherForecasts, simpleforecastData);
+                //Parse the corresponding data into WeatherForecast object model
                 parseDetailForecastDataModel(detailWeatherItems, detailforecastData);
-                //Set List of DetailWeatherItems to corresponding WeatherItem model
-                setWeatherItemDetails(weatherItems, detailWeatherItems);
+                //Set List of DetailWeatherItems to corresponding WeatherForecast model
+                setWeatherItemDetails(weatherForecasts, detailWeatherItems);
             } catch (JSONException e) {
                 e.printStackTrace();
                 revertToMainPage();
             }
-            return weatherItems;
+            return weatherForecasts;
         }
 
-        private void setWeatherItemDetails(ArrayList<WeatherItem> weatherItems,
+        private void setWeatherItemDetails(ArrayList<WeatherForecast> weatherForecasts,
                                            ArrayList<DetailedWeatherItem> detailWeatherItems) {
             //Find a more efficient way to do this?
-            for (int i = 0; i < weatherItems.size(); i++) {
+            for (int i = 0; i < weatherForecasts.size(); i++) {
                 for (int j = 0; j < detailWeatherItems.size(); j++) {
                     String weekday = Utils.getFirstWord(detailWeatherItems.get(j).getWeekday());
-                    if (weatherItems.get(i).getWeekday().equals(weekday)) {
-                        weatherItems.get(i).addDetailWeatherItem(detailWeatherItems.get(j));
+                    if (weatherForecasts.get(i).getWeekday().equals(weekday)) {
+                        weatherForecasts.get(i).addDetailWeatherItem(detailWeatherItems.get(j));
                     }
                 }
             }
@@ -405,7 +421,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             }
         }
 
-        private void parseSimpleForecastDataModel(ArrayList<WeatherItem> weatherItems,
+        private void parseSimpleForecastDataModel(ArrayList<WeatherForecast> weatherForecasts,
                                                   JSONArray simpleforecastData) throws JSONException {
             JSONObject simpleData;
             for (int i = 0; i < simpleforecastData.length(); i++) {
@@ -416,7 +432,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 String high = simpleData.getJSONObject("high").getString("fahrenheit") + "˚ F";
                 String low = simpleData.getJSONObject("low").getString("fahrenheit") + "˚ F";
 
-                weatherItems.add(new WeatherItem(weekday, conditions, high, low));
+                weatherForecasts.add(new WeatherForecast(weekday, conditions, high, low));
             }
         }
 
