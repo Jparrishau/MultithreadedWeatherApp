@@ -27,7 +27,15 @@ public class Day {
         setYear(Calendar.YEAR);
         setTime(Calendar.AM_PM);
         setTextDay(new SimpleDateFormat("EEEE").format(Calendar.getInstance().getTime()));
+    }
 
+    public Day(Date date, int day, int month, int year, int time, String mTextDay){
+        setDate(date);
+        setDay(day);
+        setMonth(month);
+        setYear(year);
+        setTime(time);
+        setTextDay(mTextDay);
     }
 
     public String getTextDay() {
