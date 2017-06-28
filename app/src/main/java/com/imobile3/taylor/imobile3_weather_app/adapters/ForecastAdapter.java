@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.models.WeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
 
 import java.util.ArrayList;
 
@@ -20,12 +20,12 @@ import java.util.ArrayList;
  * the SimpleForecastFragment.
  */
 public class ForecastAdapter extends BaseAdapter {
-    private ArrayList<WeatherItem> mWeatherItems;
+    private ArrayList<WeatherForecast> mWeatherForecasts;
     private LayoutInflater mInflater = null;
 
-    public ForecastAdapter(Activity context, ArrayList<WeatherItem> weatherItems) {
+    public ForecastAdapter(Activity context, ArrayList<WeatherForecast> weatherForecasts) {
         super();
-        mWeatherItems = weatherItems;
+        mWeatherForecasts = weatherForecasts;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -46,10 +46,10 @@ public class ForecastAdapter extends BaseAdapter {
         TextView highText = (TextView) convertView.findViewById(R.id.highDegree);
         TextView lowText = (TextView) convertView.findViewById(R.id.lowDegree);
 
-        String weekday = mWeatherItems.get(position).getWeekday();
-        String conditions = mWeatherItems.get(position).getConditions();
-        String high = mWeatherItems.get(position).getHigh();
-        String low = mWeatherItems.get(position).getLow();
+        String weekday = mWeatherForecasts.get(position).getWeekday();
+        String conditions = mWeatherForecasts.get(position).getConditions();
+        String high = mWeatherForecasts.get(position).getHigh();
+        String low = mWeatherForecasts.get(position).getLow();
 
         weekdayText.setText(weekday);
         condtionsText.setText(conditions);
@@ -59,7 +59,7 @@ public class ForecastAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mWeatherItems.size();
+        return mWeatherForecasts.size();
     }
 
     @Override

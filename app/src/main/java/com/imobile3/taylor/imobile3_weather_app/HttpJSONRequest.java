@@ -17,7 +17,7 @@ import java.net.URL;
  * Created an HTTPConnection from URL String
  * Returns a JSONObject containing requested data
  *
- * Issues: If no internet is enabled will throw exception. UnkownHostException probably.
+ * Issues: If no internet is enabled will throw exception. UnknownHostException probably.
  * Solution: Send exception back to calling method and present warning and option to turn on internet.
  */
 public class HttpJSONRequest {
