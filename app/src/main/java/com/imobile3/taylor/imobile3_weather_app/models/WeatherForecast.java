@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * An object model used to contain all the relevant weather data of a specific day.
  */
-public class WeatherItem implements Parcelable {
+public class WeatherForecast implements Parcelable {
     private String weekday;
     private String high;
     private String low;
@@ -18,8 +18,8 @@ public class WeatherItem implements Parcelable {
     private ArrayList<DetailedWeatherItem> detailWeatherItems;
 
 
-    public WeatherItem(String weekday, String conditions, String high,
-                       String low) {
+    public WeatherForecast(String weekday, String conditions, String high,
+                           String low) {
         this.weekday = weekday;
         this.conditions = conditions;
         this.high = high;
@@ -27,7 +27,7 @@ public class WeatherItem implements Parcelable {
         this.detailWeatherItems = new ArrayList<>();
     }
 
-    private WeatherItem(Parcel in) {
+    private WeatherForecast(Parcel in) {
         this.weekday = in.readString();
         this.high = in.readString();
         this.low = in.readString();
@@ -53,13 +53,13 @@ public class WeatherItem implements Parcelable {
         this.detailWeatherItems.add(detailWeatherItem);
     }
 
-    public static final Parcelable.Creator<WeatherItem> CREATOR = new Parcelable.Creator<WeatherItem>() {
-        public WeatherItem createFromParcel(Parcel in) {
-            return new WeatherItem(in);
+    public static final Parcelable.Creator<WeatherForecast> CREATOR = new Parcelable.Creator<WeatherForecast>() {
+        public WeatherForecast createFromParcel(Parcel in) {
+            return new WeatherForecast(in);
         }
 
-        public WeatherItem[] newArray(int size) {
-            return new WeatherItem[size];
+        public WeatherForecast[] newArray(int size) {
+            return new WeatherForecast[size];
         }
     };
 
@@ -85,7 +85,7 @@ public class WeatherItem implements Parcelable {
 
     @Override
     public String toString() {
-        return "WeatherItem{" +
+        return "WeatherForecast{" +
                 "weekday='" + weekday + '\'' +
                 ", high='" + high + '\'' +
                 ", low='" + low + '\'' +
