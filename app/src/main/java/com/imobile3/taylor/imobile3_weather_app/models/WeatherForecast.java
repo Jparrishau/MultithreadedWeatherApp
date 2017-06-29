@@ -44,10 +44,6 @@ public class WeatherForecast implements Parcelable {
         out.writeList(detailWeatherItems);
     }
 
-    public void addDetailWeatherItem(DetailedWeatherItem detailWeatherItem) {
-        this.detailWeatherItems.add(detailWeatherItem);
-    }
-
     public static final Parcelable.Creator<WeatherForecast> CREATOR = new Parcelable.Creator<WeatherForecast>() {
         public WeatherForecast createFromParcel(Parcel in) {
             return new WeatherForecast(in);
@@ -57,6 +53,10 @@ public class WeatherForecast implements Parcelable {
             return new WeatherForecast[size];
         }
     };
+
+    public void addDetailWeatherItem(DetailedWeatherItem detailWeatherItem) {
+        this.detailWeatherItems.add(detailWeatherItem);
+    }
 
     public String getHigh() {
         return high;
