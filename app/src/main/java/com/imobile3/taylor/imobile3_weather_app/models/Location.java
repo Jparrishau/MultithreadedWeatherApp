@@ -14,7 +14,9 @@ public class Location {
     private String mCity;
     private String mState;
     private String mFormatted_address;
-    private ArrayList<Day> mDays = new ArrayList<>();
+
+    //Convert this to hash table where keys are the dates?
+    private ArrayList<Day> mDays;
 
     public Location(String latitude, String longitude,
                     String formatted_address) {
@@ -82,6 +84,11 @@ public class Location {
     public void setFormatted_address(String formatted_address) {
         this.mFormatted_address = formatted_address;
     }
-
+    public void setDays(ArrayList<Day> days){
+        mDays = days;
+    }
+    public Day getDay(int index){
+        return mDays.get(index);
+    }
 
 }
