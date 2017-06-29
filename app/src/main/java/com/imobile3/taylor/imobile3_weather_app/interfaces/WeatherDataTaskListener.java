@@ -1,6 +1,6 @@
 package com.imobile3.taylor.imobile3_weather_app.interfaces;
 
-import com.imobile3.taylor.imobile3_weather_app.models.WeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
 
 import java.util.ArrayList;
 
@@ -13,5 +13,5 @@ import java.util.ArrayList;
 public interface WeatherDataTaskListener {
     void onTaskStarted();
 
-    void onTaskFinished(ArrayList<WeatherItem> weatherItems);
+    void onTaskFinished(ArrayList<WeatherForecast> weatherForecasts);
 }

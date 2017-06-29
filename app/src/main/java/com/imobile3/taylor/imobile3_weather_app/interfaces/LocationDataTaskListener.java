@@ -1,6 +1,6 @@
 package com.imobile3.taylor.imobile3_weather_app.interfaces;
 
-import com.imobile3.taylor.imobile3_weather_app.models.LocationData;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
  * Created by Taylor Parrish on 8/5/2016.
@@ -11,5 +11,5 @@ import com.imobile3.taylor.imobile3_weather_app.models.LocationData;
 public interface LocationDataTaskListener {
     void onTaskStarted();
 
-    void onTaskFinished(LocationData locationData);
+    void onTaskFinished(Location location);
 }
