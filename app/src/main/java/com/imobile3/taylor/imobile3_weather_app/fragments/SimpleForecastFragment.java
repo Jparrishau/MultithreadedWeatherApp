@@ -14,7 +14,7 @@ import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.activities.DetailedForecastActivity;
 import com.imobile3.taylor.imobile3_weather_app.adapters.ForecastAdapter;
 import com.imobile3.taylor.imobile3_weather_app.models.DetailedWeatherItem;
-import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 import java.util.ArrayList;
 
@@ -30,16 +30,16 @@ public class SimpleForecastFragment extends Fragment {
 
     private boolean mIsTaskRunning = false;
 
-    private Bundle saveWeatherItems;
+    private Bundle savedLocation;
     public final static String TAG_EXTRA_DETAIL_ITEMS = "detailWeatherItems";
-    public final static String TAG_WEATHER_ITEM_BUNDLE = "weatherBundle";
+    public final static String TAG_LOCATION_BUNDLE = "locationBundle";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreate(Bundle)");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        saveWeatherItems = new Bundle();
+        savedLocation = new Bundle();
     }
 
     @Override
@@ -55,29 +55,29 @@ public class SimpleForecastFragment extends Fragment {
         if (DEBUG) Log.d(CLASS_TAG, "onActivityCreated(Bundle)");
         super.onActivityCreated(savedInstanceState);
 
-        if (!saveWeatherItems.containsKey(TAG_WEATHER_ITEM_BUNDLE)) {
-            // Pull in data objects from parceble bundle
+        if (!savedLocation.containsKey(TAG_LOCATION_BUNDLE)) {
+            // Error out?
         } else {
-            ArrayList<WeatherForecast> weatherForecasts =
-                    saveWeatherItems.getParcelableArrayList(TAG_WEATHER_ITEM_BUNDLE);
-            setupWeatherItemListView(weatherForecasts);
+            Location location =
+                    savedLocation.getParcelable(TAG_LOCATION_BUNDLE);
+            setupWeatherItemListView(location);
         }
     }
 
-    private void setupWeatherItemListView(final ArrayList<WeatherForecast> weatherForecasts) {
+    private void setupWeatherItemListView(final Location location) {
         ListView simpleForecastListview = (ListView) getActivity().findViewById(R.id.forecastListView);
         simpleForecastListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 Intent detailedforecastIntent = new Intent(getActivity(), DetailedForecastActivity.class);
-                ArrayList<DetailedWeatherItem> detailItems = weatherForecasts.get(position).getDetailWeatherItems();
+                ArrayList<DetailedWeatherItem> detailItems = location.getDay(position).getWeatherForecast().getDetailWeatherItems();
 
                 detailedforecastIntent.putParcelableArrayListExtra(TAG_EXTRA_DETAIL_ITEMS, detailItems);
                 startActivity(detailedforecastIntent);
             }
         });
-        ForecastAdapter adapter = new ForecastAdapter(getActivity(), weatherForecasts);
+        ForecastAdapter adapter = new ForecastAdapter(getActivity(), location);
         simpleForecastListview.setAdapter(adapter);
     }
 }
