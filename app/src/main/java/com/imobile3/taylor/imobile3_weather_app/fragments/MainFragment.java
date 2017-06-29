@@ -35,6 +35,7 @@ import com.imobile3.taylor.imobile3_weather_app.activities.SimpleForecastActivit
 import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
+import com.imobile3.taylor.imobile3_weather_app.models.Day;
 import com.imobile3.taylor.imobile3_weather_app.models.DetailedWeatherItem;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
@@ -341,10 +342,10 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
 
         @Override
         public JSONObject doInBackground(Location... args) {
+            location = args[0];
+
             //Put this somewhere else later3
             final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
-
-            location = args[0];
 
             //URL for WUnderground API Call
             String url = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
@@ -394,9 +395,10 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             return weatherForecasts;
         }
 
+        // This should be done inside of weatherforecast?
         private void setWeatherItemDetails(ArrayList<WeatherForecast> weatherForecasts,
                                            ArrayList<DetailedWeatherItem> detailWeatherItems) {
-            //Find a more efficient way to do this?
+           /* //Find a more efficient way to do this?
             for (int i = 0; i < weatherForecasts.size(); i++) {
                 for (int j = 0; j < detailWeatherItems.size(); j++) {
                     String weekday = Utils.getFirstWord(detailWeatherItems.get(j).getWeekday());
@@ -404,7 +406,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                         weatherForecasts.get(i).addDetailWeatherItem(detailWeatherItems.get(j));
                     }
                 }
-            }
+            }*/
         }
 
         private void parseDetailForecastDataModel(ArrayList<DetailedWeatherItem> detailWeatherItems,
@@ -424,16 +426,26 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         private void parseSimpleForecastDataModel(ArrayList<WeatherForecast> weatherForecasts,
                                                   JSONArray simpleforecastData) throws JSONException {
             JSONObject simpleData;
+            ArrayList<Day> days = new ArrayList<>();
             for (int i = 0; i < simpleforecastData.length(); i++) {
                 simpleData = simpleforecastData.getJSONObject(i);
 
-                String weekday = simpleData.getJSONObject("date").getString("weekday");
+                String textDay = simpleData.getJSONObject("date").getString("weekday");
+                int day = Integer.parseInt(simpleData.getJSONObject("date").getString("day"));
+                int month = Integer.parseInt(simpleData.getJSONObject("date").getString("month"));
+                int year = Integer.parseInt(simpleData.getJSONObject("date").getString("year"));
+                long time = Integer.parseInt(simpleData.getJSONObject("date").getString("epoch"));
+
                 String conditions = simpleData.getString("conditions");
                 String high = simpleData.getJSONObject("high").getString("fahrenheit") + "˚ F";
                 String low = simpleData.getJSONObject("low").getString("fahrenheit") + "˚ F";
+                WeatherForecast weatherForecast = new WeatherForecast(conditions, high, low);
 
-                weatherForecasts.add(new WeatherForecast(weekday, conditions, high, low));
+                Day currentDay = new Day(day, month, year, time, textDay, weatherForecast);
+                days.add(i, currentDay);
+                //weatherForecasts.add(new WeatherForecast(weekday, conditions, high, low));
             }
+            location.setDays(days);
         }
 
         private void revertToMainPage() {
