@@ -9,9 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
-
-import java.util.ArrayList;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
  * Created by Taylor Parrish on 8/23/2016.
@@ -20,12 +18,12 @@ import java.util.ArrayList;
  * the SimpleForecastFragment.
  */
 public class ForecastAdapter extends BaseAdapter {
-    private ArrayList<WeatherForecast> mWeatherForecasts;
+    private Location mLocation;
     private LayoutInflater mInflater = null;
 
-    public ForecastAdapter(Activity context, ArrayList<WeatherForecast> weatherForecasts) {
+    public ForecastAdapter(Activity context, Location location) {
         super();
-        mWeatherForecasts = weatherForecasts;
+        mLocation = location;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -41,25 +39,25 @@ public class ForecastAdapter extends BaseAdapter {
     }
 
     private void setupWeatherItemListView(int position, View convertView) {
-       /* TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
-        TextView condtionsText = (TextView) convertView.findViewById(R.id.conditions);
+        TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
+        TextView conditionsText = (TextView) convertView.findViewById(R.id.conditions);
         TextView highText = (TextView) convertView.findViewById(R.id.highDegree);
         TextView lowText = (TextView) convertView.findViewById(R.id.lowDegree);
 
-        String weekday = mWeatherForecasts.get(position).getWeekday();
-        String conditions = mWeatherForecasts.get(position).getConditions();
-        String high = mWeatherForecasts.get(position).getHigh();
-        String low = mWeatherForecasts.get(position).getLow();
+        String weekday = mLocation.getDay(position).getTextDay();
+        String conditions = mLocation.getDay(position).getWeatherForecast().getConditions();
+        String high = mLocation.getDay(position).getWeatherForecast().getHigh();
+        String low = mLocation.getDay(position).getWeatherForecast().getLow();
 
         weekdayText.setText(weekday);
-        condtionsText.setText(conditions);
+        conditionsText.setText(conditions);
         highText.setText(high);
-        lowText.setText(low);*/
+        lowText.setText(low);
     }
 
     @Override
     public int getCount() {
-        return mWeatherForecasts.size();
+        return mLocation.getDays().size();
     }
 
     @Override
