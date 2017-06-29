@@ -15,10 +15,11 @@ public class Day {
     private int mDay;
     private int mMonth;
     private int mYear;
-    private int mTime;
+    private long mTime;
     private Date mDate;
     private String mTextDay;
-    private int[] hour = new int[24];
+    private WeatherForecast mWeatherForecast;
+
 
     public Day(){
         setDate(Calendar.getInstance().getTime());
@@ -29,13 +30,23 @@ public class Day {
         setTextDay(new SimpleDateFormat("EEEE").format(Calendar.getInstance().getTime()));
     }
 
-    public Day(Date date, int day, int month, int year, int time, String mTextDay){
+    public Day(Date date, int day, int month, int year, long time, String mTextDay, WeatherForecast weatherForecast){
         setDate(date);
         setDay(day);
         setMonth(month);
         setYear(year);
         setTime(time);
         setTextDay(mTextDay);
+        setWeatherForecast(weatherForecast);
+    }
+
+    public Day(int day, int month, int year, long time, String mTextDay, WeatherForecast weatherForecast){
+        setDay(day);
+        setMonth(month);
+        setYear(year);
+        setTime(time);
+        setTextDay(mTextDay);
+        setWeatherForecast(weatherForecast);
     }
 
     public String getTextDay() {
@@ -70,11 +81,11 @@ public class Day {
         this.mYear = year;
     }
 
-    public Integer getTime() {
+    public long getTime() {
         return mTime;
     }
 
-    public void setTime(Integer time) {
+    public void setTime(long time) {
         this.mTime = time;
     }
 
@@ -86,8 +97,11 @@ public class Day {
         this.mDate = fullDate;
     }
 
-    public int[] getHour() {
-        return hour;
+    public void setWeatherForecast(WeatherForecast weatherForecast){
+        this.mWeatherForecast = weatherForecast;
     }
 
+    public WeatherForecast getWeatherForecast(){
+        return mWeatherForecast;
+    }
 }
