@@ -1,6 +1,9 @@
 package com.imobile3.taylor.imobile3_weather_app.models;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,7 +14,7 @@ import java.util.Date;
  * An object model that represents a physical day of the week. (I.E: Mon-Sun)
  */
 
-public class Day {
+public class Day implements Parcelable{
     private int mDay;
     private int mMonth;
     private int mYear;
@@ -103,5 +106,59 @@ public class Day {
 
     public WeatherForecast getWeatherForecast(){
         return mWeatherForecast;
+    }
+
+
+    /*
+        Make Parcelable
+    */
+    private Day(Parcel in) {
+        this.mDay = in.readInt();
+        this.mMonth = in.readInt();
+        this.mYear = in.readInt();
+        this.mTime = in.readLong();
+        this.mWeatherForecast = in.readParcelable(null);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeInt(mDay);
+        out.writeInt(mMonth);
+        out.writeInt(mYear);
+        out.writeLong(mTime);
+        out.writeString(mTextDay);
+        out.writeParcelable(mWeatherForecast, i);
+    }
+
+    public static final Parcelable.Creator<Day> CREATOR = new Parcelable.Creator<Day>() {
+        public Day createFromParcel(Parcel in) {
+            return new Day(in);
+        }
+
+        public Day[] newArray(int size) {
+            return new Day[size];
+        }
+    };
+
+     /*
+        End Make Parcelable
+    */
+
+    @Override
+    public String toString() {
+        return "Day{" +
+                "Day=" + mDay +
+                ", Month=" + mMonth +
+                ", Year=" + mYear +
+                ", Time=" + mTime +
+                ", Date=" + mDate +
+                ", TextDay='" + mTextDay + '\'' +
+                ", WeatherForecast=" + mWeatherForecast +
+                '}';
     }
 }
