@@ -41,7 +41,7 @@ public class ForecastAdapter extends BaseAdapter {
     }
 
     private void setupWeatherItemListView(int position, View convertView) {
-        TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
+       /* TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
         TextView condtionsText = (TextView) convertView.findViewById(R.id.conditions);
         TextView highText = (TextView) convertView.findViewById(R.id.highDegree);
         TextView lowText = (TextView) convertView.findViewById(R.id.lowDegree);
@@ -54,7 +54,7 @@ public class ForecastAdapter extends BaseAdapter {
         weekdayText.setText(weekday);
         condtionsText.setText(conditions);
         highText.setText(high);
-        lowText.setText(low);
+        lowText.setText(low);*/
     }
 
     @Override
