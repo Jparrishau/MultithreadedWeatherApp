@@ -11,16 +11,13 @@ import java.util.ArrayList;
  * An object model used to contain all the relevant weather data of a specific day.
  */
 public class WeatherForecast implements Parcelable {
-    private String weekday;
     private String high;
     private String low;
     private String conditions;
     private ArrayList<DetailedWeatherItem> detailWeatherItems;
 
 
-    public WeatherForecast(String weekday, String conditions, String high,
-                           String low) {
-        this.weekday = weekday;
+    public WeatherForecast(String conditions, String high, String low) {
         this.conditions = conditions;
         this.high = high;
         this.low = low;
@@ -28,7 +25,6 @@ public class WeatherForecast implements Parcelable {
     }
 
     private WeatherForecast(Parcel in) {
-        this.weekday = in.readString();
         this.high = in.readString();
         this.low = in.readString();
         this.conditions = in.readString();
@@ -42,7 +38,6 @@ public class WeatherForecast implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int i) {
-        out.writeString(weekday);
         out.writeString(high);
         out.writeString(low);
         out.writeString(conditions);
@@ -63,10 +58,6 @@ public class WeatherForecast implements Parcelable {
         }
     };
 
-    public String getWeekday() {
-        return weekday;
-    }
-
     public String getHigh() {
         return high;
     }
@@ -86,7 +77,6 @@ public class WeatherForecast implements Parcelable {
     @Override
     public String toString() {
         return "WeatherForecast{" +
-                "weekday='" + weekday + '\'' +
                 ", high='" + high + '\'' +
                 ", low='" + low + '\'' +
                 ", conditions='" + conditions + '\'' +
