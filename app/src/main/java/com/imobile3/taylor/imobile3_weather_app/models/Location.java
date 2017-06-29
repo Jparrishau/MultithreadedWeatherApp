@@ -1,5 +1,9 @@
 package com.imobile3.taylor.imobile3_weather_app.models;
 
+import android.os.Looper;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
@@ -7,7 +11,7 @@ import java.util.ArrayList;
  *
  * An object model containing relevant location data used to search for weather data.
  */
-public class Location {
+public class Location implements Parcelable {
     private String mLatitude;
     private String mLongitude;
     private String mCoordinates;
@@ -87,8 +91,68 @@ public class Location {
     public void setDays(ArrayList<Day> days){
         mDays = days;
     }
+
     public Day getDay(int index){
         return mDays.get(index);
+    }
+
+    public ArrayList<Day> getDays(){
+        return mDays;
+    }
+
+    /*
+        Make Parcelable
+    */
+    private Location(Parcel in) {
+        this.mLatitude = in.readString();
+        this.mLongitude = in.readString();
+        this.mCoordinates = in.readString();
+        this.mCity = in.readString();
+        this.mState = in.readString();
+        this.mFormatted_address = in.readString();
+        this.mDays = in.readArrayList(null);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeString(mLatitude);
+        out.writeString(mLongitude);
+        out.writeString(mCoordinates);
+        out.writeString(mCity);
+        out.writeString(mState);
+        out.writeString(mFormatted_address);
+        out.writeList(mDays);
+    }
+
+    public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
+        public Location createFromParcel(Parcel in) {
+            return new Location(in);
+        }
+
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
+
+    /*
+       End Make Parcelable
+    */
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                ", Latitude='" + getLatitude() + '\'' +
+                ", Longitude='" + getLongitude() + '\'' +
+                ", Coordinates='" + getCoordinates() + '\'' +
+                 ", Address='" + getFormatted_address() + '\'' +
+                ", City=" + getCity() + '\'' +
+                ", State='" + getState() +
+                '}';
     }
 
 }
