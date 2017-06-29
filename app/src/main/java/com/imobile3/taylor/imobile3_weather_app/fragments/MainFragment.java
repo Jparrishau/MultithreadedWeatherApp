@@ -64,7 +64,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     private static final String CLASS_TAG = MainFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    public final static String TAG_EXTRA_LOCATION = "location";
+    public final static String TAG_LOCATION_BUNDLE = "locationBundle";
 
     private boolean mIsTaskRunning = false;
     private LocationManager mLocationManager;
@@ -142,16 +142,13 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public void onTaskFinished(ArrayList<WeatherForecast> weatherForecasts) {
         if (DEBUG) Log.d(CLASS_TAG, "onTaskFinished()");
 
-        String test = weatherForecasts.get(0).toString();
-        Log.i("TEST", test);
-
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         mIsTaskRunning = false;
-        setUpPastLocationListView(getView());
+        setUpPastLocationListView(mLocation);
 
-        //saveWeatherItems.putParcelableArrayList(TAG_WEATHER_ITEM_BUNDLE, weatherForecasts);
+        //saveWeatherItems.putParcelableArrayList(TAG_LOCATION_BUNDLE, weatherForecasts);
 
         //Sets items in the WeatherForecast listviews on click function
         //setupWeatherItemListView(weatherForecasts);
@@ -192,8 +189,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         locationConfirmationDialog.show();
     }
 
-    private void setUpPastLocationListView(View root) {
-        final ListView previousLocationsList = (ListView) root.findViewById(R.id.pastLocationsList);
+    private void setUpPastLocationListView(Location location) {
+        final ListView previousLocationsList = (ListView) getView().findViewById(R.id.pastLocationsList);
         setupForecastOnItemClickListener(previousLocationsList);
         setupDeleteItemOnLongClickListener(previousLocationsList);
 
@@ -205,12 +202,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         previousLocationsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                TextView textView = (TextView) view.findViewById(R.id.cityText);
-                String locationText = textView.getText().toString();
-
                 Intent mSimpleForecastIntent = new Intent(getActivity(), SimpleForecastActivity.class);
-                mSimpleForecastIntent.putExtra(TAG_EXTRA_LOCATION,
-                        mSharedPreferences.getString(locationText, null));
+                mSimpleForecastIntent.putExtra(TAG_LOCATION_BUNDLE, mLocation);
                 startActivity(mSimpleForecastIntent);
             }
         });
@@ -326,6 +319,9 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
     }
 
+    //This needs to return the Location object with its respective counterparts now set.
+    //How to have two seperate onTaskFinished() functions? Do we even need two asynch task?
+    //Possibly combine them.
     private class JSONParser extends AsyncTask<Location, String, JSONObject> {
         private WeatherDataTaskListener mListener;
         Location location;
@@ -427,6 +423,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                                                   JSONArray simpleforecastData) throws JSONException {
             JSONObject simpleData;
             ArrayList<Day> days = new ArrayList<>();
+
             for (int i = 0; i < simpleforecastData.length(); i++) {
                 simpleData = simpleforecastData.getJSONObject(i);
 
