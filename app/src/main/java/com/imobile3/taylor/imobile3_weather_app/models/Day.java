@@ -112,39 +112,44 @@ public class Day implements Parcelable{
     /*
         Make Parcelable
     */
-    private Day(Parcel in) {
-        this.mDay = in.readInt();
-        this.mMonth = in.readInt();
-        this.mYear = in.readInt();
-        this.mTime = in.readLong();
-        this.mWeatherForecast = in.readParcelable(null);
-    }
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel out, int i) {
-        out.writeInt(mDay);
-        out.writeInt(mMonth);
-        out.writeInt(mYear);
-        out.writeLong(mTime);
-        out.writeString(mTextDay);
-        out.writeParcelable(mWeatherForecast, i);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mDay);
+        dest.writeInt(this.mMonth);
+        dest.writeInt(this.mYear);
+        dest.writeLong(this.mTime);
+        dest.writeLong(this.mDate != null ? this.mDate.getTime() : -1);
+        dest.writeString(this.mTextDay);
+        dest.writeParcelable(this.mWeatherForecast, flags);
     }
 
-    public static final Parcelable.Creator<Day> CREATOR = new Parcelable.Creator<Day>() {
-        public Day createFromParcel(Parcel in) {
-            return new Day(in);
+    protected Day(Parcel in) {
+        this.mDay = in.readInt();
+        this.mMonth = in.readInt();
+        this.mYear = in.readInt();
+        this.mTime = in.readLong();
+        long tmpMDate = in.readLong();
+        this.mDate = tmpMDate == -1 ? null : new Date(tmpMDate);
+        this.mTextDay = in.readString();
+        this.mWeatherForecast = in.readParcelable(WeatherForecast.class.getClassLoader());
+    }
+
+    public static final Creator<Day> CREATOR = new Creator<Day>() {
+        @Override
+        public Day createFromParcel(Parcel source) {
+            return new Day(source);
         }
 
+        @Override
         public Day[] newArray(int size) {
             return new Day[size];
         }
     };
-
      /*
         End Make Parcelable
     */
