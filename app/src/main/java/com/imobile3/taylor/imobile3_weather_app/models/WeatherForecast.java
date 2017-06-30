@@ -24,40 +24,6 @@ public class WeatherForecast implements Parcelable {
         this.detailWeatherItems = new ArrayList<>();
     }
 
-    private WeatherForecast(Parcel in) {
-        this.high = in.readString();
-        this.low = in.readString();
-        this.conditions = in.readString();
-        this.detailWeatherItems = in.readArrayList(null);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel out, int i) {
-        out.writeString(high);
-        out.writeString(low);
-        out.writeString(conditions);
-        out.writeList(detailWeatherItems);
-    }
-
-    public static final Parcelable.Creator<WeatherForecast> CREATOR = new Parcelable.Creator<WeatherForecast>() {
-        public WeatherForecast createFromParcel(Parcel in) {
-            return new WeatherForecast(in);
-        }
-
-        public WeatherForecast[] newArray(int size) {
-            return new WeatherForecast[size];
-        }
-    };
-
-    public void addDetailWeatherItem(DetailedWeatherItem detailWeatherItem) {
-        this.detailWeatherItems.add(detailWeatherItem);
-    }
-
     public String getHigh() {
         return high;
     }
@@ -73,6 +39,45 @@ public class WeatherForecast implements Parcelable {
     public ArrayList<DetailedWeatherItem> getDetailWeatherItems() {
         return detailWeatherItems;
     }
+
+
+    /*
+       Make Parcelable
+   */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.high);
+        dest.writeString(this.low);
+        dest.writeString(this.conditions);
+        dest.writeTypedList(this.detailWeatherItems);
+    }
+
+    protected WeatherForecast(Parcel in) {
+        this.high = in.readString();
+        this.low = in.readString();
+        this.conditions = in.readString();
+        this.detailWeatherItems = in.createTypedArrayList(DetailedWeatherItem.CREATOR);
+    }
+
+    public static final Creator<WeatherForecast> CREATOR = new Creator<WeatherForecast>() {
+        @Override
+        public WeatherForecast createFromParcel(Parcel source) {
+            return new WeatherForecast(source);
+        }
+
+        @Override
+        public WeatherForecast[] newArray(int size) {
+            return new WeatherForecast[size];
+        }
+    };
+    /*
+       End Make Parcelable
+    */
 
     @Override
     public String toString() {
