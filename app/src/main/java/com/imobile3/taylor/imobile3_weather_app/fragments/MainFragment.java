@@ -146,7 +146,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             mProgressDialog.dismiss();
         }
         mIsTaskRunning = false;
-        setUpPastLocationListView(mLocation);
+        setUpPastLocationListView();
 
         //saveWeatherItems.putParcelableArrayList(TAG_LOCATION_BUNDLE, weatherForecasts);
 
@@ -175,6 +175,13 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 new JSONParser(MainFragment.this).execute(mLocation);
+
+                Intent mSimpleForecastIntent = new Intent(getActivity(), SimpleForecastActivity.class);
+                Bundle locationBundle = new Bundle();
+
+                locationBundle.putParcelable(TAG_LOCATION_BUNDLE, mLocation);
+                mSimpleForecastIntent.putExtras(locationBundle);
+                startActivity(mSimpleForecastIntent);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -189,7 +196,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         locationConfirmationDialog.show();
     }
 
-    private void setUpPastLocationListView(Location location) {
+    private void setUpPastLocationListView() {
         final ListView previousLocationsList = (ListView) getView().findViewById(R.id.pastLocationsList);
         setupForecastOnItemClickListener(previousLocationsList);
         setupDeleteItemOnLongClickListener(previousLocationsList);
@@ -320,7 +327,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     //This needs to return the Location object with its respective counterparts now set.
-    //How to have two seperate onTaskFinished() functions? Do we even need two asynch task?
+    //How to have two separate onTaskFinished() functions? Do we even need two asynch task?
     //Possibly combine them.
     private class JSONParser extends AsyncTask<Location, String, JSONObject> {
         private WeatherDataTaskListener mListener;
