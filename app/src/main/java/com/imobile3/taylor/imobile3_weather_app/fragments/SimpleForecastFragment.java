@@ -30,7 +30,7 @@ public class SimpleForecastFragment extends Fragment {
 
     private boolean mIsTaskRunning = false;
 
-    private Bundle savedLocation;
+    private Bundle mSavedLocation;
     public final static String TAG_EXTRA_DETAIL_ITEMS = "detailWeatherItems";
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
 
@@ -39,7 +39,7 @@ public class SimpleForecastFragment extends Fragment {
         if (DEBUG) Log.d(CLASS_TAG, "onCreate(Bundle)");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        savedLocation = new Bundle();
+        mSavedLocation = savedInstanceState;
     }
 
     @Override
@@ -55,13 +55,10 @@ public class SimpleForecastFragment extends Fragment {
         if (DEBUG) Log.d(CLASS_TAG, "onActivityCreated(Bundle)");
         super.onActivityCreated(savedInstanceState);
 
-        if (!savedLocation.containsKey(TAG_LOCATION_BUNDLE)) {
-            // Error out?
-        } else {
             Location location =
-                    savedLocation.getParcelable(TAG_LOCATION_BUNDLE);
+                getActivity().getIntent().getParcelableExtra(TAG_LOCATION_BUNDLE);
             setupWeatherItemListView(location);
-        }
+
     }
 
     private void setupWeatherItemListView(final Location location) {
