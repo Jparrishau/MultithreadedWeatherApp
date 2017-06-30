@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
@@ -24,9 +25,15 @@ public class PastLocationsAdapter extends BaseAdapter {
     private ArrayList<Location> mPastLocations;
     private LayoutInflater mInflater;
 
-    public PastLocationsAdapter(Activity context, ArrayList<Location> locations) {
+    public PastLocationsAdapter(Activity context, Map<String, ?> pastLocations) {
         super();
-        mPastLocations = locations;
+        mPastLocations = new ArrayList<>();
+
+        Map<String, ?> keys = pastLocations;
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Location location = new Gson().fromJson(entry.getValue().toString(), Location.class);
+            mPastLocations.add(location);
+        }
 
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
