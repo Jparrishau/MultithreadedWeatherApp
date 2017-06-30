@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.HttpJSONRequest;
 import com.imobile3.taylor.imobile3_weather_app.LocationLookup;
 import com.imobile3.taylor.imobile3_weather_app.ForecastLocationListener;
@@ -47,6 +48,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Taylor Parrish on 8/29/2016.
@@ -117,7 +119,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public void onResume() {
         if (DEBUG) Log.d(CLASS_TAG, "onResume()");
         super.onResume();
-
     }
 
     @Override
@@ -157,11 +158,23 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
         mIsTaskRunning = false;
 
-        //This is temporary, will only show the most recent location
-        //Will not persist, will have to save them into sharedPreferences later to work.
-        ArrayList<Location> locations = new ArrayList<>();
-        locations.add(location);
-        setUpPastLocationListView(locations);
+        Gson gson = new Gson();
+        String locationJSON = gson.toJson(location);
+        mSharedPreferences.edit().putString(location.getCoordinates(), locationJSON).apply();
+
+        /*
+            Should this be placed somewhere else? What if we don't do a lookup? Will that ever be a problem?
+        */
+        if(!mSharedPreferences.equals(null)) {
+            ArrayList<Location> locations = new ArrayList<>();
+
+            Map<String, ?> keys = mSharedPreferences.getAll();
+            for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                Location tempLocation = new Gson().fromJson(entry.getValue().toString(), Location.class);
+                locations.add(tempLocation);
+            }
+            setUpPastLocationListView(locations);
+        }
     }
 
     //This is going to require deconstructing the Location object into its JSON parts and reconstructing it in the adapter.
@@ -203,12 +216,11 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             }
         });
 
-        previousLocationsList.setAdapter(
-                new PastLocationsAdapter(getActivity(), locations));
+       /* previousLocationsList.setAdapter(
+                new PastLocationsAdapter(getActivity(), locations));*/
 
-        //Use when we get this function working correctly in future.
-        /*previousLocationsList.setAdapter(
-                new PastLocationsAdapter(getActivity(), mSharedPreferences.getAll()));*/
+        previousLocationsList.setAdapter(
+                new PastLocationsAdapter(getActivity(), mSharedPreferences.getAll()));
     }
 
     private void startForecastActivity(Location locationToDisplay) {
@@ -296,6 +308,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
 
     /*
         Using the user input location string to verify and respond with more detailed location data
+
+        Note: Hopefully move this to an outer class for better readability in future.
     */
     private class LocationResponse extends AsyncTask<String, String, Location> {
         private final LocationDataTaskListener listener;
