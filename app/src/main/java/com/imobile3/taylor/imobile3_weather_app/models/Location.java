@@ -19,7 +19,7 @@ public class Location implements Parcelable {
     private String mFormatted_address;
 
     //Convert this to hash table where keys are the dates?
-    private ArrayList<Day> mDays;
+    private ArrayList<Day> mDays = new ArrayList<>();
 
     public Location(String latitude, String longitude,
                     String formatted_address) {
@@ -102,42 +102,43 @@ public class Location implements Parcelable {
     /*
         Make Parcelable
     */
-    private Location(Parcel in) {
-        this.mLatitude = in.readString();
-        this.mLongitude = in.readString();
-        this.mCoordinates = in.readString();
-        this.mCity = in.readString();
-        this.mState = in.readString();
-        this.mFormatted_address = in.readString();
-        this.mDays = in.readArrayList(null);
-    }
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel out, int i) {
-        out.writeString(mLatitude);
-        out.writeString(mLongitude);
-        out.writeString(mCoordinates);
-        out.writeString(mCity);
-        out.writeString(mState);
-        out.writeString(mFormatted_address);
-        out.writeList(mDays);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mLatitude);
+        dest.writeString(this.mLongitude);
+        dest.writeString(this.mCoordinates);
+        dest.writeString(this.mCity);
+        dest.writeString(this.mState);
+        dest.writeString(this.mFormatted_address);
+        dest.writeTypedList(this.mDays);
     }
 
-    public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
-        public Location createFromParcel(Parcel in) {
-            return new Location(in);
+    protected Location(Parcel in) {
+        this.mLatitude = in.readString();
+        this.mLongitude = in.readString();
+        this.mCoordinates = in.readString();
+        this.mCity = in.readString();
+        this.mState = in.readString();
+        this.mFormatted_address = in.readString();
+        this.mDays = in.createTypedArrayList(Day.CREATOR);
+    }
+
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
+        @Override
+        public Location createFromParcel(Parcel source) {
+            return new Location(source);
         }
 
+        @Override
         public Location[] newArray(int size) {
             return new Location[size];
         }
     };
-
     /*
        End Make Parcelable
     */
@@ -153,5 +154,6 @@ public class Location implements Parcelable {
                 ", State='" + getState() +
                 '}';
     }
+
 
 }
