@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -20,17 +21,12 @@ import java.util.Map;
  * the pastLocastionsListView
  */
 public class PastLocationsAdapter extends BaseAdapter {
-    private ArrayList<String> mPastLocations;
+    private ArrayList<Location> mPastLocations;
     private LayoutInflater mInflater;
 
-    public PastLocationsAdapter(Activity context, Map<String, ?> pastLocations) {
+    public PastLocationsAdapter(Activity context, ArrayList<Location> locations) {
         super();
-        mPastLocations = new ArrayList<>();
-
-        Map<String, ?> keys = pastLocations;
-        for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            mPastLocations.add(entry.getKey());
-        }
+        mPastLocations = locations;
 
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -50,8 +46,8 @@ public class PastLocationsAdapter extends BaseAdapter {
         TextView cityText = (TextView) convertView.findViewById(R.id.cityText);
         TextView degreeText = (TextView) convertView.findViewById(R.id.degreeText);
 
-        String city = mPastLocations.get(position);
-        String degree = "90˚ F";
+        String city = mPastLocations.get(position).getCity();
+        String degree = mPastLocations.get(position).getDay(0).getWeatherForecast().getHigh();
 
         cityText.setText(city);
         degreeText.setText(degree);
