@@ -1,6 +1,5 @@
 package com.imobile3.taylor.imobile3_weather_app.models;
 
-import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
