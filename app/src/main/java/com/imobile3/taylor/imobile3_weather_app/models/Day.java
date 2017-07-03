@@ -21,7 +21,7 @@ public class Day implements Parcelable{
     private long mTime;
     private Date mDate;
     private String mTextDay;
-    private WeatherForecast mWeatherForecast;
+    private DailyWeatherForecast mDailyWeatherForecast;
 
 
     public Day(){
@@ -33,23 +33,23 @@ public class Day implements Parcelable{
         setTextDay(new SimpleDateFormat("EEEE").format(Calendar.getInstance().getTime()));
     }
 
-    public Day(Date date, int day, int month, int year, long time, String mTextDay, WeatherForecast weatherForecast){
+    public Day(Date date, int day, int month, int year, long time, String mTextDay, DailyWeatherForecast dailyWeatherForecast){
         setDate(date);
         setDay(day);
         setMonth(month);
         setYear(year);
         setTime(time);
         setTextDay(mTextDay);
-        setWeatherForecast(weatherForecast);
+        setWeatherForecast(dailyWeatherForecast);
     }
 
-    public Day(int day, int month, int year, long time, String mTextDay, WeatherForecast weatherForecast){
+    public Day(int day, int month, int year, long time, String mTextDay, DailyWeatherForecast dailyWeatherForecast){
         setDay(day);
         setMonth(month);
         setYear(year);
         setTime(time);
         setTextDay(mTextDay);
-        setWeatherForecast(weatherForecast);
+        setWeatherForecast(dailyWeatherForecast);
     }
 
     public String getTextDay() {
@@ -100,12 +100,12 @@ public class Day implements Parcelable{
         this.mDate = fullDate;
     }
 
-    public void setWeatherForecast(WeatherForecast weatherForecast){
-        this.mWeatherForecast = weatherForecast;
+    public void setWeatherForecast(DailyWeatherForecast dailyWeatherForecast){
+        this.mDailyWeatherForecast = dailyWeatherForecast;
     }
 
-    public WeatherForecast getWeatherForecast(){
-        return mWeatherForecast;
+    public DailyWeatherForecast getWeatherForecast(){
+        return mDailyWeatherForecast;
     }
 
 
@@ -125,7 +125,7 @@ public class Day implements Parcelable{
         dest.writeLong(this.mTime);
         dest.writeLong(this.mDate != null ? this.mDate.getTime() : -1);
         dest.writeString(this.mTextDay);
-        dest.writeParcelable(this.mWeatherForecast, flags);
+        dest.writeParcelable(this.mDailyWeatherForecast, flags);
     }
 
     protected Day(Parcel in) {
@@ -136,7 +136,7 @@ public class Day implements Parcelable{
         long tmpMDate = in.readLong();
         this.mDate = tmpMDate == -1 ? null : new Date(tmpMDate);
         this.mTextDay = in.readString();
-        this.mWeatherForecast = in.readParcelable(WeatherForecast.class.getClassLoader());
+        this.mDailyWeatherForecast = in.readParcelable(DailyWeatherForecast.class.getClassLoader());
     }
 
     public static final Creator<Day> CREATOR = new Creator<Day>() {
@@ -163,7 +163,7 @@ public class Day implements Parcelable{
                 ", Time=" + mTime +
                 ", Date=" + mDate +
                 ", TextDay='" + mTextDay + '\'' +
-                ", WeatherForecast=" + mWeatherForecast +
+                ", DailyWeatherForecast=" + mDailyWeatherForecast +
                 '}';
     }
 }
