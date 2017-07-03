@@ -33,7 +33,7 @@ public class ForecastAdapter extends BaseAdapter {
         View convertedCurrentView = convertView;
         if (convertView == null && convertedCurrentView == null) {
             convertedView = mInflater.inflate(R.layout.row_weather_item, null);
-            convertedCurrentView = mInflater.inflate(R.layout.forecast_list, null);
+            convertedCurrentView = mInflater.inflate(R.layout.forecast_fragment, null);
         }
         setupWeatherItemListView(position, convertedView, convertedCurrentView);
 
