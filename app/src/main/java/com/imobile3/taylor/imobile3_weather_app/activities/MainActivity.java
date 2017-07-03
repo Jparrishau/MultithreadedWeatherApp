@@ -1,6 +1,6 @@
 package com.imobile3.taylor.imobile3_weather_app.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,7 +18,7 @@ import com.imobile3.taylor.imobile3_weather_app.fragments.MainFragment;
  * Issue 1: Toolbar is showing on all activities but menu options are not?
  * Possible Solutions: Unsure where problem is coming from. Further testing required.
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends FragmentActivity {
     private static final String CLASS_TAG = MainActivity.class.getSimpleName();
     private static final boolean DEBUG = true;
 
@@ -33,11 +33,11 @@ public class MainActivity extends AppCompatActivity{
         if (savedInstanceState == null) {
             mMainFragment = new MainFragment();
 
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(android.R.id.content, mMainFragment, TAG_MAIN_FRAGMENT)
                     .commit();
         } else {
-            mMainFragment = (MainFragment) getFragmentManager().findFragmentByTag(TAG_MAIN_FRAGMENT);
+            mMainFragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(TAG_MAIN_FRAGMENT);
         }
     }
 
