@@ -1,8 +1,9 @@
 package com.imobile3.taylor.imobile3_weather_app.fragments;
 
-import android.app.Fragment;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,7 @@ import android.widget.ListView;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.activities.DetailedForecastActivity;
 import com.imobile3.taylor.imobile3_weather_app.adapters.ForecastAdapter;
-import com.imobile3.taylor.imobile3_weather_app.models.DetailedWeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class SimpleForecastFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 Intent detailedforecastIntent = new Intent(getActivity(), DetailedForecastActivity.class);
-                ArrayList<DetailedWeatherItem> detailItems = location.getDay(position).getWeatherForecast().getDetailWeatherItems();
+                ArrayList<DailyDetailedWeatherItem> detailItems = location.getDay(position).getWeatherForecast().getDetailWeatherItems();
 
                 detailedforecastIntent.putParcelableArrayListExtra(TAG_EXTRA_DETAIL_ITEMS, detailItems);
                 startActivity(detailedforecastIntent);
