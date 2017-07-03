@@ -21,6 +21,8 @@ public class Location implements Parcelable {
     //Convert this to hash table where keys are the dates?
     private ArrayList<Day> mDays = new ArrayList<>();
 
+    private CurrentWeatherForecast mCurrentWeatherForecast;
+
     public Location(String latitude, String longitude,
                     String formatted_address) {
         setLatitude(latitude);
@@ -38,6 +40,14 @@ public class Location implements Parcelable {
         setCoordinates(latitude + "," + longitude);
         setCity(city);
         setState(state);
+    }
+
+    public CurrentWeatherForecast getCurrentWeatherForecast() {
+        return mCurrentWeatherForecast;
+    }
+
+    public void setCurrentWeatherForecast(CurrentWeatherForecast currentWeatherForecast) {
+        this.mCurrentWeatherForecast = currentWeatherForecast;
     }
 
     public String getCoordinates() {
@@ -100,46 +110,6 @@ public class Location implements Parcelable {
     }
 
     /*
-        Make Parcelable
-    */
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mLatitude);
-        dest.writeString(this.mLongitude);
-        dest.writeString(this.mCoordinates);
-        dest.writeString(this.mCity);
-        dest.writeString(this.mState);
-        dest.writeString(this.mFormatted_address);
-        dest.writeTypedList(this.mDays);
-    }
-
-    protected Location(Parcel in) {
-        this.mLatitude = in.readString();
-        this.mLongitude = in.readString();
-        this.mCoordinates = in.readString();
-        this.mCity = in.readString();
-        this.mState = in.readString();
-        this.mFormatted_address = in.readString();
-        this.mDays = in.createTypedArrayList(Day.CREATOR);
-    }
-
-    public static final Creator<Location> CREATOR = new Creator<Location>() {
-        @Override
-        public Location createFromParcel(Parcel source) {
-            return new Location(source);
-        }
-
-        @Override
-        public Location[] newArray(int size) {
-            return new Location[size];
-        }
-    };
-    /*
        End Make Parcelable
     */
 
@@ -156,4 +126,43 @@ public class Location implements Parcelable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mLatitude);
+        dest.writeString(this.mLongitude);
+        dest.writeString(this.mCoordinates);
+        dest.writeString(this.mCity);
+        dest.writeString(this.mState);
+        dest.writeString(this.mFormatted_address);
+        dest.writeTypedList(this.mDays);
+        dest.writeParcelable(this.mCurrentWeatherForecast, flags);
+    }
+
+    protected Location(Parcel in) {
+        this.mLatitude = in.readString();
+        this.mLongitude = in.readString();
+        this.mCoordinates = in.readString();
+        this.mCity = in.readString();
+        this.mState = in.readString();
+        this.mFormatted_address = in.readString();
+        this.mDays = in.createTypedArrayList(Day.CREATOR);
+        this.mCurrentWeatherForecast = in.readParcelable(CurrentWeatherForecast.class.getClassLoader());
+    }
+
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
+        @Override
+        public Location createFromParcel(Parcel source) {
+            return new Location(source);
+        }
+
+        @Override
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
 }
