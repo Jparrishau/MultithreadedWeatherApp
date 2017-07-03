@@ -119,6 +119,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public void onResume() {
         if (DEBUG) Log.d(CLASS_TAG, "onResume()");
         super.onResume();
+        refreshPastLocations();
     }
 
     @Override
@@ -161,11 +162,11 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         Gson gson = new Gson();
         String locationJSON = gson.toJson(location);
         mSharedPreferences.edit().putString(location.getCoordinates(), locationJSON).apply();
+        refreshPastLocations();
+    }
 
-        /*
-            Should this be placed somewhere else? What if we don't do a lookup? Will that ever be a problem?
-        */
-        if(!mSharedPreferences.equals(null)) {
+    private void refreshPastLocations() {
+        if(mSharedPreferences.getAll() != null) {
             ArrayList<Location> locations = new ArrayList<>();
 
             Map<String, ?> keys = mSharedPreferences.getAll();
@@ -177,7 +178,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
     }
 
-    //This is going to require deconstructing the Location object into its JSON parts and reconstructing it in the adapter.
     private void setUpPastLocationListView(final ArrayList<Location> locations) {
         final ListView previousLocationsList = (ListView) getView().findViewById(R.id.pastLocationsList);
 
@@ -202,6 +202,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        //The key is the coordinates now, not the city. This doesn't work.
                         mSharedPreferences.edit().remove(locationText).apply();
                     }
                 });
