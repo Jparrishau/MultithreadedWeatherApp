@@ -54,10 +54,10 @@ public class PastLocationsAdapter extends BaseAdapter {
         TextView degreeText = (TextView) convertView.findViewById(R.id.degreeText);
 
         String city = mPastLocations.get(position).getCity();
-        String degree = mPastLocations.get(position).getDay(0).getWeatherForecast().getHigh();
+        Double degree = mPastLocations.get(position).getCurrentWeatherForecast().getTemp_F();
 
         cityText.setText(city);
-        degreeText.setText(degree);
+        degreeText.setText(degree + " °F");
     }
 
     @Override
