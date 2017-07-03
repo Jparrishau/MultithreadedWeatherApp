@@ -10,14 +10,14 @@ import java.util.ArrayList;
  *
  * An object model used to contain all the relevant weather data of a specific day.
  */
-public class WeatherForecast implements Parcelable {
+public class DailyWeatherForecast implements Parcelable {
     private String high;
     private String low;
     private String conditions;
-    private ArrayList<DetailedWeatherItem> detailWeatherItems;
+    private ArrayList<DailyDetailedWeatherItem> detailWeatherItems;
 
 
-    public WeatherForecast(String conditions, String high, String low) {
+    public DailyWeatherForecast(String conditions, String high, String low) {
         this.conditions = conditions;
         this.high = high;
         this.low = low;
@@ -36,7 +36,7 @@ public class WeatherForecast implements Parcelable {
         return conditions;
     }
 
-    public ArrayList<DetailedWeatherItem> getDetailWeatherItems() {
+    public ArrayList<DailyDetailedWeatherItem> getDetailWeatherItems() {
         return detailWeatherItems;
     }
 
@@ -57,22 +57,22 @@ public class WeatherForecast implements Parcelable {
         dest.writeTypedList(this.detailWeatherItems);
     }
 
-    protected WeatherForecast(Parcel in) {
+    protected DailyWeatherForecast(Parcel in) {
         this.high = in.readString();
         this.low = in.readString();
         this.conditions = in.readString();
-        this.detailWeatherItems = in.createTypedArrayList(DetailedWeatherItem.CREATOR);
+        this.detailWeatherItems = in.createTypedArrayList(DailyDetailedWeatherItem.CREATOR);
     }
 
-    public static final Creator<WeatherForecast> CREATOR = new Creator<WeatherForecast>() {
+    public static final Creator<DailyWeatherForecast> CREATOR = new Creator<DailyWeatherForecast>() {
         @Override
-        public WeatherForecast createFromParcel(Parcel source) {
-            return new WeatherForecast(source);
+        public DailyWeatherForecast createFromParcel(Parcel source) {
+            return new DailyWeatherForecast(source);
         }
 
         @Override
-        public WeatherForecast[] newArray(int size) {
-            return new WeatherForecast[size];
+        public DailyWeatherForecast[] newArray(int size) {
+            return new DailyWeatherForecast[size];
         }
     };
     /*
@@ -81,7 +81,7 @@ public class WeatherForecast implements Parcelable {
 
     @Override
     public String toString() {
-        return "WeatherForecast{" +
+        return "DailyWeatherForecast{" +
                 ", high='" + high + '\'' +
                 ", low='" + low + '\'' +
                 ", conditions='" + conditions + '\'' +
