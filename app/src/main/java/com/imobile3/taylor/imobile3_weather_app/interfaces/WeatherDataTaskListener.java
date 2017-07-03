@@ -1,9 +1,6 @@
 package com.imobile3.taylor.imobile3_weather_app.interfaces;
 
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
-import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
-
-import java.util.ArrayList;
 
 /**
  * Created by Taylor Parrish on 8/5/2016.
