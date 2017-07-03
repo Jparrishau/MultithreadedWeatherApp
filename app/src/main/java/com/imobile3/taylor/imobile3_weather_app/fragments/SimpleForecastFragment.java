@@ -48,7 +48,7 @@ public class SimpleForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
-        return inflater.inflate(R.layout.forecast_list, container, false);
+        return inflater.inflate(R.layout.forecast_fragment, container, false);
     }
 
     @Override
