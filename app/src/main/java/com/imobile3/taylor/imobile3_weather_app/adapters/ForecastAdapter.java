@@ -30,25 +30,40 @@ public class ForecastAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View convertedView = convertView;
-        if (convertView == null) {
+        View convertedCurrentView = convertView;
+        if (convertView == null && convertedCurrentView == null) {
             convertedView = mInflater.inflate(R.layout.row_weather_item, null);
+            convertedCurrentView = mInflater.inflate(R.layout.forecast_list, null);
         }
-        setupWeatherItemListView(position, convertedView);
+        setupWeatherItemListView(position, convertedView, convertedCurrentView);
 
         return convertedView;
     }
 
-    private void setupWeatherItemListView(int position, View convertView) {
-        TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
-        TextView conditionsText = (TextView) convertView.findViewById(R.id.conditions);
-        TextView highText = (TextView) convertView.findViewById(R.id.highDegree);
-        TextView lowText = (TextView) convertView.findViewById(R.id.lowDegree);
-
+    private void setupWeatherItemListView(int position, View convertView, View convertViewCurrent) {
+        String currentTemp = mLocation.getCurrentWeatherForecast().getTemp_F() + " °F";
+        String currentWeatherDescr = mLocation.getCurrentWeatherForecast().getWeather_description();
+        String currentPressure = "1016.0 hPa";
+        String currentHumidity = mLocation.getCurrentWeatherForecast().getHumidity();
         String weekday = mLocation.getDay(position).getTextDay();
         String conditions = mLocation.getDay(position).getWeatherForecast().getConditions();
         String high = mLocation.getDay(position).getWeatherForecast().getHigh();
         String low = mLocation.getDay(position).getWeatherForecast().getLow();
 
+        TextView currentTempText = (TextView) convertViewCurrent.findViewById(R.id.currentTemperature);
+        TextView currentWeatherDescrText = (TextView) convertViewCurrent.findViewById(R.id.currentWeatherDescription);
+        TextView currentPressureText = (TextView) convertViewCurrent.findViewById(R.id.currentPressure);
+        TextView currentHumidityText = (TextView) convertViewCurrent.findViewById(R.id.currentHumidity);
+
+        TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
+        TextView conditionsText = (TextView) convertView.findViewById(R.id.conditions);
+        TextView highText = (TextView) convertView.findViewById(R.id.highDegree);
+        TextView lowText = (TextView) convertView.findViewById(R.id.lowDegree);
+
+        /*currentTempText.setText(currentTemp);
+        currentWeatherDescrText.setText(currentWeatherDescr);
+        currentPressureText.setText(currentPressure);
+        currentHumidityText.setText(currentHumidity);*/
         weekdayText.setText(weekday);
         conditionsText.setText(conditions);
         highText.setText(high);
