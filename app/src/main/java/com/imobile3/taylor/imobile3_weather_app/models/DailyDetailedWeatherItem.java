@@ -6,16 +6,16 @@ import android.os.Parcelable;
 /**
  * Created by Taylor Parrish on 8/23/2016.
  *
- * The data object model DetailedWeatherItem is used
- * to hold the detailed weather information of its corresponding WeatherForecast object.
+ * The data object model DailyDetailedWeatherItem is used
+ * to hold the detailed weather information of its corresponding DailyWeatherForecast object.
  */
-public class DetailedWeatherItem implements Parcelable {
+public class DailyDetailedWeatherItem implements Parcelable {
     private String weekday;
     private String description;
     private String pop;
 
 
-    public DetailedWeatherItem(String weekday, String description, String pop) {
+    public DailyDetailedWeatherItem(String weekday, String description, String pop) {
         this.weekday = weekday;
         this.description = description;
         this.pop = pop;
@@ -33,7 +33,7 @@ public class DetailedWeatherItem implements Parcelable {
         return pop;
     }
 
-    private DetailedWeatherItem(Parcel in) {
+    private DailyDetailedWeatherItem(Parcel in) {
         weekday = in.readString();
         description = in.readString();
         pop = in.readString();
@@ -51,13 +51,13 @@ public class DetailedWeatherItem implements Parcelable {
         out.writeString(pop);
     }
 
-    public static final Parcelable.Creator<DetailedWeatherItem> CREATOR = new Parcelable.Creator<DetailedWeatherItem>() {
-        public DetailedWeatherItem createFromParcel(Parcel in) {
-            return new DetailedWeatherItem(in);
+    public static final Parcelable.Creator<DailyDetailedWeatherItem> CREATOR = new Parcelable.Creator<DailyDetailedWeatherItem>() {
+        public DailyDetailedWeatherItem createFromParcel(Parcel in) {
+            return new DailyDetailedWeatherItem(in);
         }
 
-        public DetailedWeatherItem[] newArray(int size) {
-            return new DetailedWeatherItem[size];
+        public DailyDetailedWeatherItem[] newArray(int size) {
+            return new DailyDetailedWeatherItem[size];
         }
     };
 }
