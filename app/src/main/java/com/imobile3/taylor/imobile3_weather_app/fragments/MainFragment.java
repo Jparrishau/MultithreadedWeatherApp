@@ -1,7 +1,6 @@
 package com.imobile3.taylor.imobile3_weather_app.fragments;
 
 import android.Manifest;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +13,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,10 +36,11 @@ import com.imobile3.taylor.imobile3_weather_app.activities.SimpleForecastActivit
 import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
+import com.imobile3.taylor.imobile3_weather_app.models.CurrentWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.Day;
-import com.imobile3.taylor.imobile3_weather_app.models.DetailedWeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
-import com.imobile3.taylor.imobile3_weather_app.models.WeatherForecast;
+import com.imobile3.taylor.imobile3_weather_app.models.DailyWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
 
 import org.json.JSONArray;
@@ -48,6 +49,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -217,9 +219,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             }
         });
 
-       /* previousLocationsList.setAdapter(
-                new PastLocationsAdapter(getActivity(), locations));*/
-
         previousLocationsList.setAdapter(
                 new PastLocationsAdapter(getActivity(), mSharedPreferences.getAll()));
     }
@@ -343,7 +342,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         How to have two separate onTaskFinished() functions? Do we even need two asynch task?
         Possibly combine them.
     */
-    private class JSONParser extends AsyncTask<Location, String, JSONObject> {
+    private class JSONParser extends AsyncTask<Location, String, HashMap<String, JSONObject> > {
         private WeatherDataTaskListener mListener;
         Location location;
 
@@ -358,18 +357,24 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
 
         @Override
-        public JSONObject doInBackground(Location... args) {
+        public HashMap<String, JSONObject> doInBackground(Location... args) {
+            HashMap<String, JSONObject> weatherData = new HashMap<>();
             location = args[0];
 
-            //Put this somewhere else later3
+            //Put these somewhere else later
             final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
 
             //URL for WUnderground API Call
-            String url = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                    + "/forecast/q/" + location.getCoordinates() + ".json";
+            String weatherURL_10DAY = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
+                    + "/" + "forecast10day" + "/q/" + location.getCoordinates() + ".json";
+            //URL for WUnderground API Call
+            String weatherURL_Conditions = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
+                    + "/" + "conditions" + "/q/" + location.getCoordinates() + ".json";
 
             try {
-                return new HttpJSONRequest().getJSONFromUrl(url);
+                weatherData.put("FORECAST_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_10DAY));
+                weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
+                return weatherData;
             } catch (IOException | JSONException e) {
                 //Need to handle this properly. Network may not be enabled/working.
                 e.printStackTrace();
@@ -381,35 +386,76 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
 
         @Override
-        public void onPostExecute(JSONObject JSONWeatherData) {
-            Location location = parseJSONWeatherData(JSONWeatherData);
+        public void onPostExecute(HashMap<String, JSONObject> weatherData) {
+            Location location = parseJSONWeatherData(weatherData);
             mListener.onWeatherDataTaskFinished(location);
         }
 
         //Parses JSON Data into its respective model objects
-        private Location parseJSONWeatherData(JSONObject JSONWeatherData) {
+        private Location parseJSONWeatherData(HashMap<String, JSONObject> weatherData) {
+            JSONObject dailyWeatherForecastData = weatherData.get("FORECAST_10DAY");
+            JSONObject currentWeatherForecastData = weatherData.get("FORECAST_OBSERVATION_CURR");
+
             try {
-                // Getting JSON Wunderground Simpleforecast data
-                JSONArray simpleforecastData = JSONWeatherData.getJSONObject("forecast")
-                        .getJSONObject("simpleforecast").getJSONArray("forecastday");
-                // Getting JSON Wunderground detail forecast data
-                JSONArray detailforecastData = JSONWeatherData.getJSONObject("forecast")
-                        .getJSONObject("txt_forecast").getJSONArray("forecastday");
-
                 ArrayList<Day> days =
-                        parseSimpleForecastDataModel(simpleforecastData, detailforecastData);
+                        parseSimpleForecastData(dailyWeatherForecastData);
+                CurrentWeatherForecast currentWeatherForecast
+                        = parseCurrentWeatherForecast(currentWeatherForecastData);
 
-                location.setDays(days);
-            } catch (JSONException e) {
+                if(days != null) {
+                    location.setDays(days);
+                }
+                if(currentWeatherForecast != null) {
+                    location.setCurrentWeatherForecast(currentWeatherForecast);
+                }
+            }
+            catch (JSONException e) {
                 e.printStackTrace();
                 revertToMainPage();
             }
             return location;
         }
 
-        private ArrayList<Day> parseSimpleForecastDataModel(JSONArray simpleforecastData, JSONArray detailforecastData) throws JSONException {
+        private CurrentWeatherForecast parseCurrentWeatherForecast(JSONObject currentWeatherForecastData) {
+            // Getting JSON Wunderground Simpleforecast data
+            CurrentWeatherForecast currentWeatherForecast = null;
+            try {
+                JSONObject observation_data = currentWeatherForecastData.getJSONObject("current_observation");
+                String weatherDescr = observation_data.getString("weather");
+                String tempText = observation_data.getString("temperature_string");
+                double tempF = observation_data.getDouble("temp_f");
+                double tempC = observation_data.getDouble("temp_c");
+                String humidity = observation_data.getString("relative_humidity");
+                String windText = observation_data.getString("wind_string");
+                String windDir = observation_data.getString("wind_dir");
+                int windDegree = observation_data.getInt("wind_degrees");
+                int windMPH = observation_data.getInt("wind_mph");
+                double windGustMPH = observation_data.getDouble("wind_gust_mph");
+                int windKPH = observation_data.getInt("wind_kph");
+                double windGustKPH = observation_data.getDouble("wind_gust_kph");
+                currentWeatherForecast =
+                        new CurrentWeatherForecast(weatherDescr, tempText, tempF,
+                        tempC, humidity, windText, windDir,
+                        windDegree, windMPH, windGustMPH,
+                        windKPH, windGustKPH);
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+                revertToMainPage();
+            }
+            return currentWeatherForecast;
+        }
+
+        private ArrayList<Day> parseSimpleForecastData(JSONObject dailyWeatherForecastData) throws JSONException {
             JSONObject simpleData;
             ArrayList<Day> days = new ArrayList<>();
+
+            // Getting JSON Wunderground Simpleforecast data
+            JSONArray simpleforecastData = dailyWeatherForecastData.getJSONObject("forecast")
+                    .getJSONObject("simpleforecast").getJSONArray("forecastday");
+            // Getting JSON Wunderground detail forecast data
+            JSONArray detailforecastData = dailyWeatherForecastData.getJSONObject("forecast")
+                    .getJSONObject("txt_forecast").getJSONArray("forecastday");
 
             for (int i = 0; i < simpleforecastData.length(); i++) {
                 simpleData = simpleforecastData.getJSONObject(i);
@@ -423,14 +469,13 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 String conditions = simpleData.getString("conditions");
                 String high = simpleData.getJSONObject("high").getString("fahrenheit") + "˚ F";
                 String low = simpleData.getJSONObject("low").getString("fahrenheit") + "˚ F";
-                WeatherForecast weatherForecast = new WeatherForecast(conditions, high, low);
+                DailyWeatherForecast dailyWeatherForecast = new DailyWeatherForecast(conditions, high, low);
 
-                Day currentDay = new Day(day, month, year, time, textDay, weatherForecast);
+                Day currentDay = new Day(day, month, year, time, textDay, dailyWeatherForecast);
                 days.add(i, currentDay);
-                //weatherForecasts.add(new WeatherForecast(weekday, conditions, high, low));
             }
 
-            //Parse the corresponding data into WeatherForecast object model
+            //Parse the corresponding data into DailyWeatherForecast object model
             days = parseDetailForecastDataModel(detailforecastData, days);
             return days;
         }
@@ -446,7 +491,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                     String description = detailData.getString("fcttext");
                     String pop = detailData.getString("pop");
 
-                    days.get(i).getWeatherForecast().getDetailWeatherItems().add(new DetailedWeatherItem(weekday, description, pop));
+                    days.get(i).getWeatherForecast().getDetailWeatherItems().add(new DailyDetailedWeatherItem(weekday, description, pop));
                 }
             }
             return days;
