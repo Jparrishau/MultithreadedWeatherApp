@@ -1,6 +1,5 @@
 # WeatherApplication
-<<<<<<< HEAD
-Simple 3 day weather forecasting application
+
+Simple lightweight weather forecasting application
 =======
-Test
->>>>>>> Initial Commit.
+
