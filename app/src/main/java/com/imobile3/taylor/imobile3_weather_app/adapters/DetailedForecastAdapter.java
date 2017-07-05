@@ -68,7 +68,7 @@ public class DetailedForecastAdapter extends BaseAdapter {
 
         weekdayText.setText(weekday);
         descriptionText.setText(description);
-        popText.setText(pop);
+        popText.setText(pop + "%");
     }
 
     public void setDetailWeatherItems(ArrayList<DailyDetailedWeatherItem> detailWeatherItems) {
