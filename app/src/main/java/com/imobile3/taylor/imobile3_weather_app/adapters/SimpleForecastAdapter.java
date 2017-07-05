@@ -15,13 +15,13 @@ import com.imobile3.taylor.imobile3_weather_app.models.Location;
  * Created by Taylor Parrish on 8/23/2016.
  *
  * The adapter responsible for setting up the listview displayed by
- * the SimpleForecastFragment.
+ * the CurrentForecastFragment.
  */
-public class ForecastAdapter extends BaseAdapter {
+public class SimpleForecastAdapter extends BaseAdapter {
     private Location mLocation;
     private LayoutInflater mInflater = null;
 
-    public ForecastAdapter(Activity context, Location location) {
+    public SimpleForecastAdapter(Activity context, Location location) {
         super();
         mLocation = location;
         mInflater = (LayoutInflater) context
@@ -30,44 +30,32 @@ public class ForecastAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View convertedView = convertView;
-        View convertedCurrentView = convertView;
-        if (convertView == null && convertedCurrentView == null) {
+        if (convertView == null) {
             convertedView = mInflater.inflate(R.layout.row_weather_item, null);
-            convertedCurrentView = mInflater.inflate(R.layout.forecast_fragment, null);
         }
-        setupWeatherItemListView(position, convertedView, convertedCurrentView);
-
-        return convertedView;
+        return setupWeatherItemListView(position, convertedView);
     }
 
-    private void setupWeatherItemListView(int position, View convertView, View convertViewCurrent) {
-        String currentTemp = mLocation.getCurrentWeatherForecast().getTemp_F() + " °F";
-        String currentWeatherDescr = mLocation.getCurrentWeatherForecast().getWeather_description();
-        String currentPressure = "1016.0 hPa";
-        String currentHumidity = mLocation.getCurrentWeatherForecast().getHumidity();
+    private View setupWeatherItemListView(int position, View convertView) {
         String weekday = mLocation.getDay(position).getTextDay();
         String conditions = mLocation.getDay(position).getWeatherForecast().getConditions();
+        String humidity = mLocation.getCurrentWeatherForecast().getHumidity();
         String high = mLocation.getDay(position).getWeatherForecast().getHigh();
         String low = mLocation.getDay(position).getWeatherForecast().getLow();
 
-        TextView currentTempText = (TextView) convertViewCurrent.findViewById(R.id.currentTemperature);
-        TextView currentWeatherDescrText = (TextView) convertViewCurrent.findViewById(R.id.currentWeatherDescription);
-        TextView currentPressureText = (TextView) convertViewCurrent.findViewById(R.id.currentPressure);
-        TextView currentHumidityText = (TextView) convertViewCurrent.findViewById(R.id.currentHumidity);
-
         TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
         TextView conditionsText = (TextView) convertView.findViewById(R.id.conditions);
+        TextView humidityText = (TextView) convertView.findViewById(R.id.humidity);
         TextView highText = (TextView) convertView.findViewById(R.id.highDegree);
         TextView lowText = (TextView) convertView.findViewById(R.id.lowDegree);
 
-        /*currentTempText.setText(currentTemp);
-        currentWeatherDescrText.setText(currentWeatherDescr);
-        currentPressureText.setText(currentPressure);
-        currentHumidityText.setText(currentHumidity);*/
         weekdayText.setText(weekday);
         conditionsText.setText(conditions);
+        humidityText.setText(humidity);
         highText.setText(high);
         lowText.setText(low);
+
+        return convertView;
     }
 
     @Override
