@@ -6,7 +6,7 @@
     <color name="colorBackground">@android:color/transparent</color>
     <color name="colorTintedBackground">#cdcdcd</color>
 
-    <color name="darkTheme_colorPrimary">#2196F3</color>
+    <color name="darkTheme_colorPrimary">#2196f3</color>
     <color name="darkTheme_colorPrimaryDark">#1E88E5</color>
     <color name="darkTheme_colorAccent">#2196F3</color>
     <color name="darkTheme_colorBackground">#303030</color>
