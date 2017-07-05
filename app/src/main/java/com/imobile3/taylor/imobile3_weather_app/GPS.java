@@ -19,22 +19,22 @@ import android.support.v4.app.ActivityCompat;
  */
 
 public final class GPS implements LocationListener, ActivityCompat.OnRequestPermissionsResultCallback {
-    private static GPS _instance = new GPS();
-    private static Activity _activity;
+    private static GPS mInstance = new GPS();
+    private static Activity mActivity;
 
-    private static boolean _isGPSEnabled = false;
-    private static boolean _isNetworkEnabled = false;
-    private static boolean _canGetLocation = false;
-    private static boolean _isPermissionEnabled = false;
+    private static boolean mIsGPSEnabled = false;
+    private static boolean mIsNetworkEnabled = false;
+    private static boolean mCanGetLocation = false;
+    private static boolean mIsPermissionEnabled = false;
 
-    private Location _location;
-    private double _latitude;
-    private double _longitude;
+    private Location mLocation;
+    private double mLatitude;
+    private double mLongitude;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 10 meters
     private static final long MIN_TIME_BW_UPDATES = 1; // 1 minute
 
-    private static LocationManager _locationManager;
+    private static LocationManager mLocationManager;
 
     private LocationPermissionResponseListener _locationPermissionListener;
     public static final int LOCATION_REQUEST_CODE = 200;
@@ -42,54 +42,54 @@ public final class GPS implements LocationListener, ActivityCompat.OnRequestPerm
     private GPS() {}
 
     public static GPS sharedInstance(Activity activity) {
-        _activity = activity;
-        _locationManager = (LocationManager) _activity.getSystemService(Context.LOCATION_SERVICE);
-        _isGPSEnabled = _locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        _isNetworkEnabled = _locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        mActivity = activity;
+        mLocationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+        mIsGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        mIsNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        if (!_isGPSEnabled && !_isNetworkEnabled) {
-            _canGetLocation = false;
+        if (!mIsGPSEnabled && !mIsNetworkEnabled) {
+            mCanGetLocation = false;
         } else {
-            _canGetLocation = true;
+            mCanGetLocation = true;
         }
 
-        if (ActivityCompat.checkSelfPermission(_activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            _isPermissionEnabled = false;
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            mIsPermissionEnabled = false;
         } else {
-            _isPermissionEnabled = true;
+            mIsPermissionEnabled = true;
         }
 
-        return _instance;
+        return mInstance;
     }
 
     public Location getLastKnownLocation() {
-        if (ActivityCompat.checkSelfPermission(_activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            _isPermissionEnabled = false;
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            mIsPermissionEnabled = false;
         } else {
-            if (_canGetLocation) {
-                if (_isNetworkEnabled) {
-                    _locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+            if (mCanGetLocation) {
+                if (mIsNetworkEnabled) {
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
-                    if (_locationManager != null) {
-                        _location = _locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (mLocationManager != null) {
+                        mLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-                        if (_location != null) {
-                            _latitude = _location.getLatitude();
-                            _longitude = _location.getLongitude();
+                        if (mLocation != null) {
+                            mLatitude = mLocation.getLatitude();
+                            mLongitude = mLocation.getLongitude();
                         }
                     }
                 }
 
-                if (_isGPSEnabled) {
-                    if (_location == null) {
-                        _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                if (mIsGPSEnabled) {
+                    if (mLocation == null) {
+                        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
-                        if (_locationManager != null) {
-                            _location = _locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (mLocationManager != null) {
+                            mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                            if (_location != null) {
-                                _latitude = _location.getLatitude();
-                                _longitude = _location.getLongitude();
+                            if (mLocation != null) {
+                                mLatitude = mLocation.getLatitude();
+                                mLongitude = mLocation.getLongitude();
                             }
                         }
                     }
@@ -97,52 +97,52 @@ public final class GPS implements LocationListener, ActivityCompat.OnRequestPerm
             }
         }
 
-        return _location;
+        return mLocation;
     }
 
     public void stopUsingGPS() {
-        if (_locationManager != null) {
-            if (ActivityCompat.checkSelfPermission(_activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                _locationManager.removeUpdates(GPS.this);
+        if (mLocationManager != null) {
+            if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mLocationManager.removeUpdates(GPS.this);
             }
         }
     }
 
     public double getLatitude() {
-        if (_locationManager != null) {
-            _latitude = _location.getLatitude();
+        if (mLocationManager != null) {
+            mLatitude = mLocation.getLatitude();
         }
 
-        return _latitude;
+        return mLatitude;
     }
 
     public double getLongitude() {
-        if (_locationManager != null) {
-            _longitude = _location.getLongitude();
+        if (mLocationManager != null) {
+            mLongitude = mLocation.getLongitude();
         }
 
-        return _longitude;
+        return mLongitude;
     }
 
     public boolean canGetLocation() {
-        return _canGetLocation;
+        return mCanGetLocation;
     }
 
     public boolean isPermissionEnabled() {
-        return _isPermissionEnabled;
+        return mIsPermissionEnabled;
     }
 
     public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
         alertDialog.setTitle("GPS Settings");
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu ?");
+        alertDialog.setMessage("GPS is not enabled. Do you want to enable it?");
 
         alertDialog.setPositiveButton("Settings",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(
                                 Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        _activity.startActivity(intent);
+                        mActivity.startActivity(intent);
                     }
                 });
 
@@ -159,12 +159,12 @@ public final class GPS implements LocationListener, ActivityCompat.OnRequestPerm
     public void requestLocationPermission(LocationPermissionResponseListener listener) {
         _locationPermissionListener = listener;
 
-        ActivityCompat.requestPermissions(_activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+        ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        this._location = location;
+        this.mLocation = location;
     }
 
     @Override
