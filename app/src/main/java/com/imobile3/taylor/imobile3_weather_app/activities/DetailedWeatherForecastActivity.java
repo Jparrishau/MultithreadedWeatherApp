@@ -2,6 +2,7 @@ package com.imobile3.taylor.imobile3_weather_app.activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,14 +13,14 @@ import com.imobile3.taylor.imobile3_weather_app.fragments.DetailedForecastFragme
 /**
  * Created by Taylor Parrish on 8/23/2016.
  *
- * DetailedForecastActivity is responsible for loading the corresponding fragment
+ * DetailedWeatherForecastActivity is responsible for loading the corresponding fragment
  * as well as initializing the toolbar and its menus.
  *
  * Issue 1: Toolbar is showing on all activities but menu options are not?
  * Possible Solutions: Unsure where problem is coming from. Further testing required.
  */
-public class DetailedForecastActivity extends FragmentActivity {
-    private static final String CLASS_TAG = DetailedForecastActivity.class.getSimpleName();
+public class DetailedWeatherForecastActivity extends AppCompatActivity {
+    private static final String CLASS_TAG = DetailedWeatherForecastActivity.class.getSimpleName();
 
     private static final boolean DEBUG = true;
     private static final boolean DEBUG1 = true;
