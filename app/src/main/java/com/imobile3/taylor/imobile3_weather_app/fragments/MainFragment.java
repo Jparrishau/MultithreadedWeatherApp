@@ -494,18 +494,27 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             return days;
         }
 
-        private ArrayList<Day> parseDetailForecastDataModel(JSONArray detailforecastData, ArrayList<Day> days) throws JSONException {
+        private ArrayList<Day> parseDetailForecastDataModel(JSONArray detailForecastData, ArrayList<Day> days) throws JSONException {
             JSONObject detailData;
 
+            int j = 0;
+            int iterationPairCounter = 0;
             for (int i = 0; i < days.size(); i++) {
-                for (int j = 0; j < detailforecastData.length(); j++) {
-                    detailData = detailforecastData.getJSONObject(j);
+                while(j < detailForecastData.length()){
+                    detailData = detailForecastData.getJSONObject(j);
 
                     String weekday = detailData.getString("title");
                     String description = detailData.getString("fcttext");
                     String pop = detailData.getString("pop");
 
                     days.get(i).getWeatherForecast().getDetailWeatherItems().add(new DailyDetailedWeatherItem(weekday, description, pop));
+
+                    iterationPairCounter++;
+                    j++;
+                    if(iterationPairCounter == 2){
+                        iterationPairCounter = 0;
+                        break;
+                    }
                 }
             }
             return days;
