@@ -10,7 +10,8 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ToolBarStyle">
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             app:layout_scrollFlags="scroll"
             app:titleEnabled="false">
 
-            <include layout="@layout/forecast_toolbar" />
+            <include layout="@layout/forecast_toolbar"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -40,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:text="0 °F"
                         android:textColor="@android:color/background_light"
-                        android:textSize="36dp" />
+                        android:textSize="36dp"/>
 
                     <TextView
                         android:id="@+id/currentWeatherDescription"
@@ -48,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:text="No data"
                         android:textColor="@android:color/background_light"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"/>
 
                     <TextView
                         android:id="@+id/currentWind"
@@ -57,7 +58,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Wind: 0 m/s"
                         android:textColor="@android:color/background_light"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"/>
 
                     <TextView
                         android:id="@+id/currentPressure"
@@ -65,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:text="Pressure: 0 hpa"
                         android:textColor="@android:color/background_light"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"/>
 
                     <TextView
                         android:id="@+id/currentHumidity"
@@ -73,7 +74,7 @@
                         android:layout_height="wrap_content"
                         android:text="Humidity: 0 %"
                         android:textColor="@android:color/background_light"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"/>
 
                     <TextView
                         android:id="@+id/todaySunrise"
@@ -81,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:text="Sunrise: 00:00"
                         android:textColor="@android:color/background_light"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"/>
 
                     <TextView
                         android:id="@+id/todaySunset"
@@ -89,7 +90,7 @@
                         android:layout_height="wrap_content"
                         android:text="Sunset: 00:00"
                         android:textColor="@android:color/background_light"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -109,7 +110,7 @@
                         android:drawableLeft="@drawable/ic_cloud_white_48dp"
                         android:paddingRight="42dp"
                         android:text=""
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
                     <TextView
                         android:id="@+id/lastUpdate"
@@ -119,7 +120,7 @@
                         android:layout_weight="1"
                         android:gravity="bottom|end"
                         android:paddingRight="18dp"
-                        android:text="Last Update:\n 5:02 PM" />
+                        android:text="Last Update:\n 5:02 PM"/>
 
                 </LinearLayout>
 
@@ -134,7 +135,7 @@
             android:layout_height="wrap_content"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/colorPrimaryDark"
-            app:tabMode="fixed" />
+            app:tabMode="fixed"/>
 
     </android.support.design.widget.AppBarLayout>
 
