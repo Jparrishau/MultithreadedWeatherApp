@@ -32,7 +32,7 @@ import com.imobile3.taylor.imobile3_weather_app.LocationLookup;
 import com.imobile3.taylor.imobile3_weather_app.ForecastLocationListener;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.activities.MainActivity;
-import com.imobile3.taylor.imobile3_weather_app.activities.SimpleForecastActivity;
+import com.imobile3.taylor.imobile3_weather_app.activities.WeatherForecastActivity;
 import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
@@ -199,7 +199,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setCancelable(false);
-                dialog.setTitle(R.string.deletListItemWarning);
+                dialog.setTitle(R.string.deleteListItemWarning);
                 dialog.setMessage(locationText);
                 dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
@@ -224,7 +224,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     private void startForecastActivity(Location locationToDisplay) {
-        Intent mSimpleForecastIntent = new Intent(getActivity(), SimpleForecastActivity.class);
+        Intent mSimpleForecastIntent = new Intent(getActivity(), WeatherForecastActivity.class);
         Bundle locationBundle = new Bundle();
 
         locationBundle.putParcelable(TAG_LOCATION_BUNDLE, locationToDisplay);
@@ -364,16 +364,23 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             //Put these somewhere else later
             final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
 
+            /*
+                Do this some cleaner way later, possibly with loop.
+            */
             //URL for WUnderground API Call
             String weatherURL_10DAY = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
                     + "/" + "forecast10day" + "/q/" + location.getCoordinates() + ".json";
             //URL for WUnderground API Call
             String weatherURL_Conditions = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
                     + "/" + "conditions" + "/q/" + location.getCoordinates() + ".json";
+            //URL for WUnderground API Call
+            String weatherURL_Astronomy = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
+                    + "/" + "astronomy" + "/q/" + location.getCoordinates() + ".json";
 
             try {
                 weatherData.put("FORECAST_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_10DAY));
                 weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
+                weatherData.put("FORECAST_ASTRONOMY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Astronomy));
                 return weatherData;
             } catch (IOException | JSONException e) {
                 //Need to handle this properly. Network may not be enabled/working.
@@ -395,12 +402,13 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         private Location parseJSONWeatherData(HashMap<String, JSONObject> weatherData) {
             JSONObject dailyWeatherForecastData = weatherData.get("FORECAST_10DAY");
             JSONObject currentWeatherForecastData = weatherData.get("FORECAST_OBSERVATION_CURR");
+            JSONObject astronomyWeatherForecastData = weatherData.get("FORECAST_ASTRONOMY");
 
             try {
                 ArrayList<Day> days =
                         parseSimpleForecastData(dailyWeatherForecastData);
                 CurrentWeatherForecast currentWeatherForecast
-                        = parseCurrentWeatherForecast(currentWeatherForecastData);
+                        = parseCurrentWeatherForecast(currentWeatherForecastData, astronomyWeatherForecastData);
 
                 if(days != null) {
                     location.setDays(days);
@@ -416,11 +424,15 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             return location;
         }
 
-        private CurrentWeatherForecast parseCurrentWeatherForecast(JSONObject currentWeatherForecastData) {
+        private CurrentWeatherForecast parseCurrentWeatherForecast(JSONObject currentWeatherForecastData, JSONObject astronomyWeatherForecastData) {
             // Getting JSON Wunderground Simpleforecast data
             CurrentWeatherForecast currentWeatherForecast = null;
             try {
                 JSONObject observation_data = currentWeatherForecastData.getJSONObject("current_observation");
+                JSONObject astronomy_data = astronomyWeatherForecastData.getJSONObject("sun_phase");
+                JSONObject sunrise = astronomy_data.getJSONObject("sunrise");
+                JSONObject sunset = astronomy_data.getJSONObject("sunset");
+
                 String weatherDescr = observation_data.getString("weather");
                 String tempText = observation_data.getString("temperature_string");
                 double tempF = observation_data.getDouble("temp_f");
@@ -429,10 +441,12 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 String windText = observation_data.getString("wind_string");
                 String windDir = observation_data.getString("wind_dir");
                 int windDegree = observation_data.getInt("wind_degrees");
-                int windMPH = observation_data.getInt("wind_mph");
+                double windMPH = observation_data.getDouble("wind_mph");
                 double windGustMPH = observation_data.getDouble("wind_gust_mph");
-                int windKPH = observation_data.getInt("wind_kph");
+                double windKPH = observation_data.getDouble("wind_kph");
                 double windGustKPH = observation_data.getDouble("wind_gust_kph");
+
+
                 currentWeatherForecast =
                         new CurrentWeatherForecast(weatherDescr, tempText, tempF,
                         tempC, humidity, windText, windDir,
