@@ -41,7 +41,7 @@ public class DetailedForecastFragment extends Fragment {
 
         //Get weatherItems arraylist to pass to detailedListview
         ArrayList<DailyDetailedWeatherItem> detailWeatherItems = getActivity().getIntent()
-                .getParcelableArrayListExtra(SimpleForecastFragment.TAG_EXTRA_DETAIL_ITEMS);
+                .getParcelableArrayListExtra(CurrentForecastFragment.TAG_EXTRA_DETAIL_ITEMS);
 
         ListView detailListview = (ListView) root.findViewById(R.id.detailForecastListView);
 
