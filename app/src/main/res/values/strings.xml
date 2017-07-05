@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Weather Application</string>
+    <string name="app_name">Weathered</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="fetch_weather_data">Fetch Weather Data</string>
+    <string name="fetch_weather_data">Lookup Location</string>
     <string name="manually_enter_zipcode">Enter Location</string>
     <string name="enter_zipcode">Enter Zipcode:</string>
     <string name="enter_location">Enter City, State or Zipcode</string>
