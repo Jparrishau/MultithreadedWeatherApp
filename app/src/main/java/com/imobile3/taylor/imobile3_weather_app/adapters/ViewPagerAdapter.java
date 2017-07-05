@@ -1,9 +1,10 @@
 package com.imobile3.taylor.imobile3_weather_app.adapters;
 
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.imobile3.taylor.imobile3_weather_app.fragments.WeatherForecastFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentTitleList = new ArrayList<>();
 
-    public ViewPagerAdapter(FragmentManager manager) {
-        super(manager);
+    public ViewPagerAdapter(FragmentManager fragmentManager) {
+        super(fragmentManager);
+    }
+
+    // Returns total number of pages
+    @Override
+    public int getCount() {
+        return fragmentList.size();
     }
 
     @Override
@@ -25,25 +32,12 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public int getCount() {
-        return fragmentList.size();
+    public CharSequence getPageTitle(int position) {
+        return fragmentTitleList.get(position);
     }
 
     public void addFragment(Fragment fragment, String title) {
         fragmentList.add(fragment);
         fragmentTitleList.add(title);
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "Today";
-            case 1:
-                return "Tomorrow";
-            case 2:
-                return "Later";
-        }
-        return null;
     }
 }
