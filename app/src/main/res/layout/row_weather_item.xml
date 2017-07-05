@@ -1,64 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/fab_margin">
 
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Weekday"
         android:id="@+id/weekday"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:text="Weekday"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Condition"
         android:id="@+id/conditions"
-        android:layout_below="@id/weekday"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weekday"
+        android:layout_marginRight="5dp"
+        android:fontFamily="sans-serif"
+        android:text="Condition"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="High:"
         android:id="@+id/high"
-        android:layout_below="@+id/conditions"/>
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="70"
-        android:id="@+id/highDegree"
         android:layout_below="@+id/conditions"
-        android:layout_toRightOf="@+id/high" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Low:"
-        android:id="@+id/low"
-        android:layout_below="@+id/high"/>
+        android:layout_marginTop="16dp"
+        android:text="High:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
+        android:id="@+id/highDegree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="65"
-        android:id="@+id/lowDegree"
+        android:layout_alignBottom="@+id/lowDegree"
+        android:layout_below="@+id/conditions"
+        android:layout_marginBottom="21dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/high"
+        android:layout_toRightOf="@+id/high"
+        android:text="70"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <TextView
+        android:id="@+id/low"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/high"
-        android:layout_toRightOf="@id/low"/>
+        android:layout_marginRight="5dp"
+        android:text="Low:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <TextView
+        android:id="@+id/lowDegree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/high"
+        android:layout_toRightOf="@id/low"
+        android:text="65"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <TextView
+        android:id="@+id/humidityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/low"
+        android:layout_marginRight="5dp"
+        android:text="Humidity:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <TextView
+        android:id="@+id/humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="50%"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_below="@+id/low"
+        android:layout_toRightOf="@id/humidityText"/>
 
 </RelativeLayout>
