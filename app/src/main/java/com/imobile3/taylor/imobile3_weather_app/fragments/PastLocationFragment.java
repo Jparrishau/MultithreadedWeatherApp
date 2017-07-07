@@ -55,7 +55,7 @@ import java.util.Map;
 /**
  * Created by Taylor Parrish on 8/29/2016.
  *
- * MainFragment is responsible for creating the location search page
+ * PastLocationFragment is responsible for creating the location search page
  * it runs a background task to find location details and passes them to the
  * Simpleforecast activity/fragment.
  *
@@ -64,8 +64,8 @@ import java.util.Map;
  * Issue 2: If Fragment is recreated after failed location lookup sharedpreferences is erased.
  * Possible Solutions: Need to handle exception better. RevertLocation method probably the issue.
  */
-public class MainFragment extends Fragment implements LocationDataTaskListener, WeatherDataTaskListener {
-    private static final String CLASS_TAG = MainFragment.class.getSimpleName();
+public class PastLocationFragment extends Fragment implements LocationDataTaskListener, WeatherDataTaskListener {
+    private static final String CLASS_TAG = PastLocationFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
@@ -91,7 +91,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                              Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
-        View root = inflater.inflate(R.layout.main_menu, container, false);
+        View root = inflater.inflate(R.layout.fragment_past_location, container, false);
 
         Button fetchDataButton = (Button) root.findViewById(R.id.fetchDataButton);
         fetchDataButton.setOnClickListener(fetchDataButtonListener);
@@ -237,7 +237,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
 
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                new JSONParser(MainFragment.this).execute(location);
+                new JSONParser(PastLocationFragment.this).execute(location);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -302,7 +302,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 android.location.Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 location = loc.getLatitude() + "," + loc.getLongitude();
             }
-            new LocationResponse(MainFragment.this).execute(location);
+            new LocationResponse(PastLocationFragment.this).execute(location);
         }
     };
 
