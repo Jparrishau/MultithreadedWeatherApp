@@ -14,8 +14,7 @@ import com.imobile3.taylor.imobile3_weather_app.models.Location;
 /**
  * Created by Taylor Parrish on 8/23/2016.
  *
- * The adapter responsible for setting up the listview displayed by
- * the CurrentForecastFragment.
+ * INSERT DESCRIPTION HERE.
  */
 public class SimpleForecastAdapter extends BaseAdapter {
     private Location mLocation;
