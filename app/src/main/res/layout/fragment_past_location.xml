@@ -35,6 +35,7 @@
         android:layout_alignLeft="@+id/fetchDataButton"
         android:layout_alignRight="@+id/fetchDataButton"
         android:layout_alignStart="@+id/fetchDataButton"
+        android:cursorVisible="false"
         android:hint="@string/enter_location"
         android:inputType="textPostalAddress"
         android:textAlignment="center"/>
