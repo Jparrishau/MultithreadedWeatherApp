@@ -42,7 +42,7 @@ public class PastLocationsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View convertedView = convertView;
         if (convertView == null) {
-            convertedView = mInflater.inflate(R.layout.row_pastlocation_list, null);
+            convertedView = mInflater.inflate(R.layout.row_pastlocation_item, null);
         }
         setupLocationListView(position, convertedView);
 
