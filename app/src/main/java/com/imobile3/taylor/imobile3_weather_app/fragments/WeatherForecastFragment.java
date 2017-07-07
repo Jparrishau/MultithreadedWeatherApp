@@ -1,30 +1,22 @@
 package com.imobile3.taylor.imobile3_weather_app.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.activities.DetailedWeatherForecastActivity;
-import com.imobile3.taylor.imobile3_weather_app.adapters.SimpleForecastAdapter;
-import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
-import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
-import java.util.ArrayList;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
  * Created by Taylor Parrish on 7/4/2017.
  */
 public class WeatherForecastFragment extends Fragment {
-    private static final String CLASS_TAG = CurrentForecastFragment.class.getSimpleName();
+    private static final String CLASS_TAG = WeatherForecastFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     public final static String TAG_EXTRA_DETAIL_ITEMS = "detailWeatherItems";
@@ -52,8 +44,8 @@ public class WeatherForecastFragment extends Fragment {
         mLocation =
                 getActivity().getIntent().getParcelableExtra(TAG_LOCATION_BUNDLE);
 
-        page = getArguments().getInt("someInt", 0);
-        title = getArguments().getString("someTitle");
+        //page = getArguments().getInt("someInt", 0);
+        //title = getArguments().getString("someTitle");
     }
 
     @Override
@@ -61,8 +53,6 @@ public class WeatherForecastFragment extends Fragment {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
         View view = inflater.inflate(R.layout.row_weather_item, container, false);
-        TextView tvLabel = (TextView) view.findViewById(R.id.weekday);
-        tvLabel.setText(page + " -- " + title);
 
         return view;
     }
@@ -71,23 +61,23 @@ public class WeatherForecastFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onActivityCreated(Bundle)");
         super.onActivityCreated(savedInstanceState);
-        setupWeatherItemListView(mLocation);
+        //setupWeatherItemListView(mLocation);
     }
 
-    private void setupWeatherItemListView(final Location location) {
-        ListView simpleForecastListview = (ListView) getActivity().findViewById(R.id.forecastListView);
-        simpleForecastListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
-                Intent detailedforecastIntent = new Intent(getActivity(), DetailedWeatherForecastActivity.class);
-                ArrayList<DailyDetailedWeatherItem> detailItems = location.getDay(position).getWeatherForecast().getDetailWeatherItems();
+/*private void setupWeatherItemListView(final Location location) {
+    ListView simpleForecastListview = (ListView) getActivity().findViewById(R.id.forecastListView);
+    simpleForecastListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, final View view,
+                                int position, long id) {
+            Intent detailedforecastIntent = new Intent(getActivity(), DetailedWeatherForecastActivity.class);
+            ArrayList<DailyDetailedWeatherItem> detailItems = location.getDay(position).getWeatherForecast().getDetailWeatherItems();
 
-                detailedforecastIntent.putParcelableArrayListExtra(TAG_EXTRA_DETAIL_ITEMS, detailItems);
-                startActivity(detailedforecastIntent);
-            }
-        });
-        SimpleForecastAdapter adapter = new SimpleForecastAdapter(getActivity(), location);
-        simpleForecastListview.setAdapter(adapter);
-    }
+            detailedforecastIntent.putParcelableArrayListExtra(TAG_EXTRA_DETAIL_ITEMS, detailItems);
+            startActivity(detailedforecastIntent);
+        }
+    });
+    SimpleForecastAdapter adapter = new SimpleForecastAdapter(getActivity(), location);
+    simpleForecastListview.setAdapter(adapter);
+}*/
 }
