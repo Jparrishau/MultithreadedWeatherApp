@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".models.DailyDetailedWeatherItem">
 
-    <include layout="@layout/app_toolbar" />
+    <include layout="@layout/toolbar_app" />
 
     <RelativeLayout
         android:layout_width="match_parent"
