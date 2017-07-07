@@ -91,7 +91,7 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
                              Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
-        View root = inflater.inflate(R.layout.fragment_past_location, container, false);
+        View root = inflater.inflate(R.layout.fragment_main, container, false);
 
         Button fetchDataButton = (Button) root.findViewById(R.id.fetchDataButton);
         fetchDataButton.setOnClickListener(fetchDataButtonListener);
@@ -194,8 +194,9 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
         previousLocationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView textView = (TextView) view.findViewById(R.id.cityText);
-                final String locationText = textView.getText().toString();
+                final Location tempLocation = locations.get(i);
+                //I should add a function in Location model that does this for me.
+                final String locationText = tempLocation.getCity() + ", " + tempLocation.getState();
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setCancelable(false);
@@ -205,7 +206,7 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         //The key is the coordinates now, not the city. This doesn't work.
-                        mSharedPreferences.edit().remove(locationText).apply();
+                        mSharedPreferences.edit().remove(tempLocation.getCoordinates()).apply();
                     }
                 });
                 dialog.setNegativeButton(getActivity().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
