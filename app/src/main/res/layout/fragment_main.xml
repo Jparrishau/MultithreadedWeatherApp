@@ -19,7 +19,6 @@
         android:layout_below="@+id/locationField"
         android:layout_centerHorizontal="true"
         android:backgroundTint="@color/darkTheme_colorPrimary"
-        android:elevation="2dp"
         android:text="@string/fetch_weather_data"
         android:textAlignment="center"
         android:textAllCaps="false"
@@ -45,7 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/fetchDataButton"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:scrollbars="none"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
