@@ -24,6 +24,8 @@ import java.util.ArrayList;
 public class DetailedForecastFragment extends Fragment {
     private static final String CLASS_TAG = DetailedForecastFragment.class.getSimpleName();
 
+    public final static String TAG_EXTRA_DETAIL_ITEMS = "detailWeatherItems";
+
     private static final boolean DEBUG = true;
 
     @Override
@@ -37,11 +39,11 @@ public class DetailedForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
-        View root = inflater.inflate(R.layout.forecast_details_list, container, false);
+        View root = inflater.inflate(R.layout.fragment_forecast_details, container, false);
 
         //Get weatherItems arraylist to pass to detailedListview
         ArrayList<DailyDetailedWeatherItem> detailWeatherItems = getActivity().getIntent()
-                .getParcelableArrayListExtra(CurrentForecastFragment.TAG_EXTRA_DETAIL_ITEMS);
+                .getParcelableArrayListExtra(TAG_EXTRA_DETAIL_ITEMS);
 
         ListView detailListview = (ListView) root.findViewById(R.id.detailForecastListView);
 
