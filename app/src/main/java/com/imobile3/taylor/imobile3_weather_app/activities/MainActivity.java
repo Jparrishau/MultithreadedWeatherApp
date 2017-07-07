@@ -2,12 +2,13 @@ package com.imobile3.taylor.imobile3_weather_app.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.fragments.MainFragment;
+import com.imobile3.taylor.imobile3_weather_app.fragments.PastLocationFragment;
 
 /**
  * Created by Taylor Parrish on 8/23/2016.
@@ -23,21 +24,28 @@ public class MainActivity extends AppCompatActivity {
     private static final boolean DEBUG = true;
 
     private static final String TAG_MAIN_FRAGMENT = "main_fragment";
-    private MainFragment mMainFragment;
+    private PastLocationFragment mPastLocationFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreate(Bundle)");
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            mMainFragment = new MainFragment();
+            mPastLocationFragment = new PastLocationFragment();
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, mMainFragment, TAG_MAIN_FRAGMENT)
+                    .add(R.id.pastLocationContent, mPastLocationFragment, TAG_MAIN_FRAGMENT)
                     .commit();
         } else {
-            mMainFragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(TAG_MAIN_FRAGMENT);
+            mPastLocationFragment = (PastLocationFragment) getSupportFragmentManager().findFragmentByTag(TAG_MAIN_FRAGMENT);
+        }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        if (toolbar != null)
+        {
+            this.setSupportActionBar(toolbar);
         }
     }
 
