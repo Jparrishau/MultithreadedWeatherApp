@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
 
+import com.imobile3.taylor.imobile3_weather_app.adapters.SimpleForecastAdapter;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
@@ -52,7 +54,10 @@ public class WeatherForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
+        ListView simpleForecastListview = (ListView) getActivity().findViewById(R.id.forecastListView);
         View view = inflater.inflate(R.layout.row_weather_item, container, false);
+        SimpleForecastAdapter adapter = new SimpleForecastAdapter(getActivity(), mLocation);
+        simpleForecastListview.setAdapter(adapter);
 
         return view;
     }
