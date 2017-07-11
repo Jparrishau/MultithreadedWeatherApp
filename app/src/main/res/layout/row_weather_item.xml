@@ -48,7 +48,7 @@
         android:layout_marginTop="16dp"
         android:layout_toEndOf="@+id/high"
         android:layout_toRightOf="@+id/high"
-        android:text="70"
+        android:text="0"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/high"
         android:layout_toRightOf="@id/low"
-        android:text="65"
+        android:text="0"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
