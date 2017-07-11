@@ -123,8 +123,6 @@
                         android:text="Last Update:\n 5:02 PM"/>
 
                 </LinearLayout>
-
-
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -139,20 +137,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
      <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-    <ListView
-        android:id="@+id/forecastListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorPrimary"
-        android:scrollbars="none"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
 
 </android.support.design.widget.CoordinatorLayout>
