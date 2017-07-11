@@ -84,9 +84,9 @@
         android:id="@+id/humidity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="50%"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:layout_below="@+id/low"
-        android:layout_toRightOf="@id/humidityText"/>
+        android:layout_toRightOf="@id/humidityText"
+        android:text="0%"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
 </RelativeLayout>
