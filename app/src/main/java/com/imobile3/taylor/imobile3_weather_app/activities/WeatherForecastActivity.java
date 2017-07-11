@@ -1,6 +1,5 @@
 package com.imobile3.taylor.imobile3_weather_app.activities;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -71,6 +70,13 @@ public class WeatherForecastActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(mLocation.getCity() + ", " + mLocation.getState());
         }
 
+        // Instantiate a ViewPager and a PagerAdapter.
+        mPager = (ViewPager) findViewById(R.id.viewPager);
+        mPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter.addFragment(new WeatherForecastFragment(), "Today");
+        mPagerAdapter.addFragment(new WeatherForecastFragment(), "Tomorrow");
+        mPager.setAdapter(mPagerAdapter);
+
         currentTempText = (TextView) findViewById(R.id.currentTemperature);
         currentWeatherDescrText = (TextView) findViewById(R.id.currentWeatherDescription);
         currentPressureText = (TextView) findViewById(R.id.currentPressure);
@@ -92,7 +98,8 @@ public class WeatherForecastActivity extends AppCompatActivity {
         currentHumidityText.setText("Humidity: " + currentHumidity);
         sunriseText.setText("Sunrise: " + "5:42am");
         sunsetText.setText("Sunset: " + "8:00pm");
-        setupWeatherItemListView(mLocation);
+
+        //setupWeatherItemListView(mLocation);
     }
 
     //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -127,7 +134,7 @@ public class WeatherForecastActivity extends AppCompatActivity {
         }
     }
 
-    private void setupWeatherItemListView(final Location location) {
+    /*private void setupWeatherItemListView(final Location location) {
         ListView simpleForecastListview = (ListView) findViewById(R.id.forecastListView);
         simpleForecastListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -142,7 +149,7 @@ public class WeatherForecastActivity extends AppCompatActivity {
         });
         SimpleForecastAdapter adapter = new SimpleForecastAdapter(this, location);
         simpleForecastListview.setAdapter(adapter);
-    }
+    }*/
 }
 
 
