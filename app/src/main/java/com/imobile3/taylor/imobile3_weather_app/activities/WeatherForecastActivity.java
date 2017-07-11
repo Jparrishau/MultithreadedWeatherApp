@@ -1,26 +1,20 @@
 package com.imobile3.taylor.imobile3_weather_app.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+
 import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.adapters.SimpleForecastAdapter;
 import com.imobile3.taylor.imobile3_weather_app.adapters.ViewPagerAdapter;
 import com.imobile3.taylor.imobile3_weather_app.fragments.WeatherForecastFragment;
-import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
-
-import java.util.ArrayList;
 
 /**
  * Created by Taylor Parrish on 8/23/2016.
@@ -38,8 +32,6 @@ public class WeatherForecastActivity extends AppCompatActivity {
     private static final String TAG_SIMPLE_FRAGMENT = "simple_fragment";
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
     public final static String TAG_EXTRA_DETAIL_ITEMS = "detailWeatherItems";
-
-    private WeatherForecastFragment mWeatherForecastFragment;
 
     private Location mLocation;
 
@@ -75,7 +67,11 @@ public class WeatherForecastActivity extends AppCompatActivity {
         mPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment(new WeatherForecastFragment(), "Today");
         mPagerAdapter.addFragment(new WeatherForecastFragment(), "Tomorrow");
+        mPagerAdapter.addFragment(new WeatherForecastFragment(), "Later");
         mPager.setAdapter(mPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mPager);
 
         currentTempText = (TextView) findViewById(R.id.currentTemperature);
         currentWeatherDescrText = (TextView) findViewById(R.id.currentWeatherDescription);
