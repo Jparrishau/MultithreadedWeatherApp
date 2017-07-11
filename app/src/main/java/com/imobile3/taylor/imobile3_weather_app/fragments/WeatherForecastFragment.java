@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
 
@@ -54,10 +55,27 @@ public class WeatherForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
-        ListView simpleForecastListview = (ListView) getActivity().findViewById(R.id.forecastListView);
+        //ListView simpleForecastListview = (ListView) getActivity().findViewById(R.id.forecastListView);
         View view = inflater.inflate(R.layout.row_weather_item, container, false);
-        SimpleForecastAdapter adapter = new SimpleForecastAdapter(getActivity(), mLocation);
-        simpleForecastListview.setAdapter(adapter);
+        String weekday = mLocation.getDay(0).getTextDay();
+        String conditions = mLocation.getDay(0).getWeatherForecast().getConditions();
+        String humidity = mLocation.getCurrentWeatherForecast().getHumidity();
+        String high = mLocation.getDay(0).getWeatherForecast().getHigh();
+        String low = mLocation.getDay(0).getWeatherForecast().getLow();
+
+        TextView weekdayText = (TextView) view.findViewById(R.id.weekday);
+        TextView conditionsText = (TextView) view.findViewById(R.id.conditions);
+        TextView humidityText = (TextView) view.findViewById(R.id.humidity);
+        TextView highText = (TextView) view.findViewById(R.id.highDegree);
+        TextView lowText = (TextView) view.findViewById(R.id.lowDegree);
+
+        weekdayText.setText(weekday);
+        conditionsText.setText(conditions);
+        humidityText.setText(humidity);
+        highText.setText(high);
+        lowText.setText(low);
+        //SimpleForecastAdapter adapter = new SimpleForecastAdapter(getActivity(), mLocation);
+        //simpleForecastListview.setAdapter(adapter);
 
         return view;
     }
