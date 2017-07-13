@@ -18,4 +18,24 @@
     <string name="deleteListItemWarning">Are you sure you want to delete this item?</string>
     <string name="setting_auto_detect_location">Detect Location</string>
     <string name="action_about">About</string>
+
+    <string name="wi_wu_chanceflurries" translatable="false">&#xf064;</string>
+    <string name="wi_wu_chancerain" translatable="false">&#xf019;</string>
+    <string name="wi_wu_chancesleat" translatable="false">&#xf0b5;</string>
+    <string name="wi_wu_chancesnow" translatable="false">&#xf01b;</string>
+    <string name="wi_wu_chancetstorms" translatable="false">&#xf01e;</string>
+    <string name="wi_wu_clear" translatable="false">&#xf00d;</string>
+    <string name="wi_wu_cloudy" translatable="false">&#xf002;</string>
+    <string name="wi_wu_flurries" translatable="false">&#xf064;</string>
+    <string name="wi_wu_hazy" translatable="false">&#xf0b6;</string>
+    <string name="wi_wu_mostlycloudy" translatable="false">&#xf002;</string>
+    <string name="wi_wu_mostlysunny" translatable="false">&#xf00d;</string>
+    <string name="wi_wu_partlycloudy" translatable="false">&#xf002;</string>
+    <string name="wi_wu_partlysunny" translatable="false">&#xf00d;</string>
+    <string name="wi_wu_rain" translatable="false">&#xf01a;</string>
+    <string name="wi_wu_sleat" translatable="false">&#xf0b5;</string>
+    <string name="wi_wu_snow" translatable="false">&#xf01b;</string>
+    <string name="wi_wu_sunny" translatable="false">&#xf00d;</string>
+    <string name="wi_wu_tstorms" translatable="false">&#xf01e;</string>
+    <string name="wi_wu_unknown" translatable="false">&#xf00d;</string>
 </resources>
