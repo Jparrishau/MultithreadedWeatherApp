@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_behavior="com.imobile3.taylor.imobile3_weather_app.FlingBehavior"
+        >
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -102,15 +104,14 @@
                     android:weightSum="2">
 
                     <TextView
-                        android:id="@+id/currentIcon"
+                        android:id="@+id/currentWeatherIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/ic_cloud_white_48dp"
                         android:paddingRight="42dp"
-                        android:text=""
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                        android:text="o"
+                        android:textSize="72dp"/>
 
                     <TextView
                         android:id="@+id/lastUpdate"
