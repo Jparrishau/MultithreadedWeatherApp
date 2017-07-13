@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.HttpJSONRequest;
@@ -434,6 +433,7 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
                 JSONObject sunrise = astronomy_data.getJSONObject("sunrise");
                 JSONObject sunset = astronomy_data.getJSONObject("sunset");
 
+                String weatherIcon = getIconString(observation_data.getString("icon"));
                 String weatherDescr = observation_data.getString("weather");
                 String tempText = observation_data.getString("temperature_string");
                 double tempF = observation_data.getDouble("temp_f");
@@ -449,7 +449,7 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
 
 
                 currentWeatherForecast =
-                        new CurrentWeatherForecast(weatherDescr, tempText, tempF,
+                        new CurrentWeatherForecast(weatherIcon, weatherDescr, tempText, tempF,
                         tempC, humidity, windText, windDir,
                         windDegree, windMPH, windGustMPH,
                         windKPH, windGustKPH);
@@ -484,7 +484,10 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
                 String conditions = simpleData.getString("conditions");
                 String high = simpleData.getJSONObject("high").getString("fahrenheit") + "˚ F";
                 String low = simpleData.getJSONObject("low").getString("fahrenheit") + "˚ F";
-                DailyWeatherForecast dailyWeatherForecast = new DailyWeatherForecast(conditions, high, low);
+                String humidity = simpleData.getString("avehumidity");
+                String icon = getIconString(simpleData.getString("icon"));
+
+                DailyWeatherForecast dailyWeatherForecast = new DailyWeatherForecast(conditions, high, low, humidity, icon);
 
                 Day currentDay = new Day(day, month, year, time, textDay, dailyWeatherForecast);
                 days.add(i, currentDay);
@@ -519,6 +522,71 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
                 }
             }
             return days;
+        }
+
+        private String getIconString(String icon) {
+            String iconString = "";
+
+            switch (icon) {
+                case "chanceflurries":
+                    iconString = getResources().getString(R.string.wi_wu_chanceflurries);
+                    break;
+                case "chancerain":
+                    iconString = getResources().getString(R.string.wi_wu_chancerain);
+                    break;
+                case "chancesleat":
+                    iconString = getResources().getString(R.string.wi_wu_chancesleat);
+                    break;
+                case "chancesnow":
+                    iconString = getResources().getString(R.string.wi_wu_chancesnow);
+                    break;
+                case "chancetstorms":
+                    iconString = getResources().getString(R.string.wi_wu_chancetstorms);
+                    break;
+                case "clear":
+                    iconString = getResources().getString(R.string.wi_wu_clear);
+                    break;
+                case "cloudy":
+                    iconString = getResources().getString(R.string.wi_wu_cloudy);
+                    break;
+                case "flurries":
+                    iconString = getResources().getString(R.string.wi_wu_flurries);
+                    break;
+                case "hazy":
+                    iconString = getResources().getString(R.string.wi_wu_hazy);
+                    break;
+                case "mostlycloudy":
+                    iconString = getResources().getString(R.string.wi_wu_mostlycloudy);
+                    break;
+                case "mostlysunny":
+                    iconString = getResources().getString(R.string.wi_wu_mostlysunny);
+                    break;
+                case "partlycloudy":
+                    iconString = getResources().getString(R.string.wi_wu_partlycloudy);
+                    break;
+                case "partlysunny":
+                    iconString = getResources().getString(R.string.wi_wu_partlysunny);
+                    break;
+                case "rain":
+                    iconString = getResources().getString(R.string.wi_wu_rain);
+                    break;
+                case "sleat":
+                    iconString = getResources().getString(R.string.wi_wu_sleat);
+                    break;
+                case "snow":
+                    iconString = getResources().getString(R.string.wi_wu_snow);
+                    break;
+                case "sunny":
+                    iconString = getResources().getString(R.string.wi_wu_sunny);
+                    break;
+                case "tstorms":
+                    iconString = getResources().getString(R.string.wi_wu_tstorms);
+                    break;
+                default:
+                    iconString = getResources().getString(R.string.wi_wu_unknown);
+                    break;
+            }
+            return iconString;
         }
 
         private void revertToMainPage() {
