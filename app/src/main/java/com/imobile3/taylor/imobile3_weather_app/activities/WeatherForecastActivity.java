@@ -38,21 +38,17 @@ public class WeatherForecastActivity extends AppCompatActivity {
     public final static String TAG_EXTRA_DETAIL_ITEMS = "detailWeatherItems";
 
     private Location mLocation;
-
     private ViewPager mPager;
     private ViewPagerAdapter mPagerAdapter;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
-    TextView currentWeatherIconText;
-    TextView currentTempText;
-    TextView currentWeatherDescrText;
-    TextView currentPressureText;
-    TextView currentHumidityText;
-    TextView currentWindSpeedText;
-    TextView sunriseText;
-    TextView sunsetText;
+    TextView mCurrentWeatherIconText;
+    TextView mCurrentTempText;
+    TextView mCurrentWeatherDescrText;
+    TextView mCurrentPressureText;
+    TextView mCurrentHumidityText;
+    TextView mCurrentWindSpeedText;
+    TextView mSunriseText;
+    TextView mSunsetText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,26 +74,32 @@ public class WeatherForecastActivity extends AppCompatActivity {
 
         RecyclerViewFragment recyclerViewFragment = new RecyclerViewFragment();
         Bundle bundleLocation = new Bundle();
-        Gson gson = new Gson();
-        String locationJSON = gson.toJson(mLocation);
+        String locationJSON = new Gson().toJson(mLocation);
         bundleLocation.putString("location", locationJSON);
         recyclerViewFragment.setArguments(bundleLocation);
 
+        RecyclerViewFragment recyclerViewFragment2 = new RecyclerViewFragment();
+        Bundle bundleLocation2 = new Bundle();
+        String locationJSON2 = new Gson().toJson(mLocation);
+        bundleLocation2.putString("location", locationJSON2);
+        recyclerViewFragment2.setArguments(bundleLocation2);
+
         mPagerAdapter.addFragment(recyclerViewFragment, "Today");
+        mPagerAdapter.addFragment(recyclerViewFragment2, "Tomorrow");
 
         mPager.setAdapter(mPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mPager);
 
-        currentWeatherIconText = (TextView) findViewById(R.id.currentWeatherIcon);
-        currentTempText = (TextView) findViewById(R.id.currentTemperature);
-        currentWeatherDescrText = (TextView) findViewById(R.id.currentWeatherDescription);
-        currentPressureText = (TextView) findViewById(R.id.currentPressure);
-        currentHumidityText = (TextView) findViewById(R.id.currentHumidity);
-        currentWindSpeedText = (TextView) findViewById(R.id.currentWind);
-        sunriseText = (TextView) findViewById(R.id.todaySunrise);
-        sunsetText = (TextView) findViewById(R.id.todaySunset);
+        mCurrentWeatherIconText = (TextView) findViewById(R.id.currentWeatherIcon);
+        mCurrentTempText = (TextView) findViewById(R.id.currentTemperature);
+        mCurrentWeatherDescrText = (TextView) findViewById(R.id.currentWeatherDescription);
+        mCurrentPressureText = (TextView) findViewById(R.id.currentPressure);
+        mCurrentHumidityText = (TextView) findViewById(R.id.currentHumidity);
+        mCurrentWindSpeedText = (TextView) findViewById(R.id.currentWind);
+        mSunriseText = (TextView) findViewById(R.id.todaySunrise);
+        mSunsetText = (TextView) findViewById(R.id.todaySunset);
 
         String currentWeatherIcon = mLocation.getCurrentWeatherForecast().getWeatherIcon();
         String currentTemp = mLocation.getCurrentWeatherForecast().getTemp_F() + " °F";
@@ -107,15 +109,15 @@ public class WeatherForecastActivity extends AppCompatActivity {
         Double currentWindSpeed = mLocation.getCurrentWeatherForecast().getWind_mph();
 
         Typeface weatherFont = Typeface.createFromAsset(getAssets(), "font/weathericons.ttf");
-        currentWeatherIconText.setTypeface(weatherFont);
-        currentWeatherIconText.setText(currentWeatherIcon);
-        currentTempText.setText(currentTemp);
-        currentWeatherDescrText.setText(currentWeatherDescr);
-        currentWindSpeedText.setText("Wind: " + currentWindSpeed + " Mph");
-        currentPressureText.setText("Pressure: " + currentPressure);
-        currentHumidityText.setText("Humidity: " + currentHumidity);
-        sunriseText.setText("Sunrise: " + "5:42am");
-        sunsetText.setText("Sunset: " + "8:00pm");
+        mCurrentWeatherIconText.setTypeface(weatherFont);
+        mCurrentWeatherIconText.setText(currentWeatherIcon);
+        mCurrentTempText.setText(currentTemp);
+        mCurrentWeatherDescrText.setText(currentWeatherDescr);
+        mCurrentWindSpeedText.setText("Wind: " + currentWindSpeed + " Mph");
+        mCurrentPressureText.setText("Pressure: " + currentPressure);
+        mCurrentHumidityText.setText("Humidity: " + currentHumidity);
+        mSunriseText.setText("Sunrise: " + "5:42am");
+        mSunsetText.setText("Sunset: " + "8:00pm");
     }
 
     //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)

@@ -25,7 +25,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/conditions"
+            android:id="@+id/condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/weekday"
@@ -38,7 +38,7 @@
             android:id="@+id/high"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/conditions"
+            android:layout_below="@+id/condition"
             android:layout_marginRight="5dp"
             android:layout_marginTop="16dp"
             android:text="High:"
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/lowDegree"
-            android:layout_below="@+id/conditions"
+            android:layout_below="@+id/condition"
             android:layout_marginBottom="21dp"
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/high"
@@ -58,7 +58,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
-            android:id="@+id/low"
+            android:id="@+id/mTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/high"
@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/high"
-            android:layout_toRightOf="@id/low"
+            android:layout_toRightOf="@id/mTemperature"
             android:text="0"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/low"
+            android:layout_below="@+id/mTemperature"
             android:layout_marginRight="5dp"
             android:text="Humidity:"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
@@ -90,7 +90,7 @@
             android:id="@+id/humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/low"
+            android:layout_below="@+id/mTemperature"
             android:layout_toRightOf="@id/humidityText"
             android:text="0%"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>

@@ -18,11 +18,10 @@ import com.imobile3.taylor.imobile3_weather_app.models.Location;
  * @since 7/11/2017
  */
 public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecyclerAdapter.ForecastRecyclerViewHolder> {
-
-    Location mLocation;
+    private Location mLocation;
 
     public ForecastRecyclerAdapter(Location location){
-        mLocation = location;
+        setLocation(location);
     }
 
     @Override
@@ -66,10 +65,19 @@ public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecycl
             weatherIconText = (TextView) view.findViewById(R.id.weatherIcon);
             weatherIconText.setTypeface(weatherFont);
             weekdayText = (TextView) view.findViewById(R.id.weekday);
-            conditionsText = (TextView) view.findViewById(R.id.conditions);
+            conditionsText = (TextView) view.findViewById(R.id.condition);
             humidityText = (TextView) view.findViewById(R.id.humidity);
             highText = (TextView) view.findViewById(R.id.highDegree);
             lowText = (TextView) view.findViewById(R.id.lowDegree);
         }
     }
+
+    public Location getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(Location location) {
+        mLocation = location;
+    }
+
 }

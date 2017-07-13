@@ -1,10 +1,10 @@
 package com.imobile3.taylor.imobile3_weather_app.models;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,6 +23,7 @@ public class Day implements Parcelable{
     private Date mDate;
     private String mTextDay;
     private DailyWeatherForecast mDailyWeatherForecast;
+    private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecasts = new ArrayList<>();
 
 
     public Day(){

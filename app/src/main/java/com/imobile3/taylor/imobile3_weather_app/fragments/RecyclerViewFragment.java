@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,14 @@ import com.imobile3.taylor.imobile3_weather_app.models.Location;
  * @since 7/11/2017
  */
 public class RecyclerViewFragment extends Fragment {
+    private static final String CLASS_TAG = RecyclerViewFragment.class.getSimpleName();
+    private static final boolean DEBUG = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
+
         Bundle bundle = this.getArguments();
         String locationJSON = bundle.getString("location");
         Location mLocation = new Gson().fromJson(locationJSON, Location.class);

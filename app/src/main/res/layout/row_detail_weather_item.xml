@@ -5,46 +5,46 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/detailedWeekday"
+        android:id="@+id/detailWeekday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:text="Detailed Weekday"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
     <TextView
-        android:id="@+id/forecastDescription"
+        android:id="@+id/detailForecastDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/detailedWeekday"
+        android:layout_below="@+id/detailWeekday"
         android:layout_marginTop="10dp"
         android:text="Forecast Description"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/rainChanceText"
+        android:id="@+id/detailRainChanceText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/forecastDescription"
+        android:layout_below="@+id/detailForecastDescription"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:text="Chance of Rain:"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
-        android:id="@+id/pop"
+        android:id="@+id/detailPop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/rainChanceText"
-        android:layout_toEndOf="@+id/rainChanceText"
-        android:layout_toRightOf="@+id/rainChanceText"
+        android:layout_alignTop="@+id/detailRainChanceText"
+        android:layout_toEndOf="@+id/detailRainChanceText"
+        android:layout_toRightOf="@+id/detailRainChanceText"
         android:text="20%"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 </RelativeLayout>

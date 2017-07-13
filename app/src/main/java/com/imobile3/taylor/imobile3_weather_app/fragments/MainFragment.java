@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * PastLocationFragment is responsible for creating the location search page
+ * MainFragment is responsible for creating the location search page
  * it runs a background task to find location details and passes them to the
  * Simpleforecast activity/fragment.
  *
@@ -64,8 +64,8 @@ import java.util.Map;
  * @author Taylor Parrish
  * @since 8/29/2016
  */
-public class PastLocationFragment extends Fragment implements LocationDataTaskListener, WeatherDataTaskListener {
-    private static final String CLASS_TAG = PastLocationFragment.class.getSimpleName();
+public class MainFragment extends Fragment implements LocationDataTaskListener, WeatherDataTaskListener {
+    private static final String CLASS_TAG = MainFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
@@ -238,7 +238,7 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
 
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                new JSONParser(PastLocationFragment.this).execute(location);
+                new JSONParser(MainFragment.this).execute(location);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -303,7 +303,7 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
                 android.location.Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 location = loc.getLatitude() + "," + loc.getLongitude();
             }
-            new LocationResponse(PastLocationFragment.this).execute(location);
+            new LocationResponse(MainFragment.this).execute(location);
         }
     };
 
@@ -525,10 +525,11 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
             return days;
         }
 
-        /* Gets an icon path string that points to a corresponding icon font, based off the weather data's icon condition string
+         /*
+          * Gets an icon path string that points to a corresponding icon font, based off the weather data's icon condition string
           *
           * @param  icon the icon condition
-          *  */
+          */
         private String getIconString(String icon) {
             String iconString = "";
 
