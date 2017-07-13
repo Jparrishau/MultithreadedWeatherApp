@@ -1,9 +1,12 @@
 package com.imobile3.taylor.imobile3_weather_app.activities;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -11,9 +14,10 @@ import android.view.MenuItem;
 
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.adapters.ViewPagerAdapter;
-import com.imobile3.taylor.imobile3_weather_app.fragments.WeatherForecastFragment;
+import com.imobile3.taylor.imobile3_weather_app.fragments.RecyclerViewFragment;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
@@ -37,7 +41,11 @@ public class WeatherForecastActivity extends AppCompatActivity {
 
     private ViewPager mPager;
     private ViewPagerAdapter mPagerAdapter;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
+    TextView currentWeatherIconText;
     TextView currentTempText;
     TextView currentWeatherDescrText;
     TextView currentPressureText;
@@ -62,17 +70,27 @@ public class WeatherForecastActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(mLocation.getCity() + ", " + mLocation.getState());
         }
 
+
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.viewPager);
         mPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        mPagerAdapter.addFragment(new WeatherForecastFragment(), "Today");
-        mPagerAdapter.addFragment(new WeatherForecastFragment(), "Tomorrow");
-        mPagerAdapter.addFragment(new WeatherForecastFragment(), "Later");
+
+        RecyclerViewFragment recyclerViewFragment = new RecyclerViewFragment();
+        Bundle bundleLocation = new Bundle();
+        Gson gson = new Gson();
+        String locationJSON = gson.toJson(mLocation);
+        bundleLocation.putString("location", locationJSON);
+        recyclerViewFragment.setArguments(bundleLocation);
+
+        mPagerAdapter.addFragment(recyclerViewFragment, "Today");
+
         mPager.setAdapter(mPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mPager);
 
+        currentWeatherIconText = (TextView) findViewById(R.id.currentWeatherIcon);
         currentTempText = (TextView) findViewById(R.id.currentTemperature);
         currentWeatherDescrText = (TextView) findViewById(R.id.currentWeatherDescription);
         currentPressureText = (TextView) findViewById(R.id.currentPressure);
@@ -81,12 +99,16 @@ public class WeatherForecastActivity extends AppCompatActivity {
         sunriseText = (TextView) findViewById(R.id.todaySunrise);
         sunsetText = (TextView) findViewById(R.id.todaySunset);
 
+        String currentWeatherIcon = mLocation.getCurrentWeatherForecast().getWeatherIcon();
         String currentTemp = mLocation.getCurrentWeatherForecast().getTemp_F() + " °F";
         String currentWeatherDescr = mLocation.getCurrentWeatherForecast().getWeather_description();
         String currentPressure = "1016.0 hPa";
         String currentHumidity = mLocation.getCurrentWeatherForecast().getHumidity();
         Double currentWindSpeed = mLocation.getCurrentWeatherForecast().getWind_mph();
 
+        Typeface weatherFont = Typeface.createFromAsset(getAssets(), "font/weathericons.ttf");
+        currentWeatherIconText.setTypeface(weatherFont);
+        currentWeatherIconText.setText(currentWeatherIcon);
         currentTempText.setText(currentTemp);
         currentWeatherDescrText.setText(currentWeatherDescr);
         currentWindSpeedText.setText("Wind: " + currentWindSpeed + " Mph");
@@ -94,8 +116,6 @@ public class WeatherForecastActivity extends AppCompatActivity {
         currentHumidityText.setText("Humidity: " + currentHumidity);
         sunriseText.setText("Sunrise: " + "5:42am");
         sunsetText.setText("Sunset: " + "8:00pm");
-
-        //setupWeatherItemListView(mLocation);
     }
 
     //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -126,7 +146,6 @@ public class WeatherForecastActivity extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
