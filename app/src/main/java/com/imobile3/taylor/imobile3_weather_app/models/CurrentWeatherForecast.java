@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by taylorp on 7/3/2017.
  */
 public class CurrentWeatherForecast implements Parcelable {
+    private String mWeatherIcon;
     private String mWeather_description;
     private String mTempText;
 
@@ -23,11 +24,12 @@ public class CurrentWeatherForecast implements Parcelable {
     private double mWind_gust_kph;
 
 
-    public CurrentWeatherForecast(String weather_description, String tempText,
+    public CurrentWeatherForecast(String weatherIcon, String weather_description, String tempText,
                                   double temp_F, double temp_C,
                                   String humidity, String wind_text, String wind_dir,
                                   int wind_degrees, double wind_mph, double wind_gust_mph,
                                   double wind_kph, double wind_gust_kph) {
+        setWeatherIcon(weatherIcon);
         setWeather_description(weather_description);
         setTempText(tempText);
         setTemp_F(temp_F);
@@ -40,6 +42,14 @@ public class CurrentWeatherForecast implements Parcelable {
         setWind_gust_mph(wind_gust_mph);
         setWind_kph(wind_kph);
         setWind_kph(wind_gust_kph);
+    }
+
+    public String getWeatherIcon() {
+        return mWeatherIcon;
+    }
+
+    public void setWeatherIcon(String weatherIcon) {
+        mWeatherIcon = weatherIcon;
     }
 
     public String getWeather_description() {
@@ -145,6 +155,7 @@ public class CurrentWeatherForecast implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mWeatherIcon);
         dest.writeString(this.mWeather_description);
         dest.writeString(this.mTempText);
         dest.writeDouble(this.mTemp_F);
@@ -160,6 +171,7 @@ public class CurrentWeatherForecast implements Parcelable {
     }
 
     protected CurrentWeatherForecast(Parcel in) {
+        this.mWeatherIcon = in.readString();
         this.mWeather_description = in.readString();
         this.mTempText = in.readString();
         this.mTemp_F = in.readDouble();
@@ -174,7 +186,7 @@ public class CurrentWeatherForecast implements Parcelable {
         this.mWind_gust_kph = in.readDouble();
     }
 
-    public static final Parcelable.Creator<CurrentWeatherForecast> CREATOR = new Parcelable.Creator<CurrentWeatherForecast>() {
+    public static final Creator<CurrentWeatherForecast> CREATOR = new Creator<CurrentWeatherForecast>() {
         @Override
         public CurrentWeatherForecast createFromParcel(Parcel source) {
             return new CurrentWeatherForecast(source);
