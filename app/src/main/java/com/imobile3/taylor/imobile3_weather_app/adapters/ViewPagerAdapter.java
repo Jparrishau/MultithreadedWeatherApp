@@ -4,13 +4,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.imobile3.taylor.imobile3_weather_app.fragments.WeatherForecastFragment;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by taylorp on 7/3/2017.
+ * Description.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragmentList = new ArrayList<>();

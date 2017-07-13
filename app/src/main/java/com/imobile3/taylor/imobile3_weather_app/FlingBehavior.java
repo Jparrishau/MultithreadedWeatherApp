@@ -8,7 +8,10 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Created by taylorp on 7/12/2017.
+ * Description.
+ *
+ * @author Taylor Parrish
+ * @since 7/12/2017
  */
 
 public final class FlingBehavior extends AppBarLayout.Behavior {

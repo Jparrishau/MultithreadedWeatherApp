@@ -16,10 +16,11 @@ import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
 import java.util.ArrayList;
 
 /**
- * Created by Taylor Parrish on 8/29/2016.
- *
  * DetailedForecastFragment is responsible for setting up
  * the detailed weather information into a list and displaying it to the user.
+ *
+ * @author Taylor Parrish
+ * @since 8/29/2016
  */
 public class DetailedForecastFragment extends Fragment {
     private static final String CLASS_TAG = DetailedForecastFragment.class.getSimpleName();

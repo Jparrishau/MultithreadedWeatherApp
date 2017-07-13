@@ -14,8 +14,10 @@ import com.imobile3.taylor.imobile3_weather_app.adapters.ForecastRecyclerAdapter
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
- * Created by taylorp on 7/11/2017.
+ * Description.
  *
+ * @author Taylor Parrish
+ * @since 7/11/2017
  */
 public class RecyclerViewFragment extends Fragment {
 

@@ -10,13 +10,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 /**
- * Created by Taylor Parrish on 8/23/2016.
- *
  * Class converts a String either City,State,Zipcode, Latitude & Longitude
  * into location data. Used for verification and fine tuning.
  *
  * Issues: If no internet is enabled will throw exception. UnkownHostException or JSONException probably.
  * Solution: Send exception back to calling method and allow to be delt with.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class LocationLookup {
     private String latitude;

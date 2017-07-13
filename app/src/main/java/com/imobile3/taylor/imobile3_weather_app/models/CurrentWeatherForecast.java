@@ -4,7 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by taylorp on 7/3/2017.
+ * Description.
+ *
+ * @author Taylor Parrish
+ * @since 7/3/2017
  */
 public class CurrentWeatherForecast implements Parcelable {
     private String mWeatherIcon;

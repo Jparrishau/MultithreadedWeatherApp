@@ -6,9 +6,10 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
- * Created by Taylor Parrish on 8/27/2016.
- *
  * An object model containing relevant location data used to search for weather data.
+ *
+ * @author Taylor Parrish
+ * @since 8/27/2016
  */
 public class Location implements Parcelable {
     private String mLatitude;

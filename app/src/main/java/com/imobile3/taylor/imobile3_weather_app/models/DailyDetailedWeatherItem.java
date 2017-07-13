@@ -4,10 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Taylor Parrish on 8/23/2016.
- *
  * The data object model DailyDetailedWeatherItem is used
  * to hold the detailed weather information of its corresponding DailyWeatherForecast object.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class DailyDetailedWeatherItem implements Parcelable {
     private String weekday;

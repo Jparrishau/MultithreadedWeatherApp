@@ -16,10 +16,11 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Taylor Parrish on 8/2/2016.
- *
  * Adapter for setting up the listview displayed by
  * the pastLocastionsListView
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class PastLocationsAdapter extends BaseAdapter {
     private ArrayList<Location> mPastLocations;

@@ -9,9 +9,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by taylorp on 6/28/2017.
- *
  * An object model that represents a physical day of the week. (I.E: Mon-Sun)
+ *
+ * @author Taylor Parrish
+ * @since 6/28/2017
  */
 
 public class Day implements Parcelable{

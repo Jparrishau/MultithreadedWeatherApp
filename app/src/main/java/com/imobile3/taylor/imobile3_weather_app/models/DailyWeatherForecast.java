@@ -6,9 +6,10 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
- * Created by Taylor Parrish on 8/23/2016.
- *
  * An object model used to contain all the relevant weather data of a specific day.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class DailyWeatherForecast implements Parcelable {
     private String high;

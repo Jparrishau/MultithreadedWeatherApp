@@ -15,7 +15,10 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 
 /**
- * Created by taylorp on 7/5/2017.
+ * Description.
+ *
+ * @author Taylor Parrish
+ * @since 7/5/2017
  */
 
 public final class GPS implements LocationListener, ActivityCompat.OnRequestPermissionsResultCallback {

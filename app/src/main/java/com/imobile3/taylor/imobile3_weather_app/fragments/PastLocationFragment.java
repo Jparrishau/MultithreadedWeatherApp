@@ -52,8 +52,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Taylor Parrish on 8/29/2016.
- *
  * PastLocationFragment is responsible for creating the location search page
  * it runs a background task to find location details and passes them to the
  * Simpleforecast activity/fragment.
@@ -62,6 +60,9 @@ import java.util.Map;
  * Possible Solutions: Still researching. Will add current temperature as well in future.
  * Issue 2: If Fragment is recreated after failed location lookup sharedpreferences is erased.
  * Possible Solutions: Need to handle exception better. RevertLocation method probably the issue.
+ *
+ * @author Taylor Parrish
+ * @since 8/29/2016
  */
 public class PastLocationFragment extends Fragment implements LocationDataTaskListener, WeatherDataTaskListener {
     private static final String CLASS_TAG = PastLocationFragment.class.getSimpleName();
@@ -524,6 +525,10 @@ public class PastLocationFragment extends Fragment implements LocationDataTaskLi
             return days;
         }
 
+        /* Gets an icon path string that points to a corresponding icon font, based off the weather data's icon condition string
+          *
+          * @param  icon the icon condition
+          *  */
         private String getIconString(String icon) {
             String iconString = "";
 

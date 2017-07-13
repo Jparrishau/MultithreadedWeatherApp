@@ -1,6 +1,5 @@
 package com.imobile3.taylor.imobile3_weather_app.adapters;
 
-import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,10 @@ import com.imobile3.taylor.imobile3_weather_app.models.Day;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
- * Created by taylorp on 7/11/2017.
+ * Description.
+ *
+ * @author Taylor Parrish
+ * @since 7/11/2017
  */
 public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecyclerAdapter.ForecastRecyclerViewHolder> {
 

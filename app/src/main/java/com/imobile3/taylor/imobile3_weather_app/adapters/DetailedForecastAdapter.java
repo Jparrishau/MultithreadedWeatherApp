@@ -14,10 +14,11 @@ import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
 import java.util.ArrayList;
 
 /**
- * Created by Taylor Parrish on 8/23/2016.
- *
  * Adapter responsible for setting up the listview displayed by
  * the DetailedForecastFragment.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class DetailedForecastAdapter extends BaseAdapter {
     ArrayList<DailyDetailedWeatherItem> detailWeatherItems;
