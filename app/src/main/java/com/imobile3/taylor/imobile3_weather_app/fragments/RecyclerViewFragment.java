@@ -24,6 +24,10 @@ public class RecyclerViewFragment extends Fragment {
     private static final String CLASS_TAG = RecyclerViewFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
+    public RecyclerViewFragment(){
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

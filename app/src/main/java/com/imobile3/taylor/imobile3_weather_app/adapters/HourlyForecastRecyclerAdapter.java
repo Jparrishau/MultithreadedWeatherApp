@@ -8,47 +8,56 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.models.Day;
-import com.imobile3.taylor.imobile3_weather_app.models.Location;
+import com.imobile3.taylor.imobile3_weather_app.models.HourlyWeatherForecast;
+
+import java.util.ArrayList;
 
 /**
- * Description.
+ * Created by taylorp on 7/14/2017.
  *
  * @author Taylor Parrish
- * @since 7/11/2017
+ * @since 7/14/2017
  */
-public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecyclerAdapter.ForecastRecyclerViewHolder> {
-    private Location mLocation;
+public class HourlyForecastRecyclerAdapter extends RecyclerView.Adapter<com.imobile3.taylor.imobile3_weather_app.adapters.HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder> {
+    private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecasts;
 
-    public ForecastRecyclerAdapter(Location location){
-        setLocation(location);
+    public HourlyForecastRecyclerAdapter(ArrayList<HourlyWeatherForecast> hourlyWeatherForecasts){
+        setHourlyWeatherForecasts(hourlyWeatherForecasts);
     }
 
     @Override
-    public ForecastRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_weather_item, parent, false);
-        ForecastRecyclerViewHolder recyclerViewHolder = new ForecastRecyclerViewHolder(view);
+        HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder recyclerViewHolder = new HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder(view);
         return recyclerViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ForecastRecyclerViewHolder holder, int position) {
-        Day day = mLocation.getDay(position);
+    public void onBindViewHolder(HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder holder, int position) {
 
-        holder.weatherIconText.setText(day.getWeatherForecast().getWeatherIcon());
+        /*holder.weatherIconText.setText(day.getWeatherForecast().getWeatherIcon());
         holder.weekdayText.setText(day.getTextDay());
         holder.conditionsText.setText(day.getWeatherForecast().getConditions());
         holder.humidityText.setText(day.getWeatherForecast().getHumidity() + " %");
         holder.highText.setText(day.getWeatherForecast().getHigh());
-        holder.lowText.setText(day.getWeatherForecast().getLow());
+        holder.lowText.setText(day.getWeatherForecast().getLow());*/
     }
+
+    public ArrayList<HourlyWeatherForecast> getHourlyWeatherForecasts() {
+        return mHourlyWeatherForecasts;
+    }
+
+    public void setHourlyWeatherForecasts(ArrayList<HourlyWeatherForecast> hourlyWeatherForecasts) {
+        mHourlyWeatherForecasts = hourlyWeatherForecasts;
+    }
+
 
     @Override
     public int getItemCount() {
-        return mLocation.getDays().size();
+        return mHourlyWeatherForecasts.size();
     }
 
-    public static class ForecastRecyclerViewHolder extends RecyclerView.ViewHolder {
+    public static class HourlyForecastRecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView weatherIconText;
         TextView weekdayText;
         TextView conditionsText;
@@ -56,7 +65,7 @@ public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecycl
         TextView highText;
         TextView lowText;
 
-        public ForecastRecyclerViewHolder(View view) {
+        public HourlyForecastRecyclerViewHolder(View view) {
             super(view);
             Typeface weatherFont
                     = Typeface.createFromAsset(view.getContext().getAssets(), "font/weathericons.ttf");
@@ -69,14 +78,6 @@ public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecycl
             highText = (TextView) view.findViewById(R.id.highDegree);
             lowText = (TextView) view.findViewById(R.id.lowDegree);
         }
-    }
-
-    public Location getLocation() {
-        return mLocation;
-    }
-
-    public void setLocation(Location location) {
-        mLocation = location;
     }
 
 }

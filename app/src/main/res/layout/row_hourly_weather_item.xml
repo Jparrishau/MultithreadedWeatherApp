@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical">
@@ -41,11 +39,11 @@
             android:layout_below="@+id/condition"
             android:layout_marginRight="5dp"
             android:layout_marginTop="16dp"
-            android:text="High:"
+            android:text="Temperature:"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
-            android:id="@+id/highDegree"
+            android:id="@+id/hourlyTemperatureDegree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/lowDegree"
@@ -58,30 +56,12 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
-            android:id="@+id/mTemperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hourlyTemperature"
-            android:layout_marginRight="5dp"
-            android:text="Low:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
-        <TextView
-            android:id="@+id/lowDegree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/hourlyTemperature"
-            android:layout_toRightOf="@id/mTemperature"
-            android:text="0"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
-        <TextView
             android:id="@+id/humidityText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/mTemperature"
+            android:layout_below="@+id/hourlyTemperature"
             android:layout_marginRight="5dp"
             android:text="Humidity:"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
@@ -90,7 +70,7 @@
             android:id="@+id/humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/mTemperature"
+            android:layout_below="@+id/hourlyTemperature"
             android:layout_toRightOf="@id/humidityText"
             android:text="0%"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>

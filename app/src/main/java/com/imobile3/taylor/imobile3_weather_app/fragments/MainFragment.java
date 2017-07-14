@@ -38,6 +38,7 @@ import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListen
 import com.imobile3.taylor.imobile3_weather_app.models.CurrentWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.Day;
 import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.HourlyWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 import com.imobile3.taylor.imobile3_weather_app.models.DailyWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
@@ -47,8 +48,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -377,11 +383,15 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             //URL for WUnderground API Call
             String weatherURL_Astronomy = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
                     + "/" + "astronomy" + "/q/" + location.getCoordinates() + ".json";
+            //URL for WUnderground API Call
+            String weatherURL_Hourly10Day = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
+                    + "/" + "hourly" + "/q/" + location.getCoordinates() + ".json";
 
             try {
                 weatherData.put("FORECAST_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_10DAY));
                 weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
                 weatherData.put("FORECAST_ASTRONOMY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Astronomy));
+                weatherData.put("FORECAST_HOURLY_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Hourly10Day));
                 return weatherData;
             } catch (IOException | JSONException e) {
                 //Need to handle this properly. Network may not be enabled/working.
@@ -402,33 +412,84 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         //Parses JSON Data into its respective model objects
         private Location parseJSONWeatherData(HashMap<String, JSONObject> weatherData) {
             JSONObject dailyWeatherForecastData = weatherData.get("FORECAST_10DAY");
+            JSONObject hourly10DAYWeatherForecastData = weatherData.get("FORECAST_HOURLY_10DAY");
             JSONObject currentWeatherForecastData = weatherData.get("FORECAST_OBSERVATION_CURR");
             JSONObject astronomyWeatherForecastData = weatherData.get("FORECAST_ASTRONOMY");
 
             try {
                 ArrayList<Day> days =
                         parseSimpleForecastData(dailyWeatherForecastData);
+                HashMap<String, ArrayList<HourlyWeatherForecast>> hourlyWeatherForecasts =
+                        parseHourlyForecastData(hourly10DAYWeatherForecastData);
                 CurrentWeatherForecast currentWeatherForecast
                         = parseCurrentWeatherForecast(currentWeatherForecastData, astronomyWeatherForecastData);
 
                 if(days != null) {
                     location.setDays(days);
                 }
+                if(hourlyWeatherForecasts != null) {
+                    location.setHourlyWeatherForecastsToday(hourlyWeatherForecasts.get("today"));
+                    location.setHourlyWeatherForecastsTomorrow(hourlyWeatherForecasts.get("tomorrow"));
+                    location.setHourlyWeatherForecastsLater(hourlyWeatherForecasts.get("later"));
+                }
                 if(currentWeatherForecast != null) {
                     location.setCurrentWeatherForecast(currentWeatherForecast);
                 }
             }
-            catch (JSONException e) {
+            catch (ParseException | JSONException e) {
                 e.printStackTrace();
                 revertToMainPage();
             }
             return location;
         }
 
-        private CurrentWeatherForecast parseCurrentWeatherForecast(JSONObject currentWeatherForecastData, JSONObject astronomyWeatherForecastData) {
-            // Getting JSON Wunderground Simpleforecast data
-            CurrentWeatherForecast currentWeatherForecast = null;
-            try {
+        private HashMap<String, ArrayList<HourlyWeatherForecast>> parseHourlyForecastData(JSONObject hourly10DAYWeatherForecastData) throws JSONException, ParseException {
+            HashMap<String, ArrayList<HourlyWeatherForecast>> hourlyWeatherForecasts = new HashMap<>();
+            ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsToday = new ArrayList<>();
+            ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsTomorrow = new ArrayList<>();
+            ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsLater = new ArrayList<>();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm a z  MMMMM dd, yyyy", Locale.ENGLISH);
+            JSONArray hourly_forecast_data = hourly10DAYWeatherForecastData.getJSONArray("hourly_forecast");
+            for (int i = 0; i < hourly_forecast_data.length(); i++) {
+                JSONObject hourly_forecast = hourly_forecast_data.getJSONObject(i);
+                JSONObject time_data = hourly_forecast.getJSONObject("FCTTIME");
+
+                Calendar calendar = Calendar.getInstance();
+                String timeToConvert = time_data.getString("pretty").replace("on", "");
+                calendar.setTime(dateFormat.parse(timeToConvert));
+
+                String condition = hourly_forecast.getString("condition");
+                String temperature = hourly_forecast.getJSONObject("temp").getString("english");
+                String feelslike = hourly_forecast.getJSONObject("feelslike").getString("english");
+                String humidity = hourly_forecast.getString("humidity");
+                String icon = hourly_forecast.getString("icon");
+
+
+                int currentDayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+                int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+                if(currentDayOfYear == dayOfYear) {
+                    hourlyWeatherForecastsToday.add(new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
+                }
+                else if((currentDayOfYear + 1) == dayOfYear){
+                    hourlyWeatherForecastsTomorrow.add(new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
+                }
+                else{
+                    hourlyWeatherForecastsLater.add(new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
+                }
+
+            }
+            hourlyWeatherForecasts.put("today", hourlyWeatherForecastsToday);
+            hourlyWeatherForecasts.put("tomorrow", hourlyWeatherForecastsTomorrow);
+            hourlyWeatherForecasts.put("later", hourlyWeatherForecastsLater);
+            return hourlyWeatherForecasts;
+        }
+
+        private CurrentWeatherForecast parseCurrentWeatherForecast(JSONObject currentWeatherForecastData,
+                                                                   JSONObject astronomyWeatherForecastData) throws JSONException {
+                // Getting JSON Wunderground Simpleforecast data
+                CurrentWeatherForecast currentWeatherForecast;
+
                 JSONObject observation_data = currentWeatherForecastData.getJSONObject("current_observation");
                 JSONObject astronomy_data = astronomyWeatherForecastData.getJSONObject("sun_phase");
                 JSONObject sunrise = astronomy_data.getJSONObject("sunrise");
@@ -448,17 +509,12 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 double windKPH = observation_data.getDouble("wind_kph");
                 double windGustKPH = observation_data.getDouble("wind_gust_kph");
 
-
                 currentWeatherForecast =
                         new CurrentWeatherForecast(weatherIcon, weatherDescr, tempText, tempF,
                         tempC, humidity, windText, windDir,
                         windDegree, windMPH, windGustMPH,
                         windKPH, windGustKPH);
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-                revertToMainPage();
-            }
+
             return currentWeatherForecast;
         }
 

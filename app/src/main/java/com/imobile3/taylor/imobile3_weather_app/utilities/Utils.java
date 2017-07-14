@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.widget.Toast;
 
 /**
- * Created by Taylor Parrish on 8/24/2016.
- *
  * Contains helper methods to perform certain tasks
+ *
+ * @author Taylor Parrish
+ * @since 8/24/2016
  */
 public class Utils {
 

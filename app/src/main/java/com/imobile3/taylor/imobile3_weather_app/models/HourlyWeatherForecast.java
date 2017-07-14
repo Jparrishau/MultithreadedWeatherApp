@@ -3,7 +3,8 @@ package com.imobile3.taylor.imobile3_weather_app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * An object model used to contain all the relevant weather data of a specific day.
@@ -17,13 +18,23 @@ public class HourlyWeatherForecast implements Parcelable {
     private String mCondition;
     private String mHumidity;
     private String mWeatherIcon;
+    private Calendar mTimeStamp;
 
-    public HourlyWeatherForecast(String condition, String mTemperature,String feelsLike, String humidity, String icon) {
+    public HourlyWeatherForecast(String condition, String mTemperature,String feelsLike, String humidity, String icon, Calendar timeStamp) {
         setCondition(condition);
         setTemperature(mTemperature);
         setFeelsLike(feelsLike);
         setHumidity(humidity);
         setWeatherIcon(icon);
+        setTimeStamp(timeStamp);
+    }
+
+    public Calendar getTimeStamp() {
+        return mTimeStamp;
+    }
+
+    public void setTimeStamp(Calendar timeStamp) {
+        mTimeStamp = timeStamp;
     }
 
     public String getHumidity() {
@@ -67,8 +78,19 @@ public class HourlyWeatherForecast implements Parcelable {
     }
 
     /*
-       Begin Make Parcelable
+       End Make Parcelable
     */
+    @Override
+    public String toString() {
+        return "HourlyWeatherForecast{" +
+                "mTemperature='" + mTemperature + '\'' +
+                ", mFeelsLike='" + mFeelsLike + '\'' +
+                ", mCondition='" + mCondition + '\'' +
+                ", mHumidity='" + mHumidity + '\'' +
+                ", mWeatherIcon='" + mWeatherIcon + '\'' +
+                '}';
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -81,6 +103,7 @@ public class HourlyWeatherForecast implements Parcelable {
         dest.writeString(this.mCondition);
         dest.writeString(this.mHumidity);
         dest.writeString(this.mWeatherIcon);
+        dest.writeSerializable(this.mTimeStamp);
     }
 
     protected HourlyWeatherForecast(Parcel in) {
@@ -89,6 +112,7 @@ public class HourlyWeatherForecast implements Parcelable {
         this.mCondition = in.readString();
         this.mHumidity = in.readString();
         this.mWeatherIcon = in.readString();
+        this.mTimeStamp = (Calendar) in.readSerializable();
     }
 
     public static final Creator<HourlyWeatherForecast> CREATOR = new Creator<HourlyWeatherForecast>() {
@@ -102,18 +126,4 @@ public class HourlyWeatherForecast implements Parcelable {
             return new HourlyWeatherForecast[size];
         }
     };
-    /*
-       End Make Parcelable
-    */
-
-    @Override
-    public String toString() {
-        return "HourlyWeatherForecast{" +
-                "mTemperature='" + mTemperature + '\'' +
-                ", mFeelsLike='" + mFeelsLike + '\'' +
-                ", mCondition='" + mCondition + '\'' +
-                ", mHumidity='" + mHumidity + '\'' +
-                ", mWeatherIcon='" + mWeatherIcon + '\'' +
-                '}';
-    }
 }

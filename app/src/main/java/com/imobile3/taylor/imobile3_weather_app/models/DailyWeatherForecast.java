@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * An object model used to contain all the relevant weather data of a specific day.
@@ -17,6 +18,9 @@ public class DailyWeatherForecast implements Parcelable {
     private String conditions;
     private String humidity;
     private String weatherIcon;
+
+    //Replace Day class with this?
+    private Calendar mTimeStamp;
     private ArrayList<DailyDetailedWeatherItem> detailWeatherItems;
 
 

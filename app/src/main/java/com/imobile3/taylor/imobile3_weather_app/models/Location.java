@@ -3,7 +3,11 @@ package com.imobile3.taylor.imobile3_weather_app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONObject;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * An object model containing relevant location data used to search for weather data.
@@ -11,7 +15,7 @@ import java.util.ArrayList;
  * @author Taylor Parrish
  * @since 8/27/2016
  */
-public class Location implements Parcelable {
+public class Location implements Parcelable, Serializable {
     private String mLatitude;
     private String mLongitude;
     private String mCoordinates;
@@ -21,6 +25,11 @@ public class Location implements Parcelable {
 
     //Convert this to hash table where keys are the dates?
     private ArrayList<Day> mDays = new ArrayList<>();
+
+    //Convert to map later if we can make it parcelable/serializable
+    private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsToday = new ArrayList<>();
+    private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsTomorrow = new ArrayList<>();
+    private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsLater = new ArrayList<>();
 
     private CurrentWeatherForecast mCurrentWeatherForecast;
 
@@ -41,6 +50,28 @@ public class Location implements Parcelable {
         setCoordinates(latitude + "," + longitude);
         setCity(city);
         setState(state);
+    }
+
+    public  ArrayList<HourlyWeatherForecast> getHourlyWeatherForecastsToday() {
+        return mHourlyWeatherForecastsToday;
+    }
+    public Location setHourlyWeatherForecastsToday(ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsToday) {
+        mHourlyWeatherForecastsToday = hourlyWeatherForecastsToday;
+        return this;
+    }
+    public ArrayList<HourlyWeatherForecast> getHourlyWeatherForecastsTomorrow() {
+        return mHourlyWeatherForecastsTomorrow;
+    }
+    public Location setHourlyWeatherForecastsTomorrow(ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsTomorrow) {
+        mHourlyWeatherForecastsTomorrow = hourlyWeatherForecastsTomorrow;
+        return this;
+    }
+    public ArrayList<HourlyWeatherForecast> getHourlyWeatherForecastsLater() {
+        return mHourlyWeatherForecastsLater;
+    }
+    public Location setHourlyWeatherForecastsLater(ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsLater) {
+        mHourlyWeatherForecastsLater = hourlyWeatherForecastsLater;
+        return this;
     }
 
     public CurrentWeatherForecast getCurrentWeatherForecast() {
@@ -141,6 +172,9 @@ public class Location implements Parcelable {
         dest.writeString(this.mState);
         dest.writeString(this.mFormatted_address);
         dest.writeTypedList(this.mDays);
+        dest.writeTypedList(this.mHourlyWeatherForecastsToday);
+        dest.writeTypedList(this.mHourlyWeatherForecastsTomorrow);
+        dest.writeTypedList(this.mHourlyWeatherForecastsLater);
         dest.writeParcelable(this.mCurrentWeatherForecast, flags);
     }
 
@@ -152,6 +186,9 @@ public class Location implements Parcelable {
         this.mState = in.readString();
         this.mFormatted_address = in.readString();
         this.mDays = in.createTypedArrayList(Day.CREATOR);
+        this.mHourlyWeatherForecastsToday = in.createTypedArrayList(HourlyWeatherForecast.CREATOR);
+        this.mHourlyWeatherForecastsTomorrow = in.createTypedArrayList(HourlyWeatherForecast.CREATOR);
+        this.mHourlyWeatherForecastsLater = in.createTypedArrayList(HourlyWeatherForecast.CREATOR);
         this.mCurrentWeatherForecast = in.readParcelable(CurrentWeatherForecast.class.getClassLoader());
     }
 
