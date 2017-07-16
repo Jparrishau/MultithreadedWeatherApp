@@ -17,10 +17,10 @@ import com.imobile3.taylor.imobile3_weather_app.models.Location;
  * @author Taylor Parrish
  * @since 7/11/2017
  */
-public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecyclerAdapter.ForecastRecyclerViewHolder> {
+public class DailyForecastRecyclerAdapter extends RecyclerView.Adapter<DailyForecastRecyclerAdapter.ForecastRecyclerViewHolder> {
     private Location mLocation;
 
-    public ForecastRecyclerAdapter(Location location){
+    public DailyForecastRecyclerAdapter(Location location){
         setLocation(location);
     }
 

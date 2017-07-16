@@ -43,7 +43,7 @@ public class SimpleForecastAdapter extends BaseAdapter {
         String low = mLocation.getDay(position).getWeatherForecast().getLow();
 
         TextView weekdayText = (TextView) convertView.findViewById(R.id.weekday);
-        TextView conditionsText = (TextView) convertView.findViewById(R.id.conditions);
+        TextView conditionsText = (TextView) convertView.findViewById(R.id.condition);
         TextView humidityText = (TextView) convertView.findViewById(R.id.humidity);
         TextView highText = (TextView) convertView.findViewById(R.id.highDegree);
         TextView lowText = (TextView) convertView.findViewById(R.id.lowDegree);

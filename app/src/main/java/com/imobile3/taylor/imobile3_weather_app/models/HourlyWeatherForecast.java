@@ -3,6 +3,9 @@ package com.imobile3.taylor.imobile3_weather_app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -27,6 +30,13 @@ public class HourlyWeatherForecast implements Parcelable {
         setHumidity(humidity);
         setWeatherIcon(icon);
         setTimeStamp(timeStamp);
+    }
+
+    public String getFormattedTime(String formatString){
+        if (mTimeStamp != null)
+            return Utils.getFormattedTime(formatString, mTimeStamp);
+        else
+            return null;
     }
 
     public Calendar getTimeStamp() {

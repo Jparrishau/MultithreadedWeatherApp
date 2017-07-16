@@ -18,9 +18,13 @@ public class CurrentWeatherForecast implements Parcelable {
     private double mTemp_C;
     private String mHumidity;
 
-    private String mWind_text;
-    private String mWind_dir;
+    private String mSunriseTime;
+    private String mSunsetTime;
+    private String mWindText;
+    private String mWindDir;
     private int mWind_degrees;
+    private double mPressure_mb;
+    private double mPressure_in;
     private double mWind_mph;
     private double mWind_gust_mph;
     private double mWind_kph;
@@ -30,14 +34,16 @@ public class CurrentWeatherForecast implements Parcelable {
     public CurrentWeatherForecast(String weatherIcon, String weather_description, String tempText,
                                   double temp_F, double temp_C,
                                   String humidity, String wind_text, String wind_dir,
-                                  int wind_degrees, double wind_mph, double wind_gust_mph,
-                                  double wind_kph, double wind_gust_kph) {
+                                  int wind_degrees, double pressure_mb, double pressure_in,  double wind_mph, double wind_gust_mph,
+                                  double wind_kph, double wind_gust_kph, String sunriseTime, String sunsetTime) {
         setWeatherIcon(weatherIcon);
         setWeather_description(weather_description);
         setTempText(tempText);
         setTemp_F(temp_F);
         setTemp_C(temp_C);
         setHumidity(humidity);
+        setSunriseTime(sunriseTime);
+        setSunsetTime(sunsetTime);
         setWind_text(wind_text);
         setWind_dir(wind_dir);
         setWind_degrees(wind_degrees);
@@ -45,6 +51,40 @@ public class CurrentWeatherForecast implements Parcelable {
         setWind_gust_mph(wind_gust_mph);
         setWind_kph(wind_kph);
         setWind_kph(wind_gust_kph);
+        setPressure_mb(pressure_mb);
+        setPressure_in(pressure_in);
+    }
+
+    public double getPressure_mb() {
+        return mPressure_mb;
+    }
+
+    public void setPressure_mb(double pressure_mb) {
+        this.mPressure_mb = pressure_mb;
+    }
+
+    public double getPressure_in() {
+        return mPressure_in;
+    }
+
+    public void setPressure_in(double pressure_in) {
+        this.mPressure_in = pressure_in;
+    }
+
+    public String getSunriseTime() {
+        return mSunriseTime;
+    }
+
+    public void setSunriseTime(String mSunriseTime) {
+        this.mSunriseTime = mSunriseTime;
+    }
+
+    public String getSunsetTime() {
+        return mSunsetTime;
+    }
+
+    public void setSunsetTime(String mSunsetTime) {
+        this.mSunsetTime = mSunsetTime;
     }
 
     public String getWeatherIcon() {
@@ -96,19 +136,19 @@ public class CurrentWeatherForecast implements Parcelable {
     }
 
     public String getWind_dir() {
-        return mWind_dir;
+        return mWindDir;
     }
 
     public void setWind_dir(String wind_dir) {
-        mWind_dir = wind_dir;
+        mWindDir = wind_dir;
     }
 
     public String getWind_text() {
-        return mWind_text;
+        return mWindText;
     }
 
     public void setWind_text(String wind_text) {
-        mWind_text = wind_text;
+        mWindText = wind_text;
     }
 
     public int getWind_degrees() {
@@ -164,9 +204,13 @@ public class CurrentWeatherForecast implements Parcelable {
         dest.writeDouble(this.mTemp_F);
         dest.writeDouble(this.mTemp_C);
         dest.writeString(this.mHumidity);
-        dest.writeString(this.mWind_text);
-        dest.writeString(this.mWind_dir);
+        dest.writeString(this.mSunriseTime);
+        dest.writeString(this.mSunsetTime);
+        dest.writeString(this.mWindText);
+        dest.writeString(this.mWindDir);
         dest.writeInt(this.mWind_degrees);
+        dest.writeDouble(this.mPressure_mb);
+        dest.writeDouble(this.mPressure_in);
         dest.writeDouble(this.mWind_mph);
         dest.writeDouble(this.mWind_gust_mph);
         dest.writeDouble(this.mWind_kph);
@@ -180,9 +224,13 @@ public class CurrentWeatherForecast implements Parcelable {
         this.mTemp_F = in.readDouble();
         this.mTemp_C = in.readDouble();
         this.mHumidity = in.readString();
-        this.mWind_text = in.readString();
-        this.mWind_dir = in.readString();
+        this.mSunriseTime = in.readString();
+        this.mSunsetTime = in.readString();
+        this.mWindText = in.readString();
+        this.mWindDir = in.readString();
         this.mWind_degrees = in.readInt();
+        this.mPressure_mb = in.readDouble();
+        this.mPressure_in = in.readDouble();
         this.mWind_mph = in.readDouble();
         this.mWind_gust_mph = in.readDouble();
         this.mWind_kph = in.readDouble();

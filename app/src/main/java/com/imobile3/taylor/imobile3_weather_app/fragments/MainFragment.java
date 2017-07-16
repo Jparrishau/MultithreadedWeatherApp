@@ -52,7 +52,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -449,7 +448,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsTomorrow = new ArrayList<>();
             ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsLater = new ArrayList<>();
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm a z  MMMMM dd, yyyy", Locale.ENGLISH);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a z  MMMMM dd, yyyy");
             JSONArray hourly_forecast_data = hourly10DAYWeatherForecastData.getJSONArray("hourly_forecast");
             for (int i = 0; i < hourly_forecast_data.length(); i++) {
                 JSONObject hourly_forecast = hourly_forecast_data.getJSONObject(i);
@@ -463,19 +462,22 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 String temperature = hourly_forecast.getJSONObject("temp").getString("english");
                 String feelslike = hourly_forecast.getJSONObject("feelslike").getString("english");
                 String humidity = hourly_forecast.getString("humidity");
-                String icon = hourly_forecast.getString("icon");
+                String icon = getIcon(hourly_forecast.getString("icon"));
 
 
                 int currentDayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
                 int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
                 if(currentDayOfYear == dayOfYear) {
-                    hourlyWeatherForecastsToday.add(new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
+                    hourlyWeatherForecastsToday.add(
+                            new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
                 }
                 else if((currentDayOfYear + 1) == dayOfYear){
-                    hourlyWeatherForecastsTomorrow.add(new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
+                    hourlyWeatherForecastsTomorrow.add(
+                            new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
                 }
                 else{
-                    hourlyWeatherForecastsLater.add(new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
+                    hourlyWeatherForecastsLater.add(
+                            new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
                 }
 
             }
@@ -486,7 +488,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         }
 
         private CurrentWeatherForecast parseCurrentWeatherForecast(JSONObject currentWeatherForecastData,
-                                                                   JSONObject astronomyWeatherForecastData) throws JSONException {
+                                                                   JSONObject astronomyWeatherForecastData) throws JSONException, ParseException {
                 // Getting JSON Wunderground Simpleforecast data
                 CurrentWeatherForecast currentWeatherForecast;
 
@@ -494,8 +496,10 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 JSONObject astronomy_data = astronomyWeatherForecastData.getJSONObject("sun_phase");
                 JSONObject sunrise = astronomy_data.getJSONObject("sunrise");
                 JSONObject sunset = astronomy_data.getJSONObject("sunset");
+                String sunriseTime = Utils.militaryToStandard(sunrise.getString("hour") + sunrise.getString("minute"));
+                String sunsetTime = Utils.militaryToStandard(sunset.getString("hour") + sunset.getString("minute"));
 
-                String weatherIcon = getIconString(observation_data.getString("icon"));
+                String weatherIcon = getIcon(observation_data.getString("icon"));
                 String weatherDescr = observation_data.getString("weather");
                 String tempText = observation_data.getString("temperature_string");
                 double tempF = observation_data.getDouble("temp_f");
@@ -504,6 +508,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 String windText = observation_data.getString("wind_string");
                 String windDir = observation_data.getString("wind_dir");
                 int windDegree = observation_data.getInt("wind_degrees");
+                double pressureMB = observation_data.getInt("pressure_mb");
+                double pressureIN = observation_data.getInt("pressure_in");
                 double windMPH = observation_data.getDouble("wind_mph");
                 double windGustMPH = observation_data.getDouble("wind_gust_mph");
                 double windKPH = observation_data.getDouble("wind_kph");
@@ -512,8 +518,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 currentWeatherForecast =
                         new CurrentWeatherForecast(weatherIcon, weatherDescr, tempText, tempF,
                         tempC, humidity, windText, windDir,
-                        windDegree, windMPH, windGustMPH,
-                        windKPH, windGustKPH);
+                        windDegree, pressureMB, pressureIN, windMPH, windGustMPH,
+                        windKPH, windGustKPH, sunriseTime, sunsetTime);
 
             return currentWeatherForecast;
         }
@@ -542,7 +548,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 String high = simpleData.getJSONObject("high").getString("fahrenheit") + "˚ F";
                 String low = simpleData.getJSONObject("low").getString("fahrenheit") + "˚ F";
                 String humidity = simpleData.getString("avehumidity");
-                String icon = getIconString(simpleData.getString("icon"));
+                String icon = getIcon(simpleData.getString("icon"));
 
                 DailyWeatherForecast dailyWeatherForecast = new DailyWeatherForecast(conditions, high, low, humidity, icon);
 
@@ -581,12 +587,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             return days;
         }
 
-         /*
-          * Gets an icon path string that points to a corresponding icon font, based off the weather data's icon condition string
-          *
-          * @param  icon the icon condition
-          */
-        private String getIconString(String icon) {
+        private String getIcon(String icon) {
             String iconString = "";
 
             switch (icon) {

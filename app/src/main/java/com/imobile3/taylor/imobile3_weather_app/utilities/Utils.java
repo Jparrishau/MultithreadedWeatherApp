@@ -3,6 +3,11 @@ package com.imobile3.taylor.imobile3_weather_app.utilities;
 import android.app.Activity;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Contains helper methods to perform certain tasks
  *
@@ -20,6 +25,30 @@ public class Utils {
     }
     public static String removeWhitespace(String text) {
         return text.replaceAll("\\s+","");
+    }
+
+    public static String militaryToStandard(String rawTimestamp) throws ParseException {
+        SimpleDateFormat inputFormatter = new SimpleDateFormat("HHmm");
+        SimpleDateFormat outputFormatter = new SimpleDateFormat("hh:mm a");
+
+        Date dateToFormat = inputFormatter.parse(rawTimestamp);
+        String formattedTimestamp = outputFormatter.format(dateToFormat);
+
+        return formattedTimestamp;
+    }
+
+    public static String getFormattedTime(String formatString, Calendar calendar){
+        SimpleDateFormat dateFormater = new SimpleDateFormat(formatString);
+        Date date = calendar.getTime();
+        String formattedTime =  dateFormater.format(date);
+        return formattedTime;
+    }
+
+    public static String getStandardTime(Calendar calendar){
+        SimpleDateFormat outputFormatter = new SimpleDateFormat("hh:mm a");
+        Date dateToFormat = calendar.getTime();
+
+        return outputFormatter.format(dateToFormat);
     }
 
     public static void showToast(Activity activity, String message){

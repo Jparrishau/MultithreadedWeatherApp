@@ -3,10 +3,13 @@ package com.imobile3.taylor.imobile3_weather_app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
+
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -16,6 +19,7 @@ import java.util.HashMap;
  * @since 8/27/2016
  */
 public class Location implements Parcelable, Serializable {
+    private Calendar mTimeStamp;
     private String mLatitude;
     private String mLongitude;
     private String mCoordinates;
@@ -35,6 +39,7 @@ public class Location implements Parcelable, Serializable {
 
     public Location(String latitude, String longitude,
                     String formatted_address) {
+        setTimeStamp(Calendar.getInstance());
         setLatitude(latitude);
         setLatitude(longitude);
         setFormatted_address(formatted_address);
@@ -44,12 +49,28 @@ public class Location implements Parcelable, Serializable {
     public Location(String latitude, String longitude,
                     String city, String state,
                     String formatted_address) {
+        setTimeStamp(Calendar.getInstance());
         setLatitude(latitude);
         setLongitude(longitude);
         setFormatted_address(formatted_address);
         setCoordinates(latitude + "," + longitude);
         setCity(city);
         setState(state);
+    }
+
+    public String getFormattedTime(String formatString){
+        if (mTimeStamp != null)
+            return Utils.getFormattedTime(formatString, mTimeStamp);
+        else
+            return null;
+    }
+
+    public Calendar getTimeStamp() {
+        return mTimeStamp;
+    }
+
+    public void setTimeStamp(Calendar timeStamp) {
+        this.mTimeStamp = timeStamp;
     }
 
     public  ArrayList<HourlyWeatherForecast> getHourlyWeatherForecastsToday() {
@@ -165,6 +186,7 @@ public class Location implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(this.mTimeStamp);
         dest.writeString(this.mLatitude);
         dest.writeString(this.mLongitude);
         dest.writeString(this.mCoordinates);
@@ -179,6 +201,7 @@ public class Location implements Parcelable, Serializable {
     }
 
     protected Location(Parcel in) {
+        this.mTimeStamp = (Calendar) in.readSerializable();
         this.mLatitude = in.readString();
         this.mLongitude = in.readString();
         this.mCoordinates = in.readString();
