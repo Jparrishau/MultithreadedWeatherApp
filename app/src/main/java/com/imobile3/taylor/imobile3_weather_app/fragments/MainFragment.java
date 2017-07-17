@@ -475,7 +475,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                     hourlyWeatherForecastsTomorrow.add(
                             new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
                 }
-                else if ((currentDayOfYear + 2) == dayOfYear){
+                else if ((currentDayOfYear + 2) == dayOfYear || (currentDayOfYear + 3) == dayOfYear){
                     hourlyWeatherForecastsLater.add(
                             new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
                 }
