@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -26,36 +25,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.imobile3.taylor.imobile3_weather_app.HttpJSONRequest;
-import com.imobile3.taylor.imobile3_weather_app.LocationLookup;
 import com.imobile3.taylor.imobile3_weather_app.ForecastLocationListener;
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.activities.MainActivity;
 import com.imobile3.taylor.imobile3_weather_app.activities.WeatherForecastActivity;
 import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
-import com.imobile3.taylor.imobile3_weather_app.models.CurrentWeatherForecast;
-import com.imobile3.taylor.imobile3_weather_app.models.Day;
-import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
-import com.imobile3.taylor.imobile3_weather_app.models.HourlyWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
-import com.imobile3.taylor.imobile3_weather_app.models.DailyWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.tasks.JSONParser;
 import com.imobile3.taylor.imobile3_weather_app.tasks.LocationResponse;
-import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
