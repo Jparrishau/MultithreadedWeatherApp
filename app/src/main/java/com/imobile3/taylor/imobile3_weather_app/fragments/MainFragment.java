@@ -384,7 +384,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                     + "/" + "astronomy" + "/q/" + location.getCoordinates() + ".json";
             //URL for WUnderground API Call
             String weatherURL_Hourly10Day = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                    + "/" + "hourly" + "/q/" + location.getCoordinates() + ".json";
+                    + "/" + "hourly10day" + "/q/" + location.getCoordinates() + ".json";
 
             try {
                 weatherData.put("FORECAST_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_10DAY));
@@ -475,7 +475,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                     hourlyWeatherForecastsTomorrow.add(
                             new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
                 }
-                else{
+                else if ((currentDayOfYear + 2) == dayOfYear){
                     hourlyWeatherForecastsLater.add(
                             new HourlyWeatherForecast(condition, temperature, feelslike, humidity, icon, calendar));
                 }
