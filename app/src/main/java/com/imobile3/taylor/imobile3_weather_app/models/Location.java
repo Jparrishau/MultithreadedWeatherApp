@@ -65,6 +65,10 @@ public class Location implements Parcelable, Serializable {
             return null;
     }
 
+    public void updateTimeStamp(){
+        setTimeStamp(Calendar.getInstance());
+    }
+
     public Calendar getTimeStamp() {
         return mTimeStamp;
     }
