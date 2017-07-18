@@ -32,8 +32,8 @@ import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
-import com.imobile3.taylor.imobile3_weather_app.tasks.JSONParser;
-import com.imobile3.taylor.imobile3_weather_app.tasks.LocationResponse;
+import com.imobile3.taylor.imobile3_weather_app.tasks.WeatherDataLookup;
+import com.imobile3.taylor.imobile3_weather_app.tasks.LocationDataLookup;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -225,7 +225,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
 
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                new JSONParser(MainFragment.this, getContext()).execute(location);
+                new WeatherDataLookup(MainFragment.this, getContext()).execute(location);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -290,7 +290,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 android.location.Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 location = loc.getLatitude() + "," + loc.getLongitude();
             }
-            new LocationResponse(MainFragment.this).execute(location);
+            new LocationDataLookup(MainFragment.this).execute(location);
         }
     };
 }

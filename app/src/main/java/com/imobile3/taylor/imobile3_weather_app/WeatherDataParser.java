@@ -1,12 +1,7 @@
-package com.imobile3.taylor.imobile3_weather_app.tasks;
+package com.imobile3.taylor.imobile3_weather_app;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 
-import com.imobile3.taylor.imobile3_weather_app.HttpJSONRequest;
-import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.activities.MainActivity;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.models.CurrentWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
@@ -20,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,71 +22,20 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 /**
- * Created by taylorp on 7/17/2017.
+ * Created by taylorp on 7/18/2017.
  */
-public class JSONParser extends AsyncTask<Location, String, HashMap<String, JSONObject> > {
-    private WeatherDataTaskListener mListener;
-    private Context mContext;
-    Location location;
 
-    public JSONParser(WeatherDataTaskListener listener, Context context) {
-        this.mListener = listener;
+public class WeatherDataParser {
+    private Context mContext;
+    Location mLocation;
+
+    public WeatherDataParser(Location location, Context context) {
+        this.mLocation = location;
         this.mContext = context;
     }
 
-    @Override
-    public void onPreExecute() {
-        super.onPreExecute();
-        mListener.onTaskStarted();
-    }
-
-    @Override
-    public HashMap<String, JSONObject> doInBackground(Location... args) {
-        HashMap<String, JSONObject> weatherData = new HashMap<>();
-        location = args[0];
-
-        //Put these somewhere else later
-        final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
-
-            /*
-                Do this some cleaner way later, possibly with loop.
-            */
-        //URL for WUnderground API Call
-        String weatherURL_10DAY = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "forecast10day" + "/q/" + location.getCoordinates() + ".json";
-        //URL for WUnderground API Call
-        String weatherURL_Conditions = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "conditions" + "/q/" + location.getCoordinates() + ".json";
-        //URL for WUnderground API Call
-        String weatherURL_Astronomy = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "astronomy" + "/q/" + location.getCoordinates() + ".json";
-        //URL for WUnderground API Call
-        String weatherURL_Hourly10Day = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "hourly10day" + "/q/" + location.getCoordinates() + ".json";
-
-        try {
-            weatherData.put("FORECAST_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_10DAY));
-            weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
-            weatherData.put("FORECAST_ASTRONOMY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Astronomy));
-            weatherData.put("FORECAST_HOURLY_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Hourly10Day));
-            return weatherData;
-        } catch (IOException | JSONException e) {
-            //Need to handle this properly. Network may not be enabled/working.
-            e.printStackTrace();
-        }
-        //This causes app to crash. Find a way to handle this.
-        //Need to add new exception above?
-        return null;
-    }
-
-    @Override
-    public void onPostExecute(HashMap<String, JSONObject> weatherData) {
-        Location location = parseJSONWeatherData(weatherData);
-        mListener.onWeatherDataTaskFinished(location);
-    }
-
     //Parses JSON Data into its respective model objects
-    private Location parseJSONWeatherData(HashMap<String, JSONObject> weatherData) {
+    public Location parseJSONWeatherData(HashMap<String, JSONObject> weatherData) {
         JSONObject dailyWeatherForecastData = weatherData.get("FORECAST_10DAY");
         JSONObject hourly10DAYWeatherForecastData = weatherData.get("FORECAST_HOURLY_10DAY");
         JSONObject currentWeatherForecastData = weatherData.get("FORECAST_OBSERVATION_CURR");
@@ -107,21 +50,21 @@ public class JSONParser extends AsyncTask<Location, String, HashMap<String, JSON
                     = parseCurrentWeatherForecast(currentWeatherForecastData, astronomyWeatherForecastData);
 
             if(days != null) {
-                location.setDays(days);
+                mLocation.setDays(days);
             }
             if(hourlyWeatherForecasts != null) {
-                location.setHourlyWeatherForecastsToday(hourlyWeatherForecasts.get("today"));
-                location.setHourlyWeatherForecastsTomorrow(hourlyWeatherForecasts.get("tomorrow"));
-                location.setHourlyWeatherForecastsLater(hourlyWeatherForecasts.get("later"));
+                mLocation.setHourlyWeatherForecastsToday(hourlyWeatherForecasts.get("today"));
+                mLocation.setHourlyWeatherForecastsTomorrow(hourlyWeatherForecasts.get("tomorrow"));
+                mLocation.setHourlyWeatherForecastsLater(hourlyWeatherForecasts.get("later"));
             }
             if(currentWeatherForecast != null) {
-                location.setCurrentWeatherForecast(currentWeatherForecast);
+                mLocation.setCurrentWeatherForecast(currentWeatherForecast);
             }
         }
         catch (ParseException | JSONException e) {
             e.printStackTrace();
         }
-        return location;
+        return mLocation;
     }
 
     private HashMap<String, ArrayList<HourlyWeatherForecast>> parseHourlyForecastData(JSONObject hourly10DAYWeatherForecastData) throws JSONException, ParseException {
