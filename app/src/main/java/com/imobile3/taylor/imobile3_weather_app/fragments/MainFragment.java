@@ -58,8 +58,9 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
 
     private boolean mIsTaskRunning = false;
-    private LocationManager mLocationManager;
     private ProgressDialog mProgressDialog;
+
+    private LocationManager mLocationManager;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -114,11 +115,11 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     @Override
     public void onDetach() {
         if (DEBUG) Log.d(CLASS_TAG, "onDetach()");
+        super.onDetach();
 
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
-        super.onDetach();
     }
 
     @Override
