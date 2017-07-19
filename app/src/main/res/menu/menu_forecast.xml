@@ -8,16 +8,7 @@
         android:title="@string/action_refresh"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_magnify_white_24dp"
-        android:title="@string/action_search"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_about"
-        android:title="@string/action_about"
         app:showAsAction="never" />
 </menu>
