@@ -10,7 +10,9 @@ import com.imobile3.taylor.imobile3_weather_app.models.Location;
  * @since 8/5/2016
  */
 public interface WeatherDataTaskListener {
-    void onTaskStarted();
+    void onWeatherDataTaskStarted();
+
+    void onWeatherDataTaskFailed();
 
     void onWeatherDataTaskFinished(Location location);
 }
