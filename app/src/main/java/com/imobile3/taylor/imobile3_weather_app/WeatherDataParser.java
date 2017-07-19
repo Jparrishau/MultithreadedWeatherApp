@@ -2,11 +2,7 @@ package com.imobile3.taylor.imobile3_weather_app;
 
 import android.content.Context;
 
-import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.models.CurrentWeatherForecast;
-import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
-import com.imobile3.taylor.imobile3_weather_app.models.DailyWeatherForecast;
-import com.imobile3.taylor.imobile3_weather_app.models.Day;
 import com.imobile3.taylor.imobile3_weather_app.models.HourlyWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
@@ -36,22 +32,16 @@ public class WeatherDataParser {
 
     //Parses JSON Data into its respective model objects
     public Location parseJSONWeatherData(HashMap<String, JSONObject> weatherData) {
-        JSONObject dailyWeatherForecastData = weatherData.get("FORECAST_10DAY");
         JSONObject hourly10DAYWeatherForecastData = weatherData.get("FORECAST_HOURLY_10DAY");
         JSONObject currentWeatherForecastData = weatherData.get("FORECAST_OBSERVATION_CURR");
         JSONObject astronomyWeatherForecastData = weatherData.get("FORECAST_ASTRONOMY");
 
         try {
-            ArrayList<Day> days =
-                    parseSimpleForecastData(dailyWeatherForecastData);
             HashMap<String, ArrayList<HourlyWeatherForecast>> hourlyWeatherForecasts =
                     parseHourlyForecastData(hourly10DAYWeatherForecastData);
             CurrentWeatherForecast currentWeatherForecast
                     = parseCurrentWeatherForecast(currentWeatherForecastData, astronomyWeatherForecastData);
 
-            if(days != null) {
-                mLocation.setDays(days);
-            }
             if(hourlyWeatherForecasts != null) {
                 mLocation.setHourlyWeatherForecastsToday(hourlyWeatherForecasts.get("today"));
                 mLocation.setHourlyWeatherForecastsTomorrow(hourlyWeatherForecasts.get("tomorrow"));
@@ -147,69 +137,6 @@ public class WeatherDataParser {
                         windKPH, windGustKPH, sunriseTime, sunsetTime);
 
         return currentWeatherForecast;
-    }
-
-    private ArrayList<Day> parseSimpleForecastData(JSONObject dailyWeatherForecastData) throws JSONException {
-        JSONObject simpleData;
-        ArrayList<Day> days = new ArrayList<>();
-
-        // Getting JSON Wunderground Simpleforecast data
-        JSONArray simpleforecastData = dailyWeatherForecastData.getJSONObject("forecast")
-                .getJSONObject("simpleforecast").getJSONArray("forecastday");
-        // Getting JSON Wunderground detail forecast data
-        JSONArray detailforecastData = dailyWeatherForecastData.getJSONObject("forecast")
-                .getJSONObject("txt_forecast").getJSONArray("forecastday");
-
-        for (int i = 0; i < simpleforecastData.length(); i++) {
-            simpleData = simpleforecastData.getJSONObject(i);
-
-            String textDay = simpleData.getJSONObject("date").getString("weekday");
-            int day = Integer.parseInt(simpleData.getJSONObject("date").getString("day"));
-            int month = Integer.parseInt(simpleData.getJSONObject("date").getString("month"));
-            int year = Integer.parseInt(simpleData.getJSONObject("date").getString("year"));
-            long time = Integer.parseInt(simpleData.getJSONObject("date").getString("epoch"));
-
-            String conditions = simpleData.getString("conditions");
-            String high = simpleData.getJSONObject("high").getString("fahrenheit") + "˚ F";
-            String low = simpleData.getJSONObject("low").getString("fahrenheit") + "˚ F";
-            String humidity = simpleData.getString("avehumidity");
-            String icon = getIcon(simpleData.getString("icon"));
-
-            DailyWeatherForecast dailyWeatherForecast = new DailyWeatherForecast(conditions, high, low, humidity, icon);
-
-            Day currentDay = new Day(day, month, year, time, textDay, dailyWeatherForecast);
-            days.add(i, currentDay);
-        }
-
-        //Parse the corresponding data into DailyWeatherForecast object model
-        days = parseDetailForecastDataModel(detailforecastData, days);
-        return days;
-    }
-
-    private ArrayList<Day> parseDetailForecastDataModel(JSONArray detailForecastData, ArrayList<Day> days) throws JSONException {
-        JSONObject detailData;
-
-        int j = 0;
-        int iterationPairCounter = 0;
-        for (int i = 0; i < days.size(); i++) {
-            while(j < detailForecastData.length()){
-                detailData = detailForecastData.getJSONObject(j);
-
-                String weekday = detailData.getString("title");
-                String description = detailData.getString("fcttext");
-                String pop = detailData.getString("pop");
-
-                days.get(i).getWeatherForecast().getDetailWeatherItems().add(new DailyDetailedWeatherItem(weekday, description, pop));
-
-                iterationPairCounter++;
-                j++;
-                if(iterationPairCounter == 2){
-                    iterationPairCounter = 0;
-                    break;
-                }
-            }
-        }
-        return days;
     }
 
     private String getIcon(String icon) {

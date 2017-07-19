@@ -27,9 +27,6 @@ public class Location implements Parcelable, Serializable {
     private String mState;
     private String mFormatted_address;
 
-    //Convert this to hash table where keys are the dates?
-    private ArrayList<Day> mDays = new ArrayList<>();
-
     //Convert to map later if we can make it parcelable/serializable
     private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsToday = new ArrayList<>();
     private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsTomorrow = new ArrayList<>();
@@ -154,17 +151,6 @@ public class Location implements Parcelable, Serializable {
     public void setFormatted_address(String formatted_address) {
         this.mFormatted_address = formatted_address;
     }
-    public void setDays(ArrayList<Day> days){
-        mDays = days;
-    }
-
-    public Day getDay(int index){
-        return mDays.get(index);
-    }
-
-    public ArrayList<Day> getDays(){
-        return mDays;
-    }
 
     /*
        End Make Parcelable
@@ -197,7 +183,6 @@ public class Location implements Parcelable, Serializable {
         dest.writeString(this.mCity);
         dest.writeString(this.mState);
         dest.writeString(this.mFormatted_address);
-        dest.writeTypedList(this.mDays);
         dest.writeTypedList(this.mHourlyWeatherForecastsToday);
         dest.writeTypedList(this.mHourlyWeatherForecastsTomorrow);
         dest.writeTypedList(this.mHourlyWeatherForecastsLater);
@@ -212,7 +197,6 @@ public class Location implements Parcelable, Serializable {
         this.mCity = in.readString();
         this.mState = in.readString();
         this.mFormatted_address = in.readString();
-        this.mDays = in.createTypedArrayList(Day.CREATOR);
         this.mHourlyWeatherForecastsToday = in.createTypedArrayList(HourlyWeatherForecast.CREATOR);
         this.mHourlyWeatherForecastsTomorrow = in.createTypedArrayList(HourlyWeatherForecast.CREATOR);
         this.mHourlyWeatherForecastsLater = in.createTypedArrayList(HourlyWeatherForecast.CREATOR);
