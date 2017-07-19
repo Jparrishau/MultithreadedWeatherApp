@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.adapters.DailyForecastRecyclerAdapter;
 import com.imobile3.taylor.imobile3_weather_app.adapters.HourlyForecastRecyclerAdapter;
 import com.imobile3.taylor.imobile3_weather_app.models.HourlyWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
@@ -24,8 +23,8 @@ import java.util.ArrayList;
  * @author Taylor Parrish
  * @since 7/11/2017
  */
-public class RecyclerViewFragment extends Fragment {
-    private static final String CLASS_TAG = RecyclerViewFragment.class.getSimpleName();
+public class ForecastRecyclerFragment extends Fragment {
+    private static final String CLASS_TAG = ForecastRecyclerFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
     private Location mLocation;
 
