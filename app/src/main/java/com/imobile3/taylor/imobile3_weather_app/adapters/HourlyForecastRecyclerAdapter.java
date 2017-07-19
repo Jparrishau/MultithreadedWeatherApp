@@ -10,10 +10,7 @@ import android.widget.TextView;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.models.HourlyWeatherForecast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by taylorp on 7/14/2017.
@@ -21,7 +18,7 @@ import java.util.Date;
  * @author Taylor Parrish
  * @since 7/14/2017
  */
-public class HourlyForecastRecyclerAdapter extends RecyclerView.Adapter<com.imobile3.taylor.imobile3_weather_app.adapters.HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder> {
+public class HourlyForecastRecyclerAdapter extends RecyclerView.Adapter<HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder> {
     private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecasts;
 
     public HourlyForecastRecyclerAdapter(ArrayList<HourlyWeatherForecast> hourlyWeatherForecasts){
@@ -30,10 +27,9 @@ public class HourlyForecastRecyclerAdapter extends RecyclerView.Adapter<com.imob
 
     @Override
     public HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_weather_item, parent, false);
-        HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder recyclerViewHolder =
-                new HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder(view);
-        return recyclerViewHolder;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_hourly_weather_item, parent, false);
+
+        return new HourlyForecastRecyclerAdapter.HourlyForecastRecyclerViewHolder(view);
     }
 
     @Override
@@ -70,7 +66,7 @@ public class HourlyForecastRecyclerAdapter extends RecyclerView.Adapter<com.imob
         TextView highText;
         TextView lowText;
 
-        public HourlyForecastRecyclerViewHolder(View view) {
+        private HourlyForecastRecyclerViewHolder(View view) {
             super(view);
             Typeface weatherFont
                     = Typeface.createFromAsset(view.getContext().getAssets(), "font/weathericons.ttf");
@@ -80,8 +76,8 @@ public class HourlyForecastRecyclerAdapter extends RecyclerView.Adapter<com.imob
             weekdayText = (TextView) view.findViewById(R.id.weekday);
             conditionsText = (TextView) view.findViewById(R.id.condition);
             humidityText = (TextView) view.findViewById(R.id.humidity);
-            highText = (TextView) view.findViewById(R.id.highDegree);
-            lowText = (TextView) view.findViewById(R.id.lowDegree);
+            highText = (TextView) view.findViewById(R.id.hourlyTemp);
+            lowText = (TextView) view.findViewById(R.id.feelsLikeTemp);
         }
     }
 
