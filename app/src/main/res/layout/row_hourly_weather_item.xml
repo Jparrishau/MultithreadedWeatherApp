@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical">
@@ -33,7 +35,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
-            android:id="@+id/hourlyTemperature"
+            android:id="@+id/hourlyTempText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/condition"
@@ -43,15 +45,33 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
-            android:id="@+id/hourlyTemperatureDegree"
+            android:id="@+id/hourlyTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/lowDegree"
+            android:layout_alignBottom="@+id/feelsLikeTemp"
             android:layout_below="@+id/condition"
             android:layout_marginBottom="21dp"
             android:layout_marginTop="16dp"
-            android:layout_toEndOf="@+id/hourlyTemperature"
-            android:layout_toRightOf="@+id/hourlyTemperature"
+            android:layout_toEndOf="@+id/hourlyTempText"
+            android:layout_toRightOf="@+id/hourlyTempText"
+            android:text="0"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+        <TextView
+            android:id="@+id/feelsLikeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hourlyTempText"
+            android:layout_marginRight="5dp"
+            android:text="Feels Like:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+        <TextView
+            android:id="@+id/feelsLikeTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hourlyTempText"
+            android:layout_toRightOf="@id/feelsLikeText"
             android:text="0"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
@@ -61,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/hourlyTemperature"
+            android:layout_below="@+id/feelsLikeText"
             android:layout_marginRight="5dp"
             android:text="Humidity:"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
@@ -70,7 +90,7 @@
             android:id="@+id/humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/hourlyTemperature"
+            android:layout_below="@+id/feelsLikeText"
             android:layout_toRightOf="@id/humidityText"
             android:text="0%"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
