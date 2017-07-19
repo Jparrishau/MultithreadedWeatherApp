@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.adapters.ViewPagerAdapter;
-import com.imobile3.taylor.imobile3_weather_app.fragments.RecyclerViewFragment;
+import com.imobile3.taylor.imobile3_weather_app.fragments.ForecastRecyclerFragment;
 import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 import com.imobile3.taylor.imobile3_weather_app.tasks.WeatherDataLookup;
@@ -41,24 +41,12 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
     private static final boolean DEBUG = true;
 
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
+    private final static long TIME_TO_UPDATE = 3600000;
 
     private SharedPreferences mSharedPreferences;
-    private boolean mIsTaskRunning = false;
     private ProgressDialog mProgressDialog;
 
     private Location mLocation;
-    private ViewPager mPager;
-    private ViewPagerAdapter mPagerAdapter;
-
-    private TextView mLastUpdate;
-    private TextView mCurrentWeatherIconText;
-    private TextView mCurrentTempText;
-    private TextView mCurrentWeatherDescrText;
-    private TextView mCurrentPressureText;
-    private TextView mCurrentHumidityText;
-    private TextView mCurrentWindSpeedText;
-    private TextView mSunriseText;
-    TextView mSunsetText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +65,6 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
             this.setSupportActionBar(toolbar);
             getSupportActionBar().setTitle(mLocation.getCity() + ", " + mLocation.getState());
         }
-
         setupForecastPager();
         setupCurrentForecastBar();
     }
@@ -85,7 +72,7 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
     @Override
     protected void onResume() {
         super.onResume();
-        isTimeToUpdate();
+        isTimeToUpdate(TIME_TO_UPDATE);
     }
 
     //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -106,9 +93,6 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
             case R.id.action_refresh:
                 new WeatherDataLookup(this, this).execute(mLocation);
                 return true;
-            case R.id.action_search:
-                //Do something
-                return true;
             case R.id.action_location:
                 //Do something
                 return true;
@@ -120,9 +104,17 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
     }
 
     @Override
-    public void onTaskStarted() {
-        mIsTaskRunning = true;
-        mProgressDialog = ProgressDialog.show(this, "Fetching data", "Please wait...");
+    public void onWeatherDataTaskStarted() {
+        mProgressDialog = ProgressDialog.show(this, "Downloading data", "Please wait...");
+    }
+
+    @Override
+    public void onWeatherDataTaskFailed() {
+        Utils.showToast(this, "Could not lookup data. Please check that you have an internet connection");
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
     @Override
@@ -133,7 +125,6 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
-        mIsTaskRunning = false;
     }
 
     private void refreshUI(Location location) {
@@ -145,47 +136,47 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
 
     private void setupForecastPager() {
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.viewPager);
-        mPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         String locationJSON = new Gson().toJson(mLocation);
 
-        RecyclerViewFragment todayFragment = new RecyclerViewFragment();
+        ForecastRecyclerFragment todayFragment = new ForecastRecyclerFragment();
         Bundle bundleLocation = new Bundle();
         bundleLocation.putString("type", "today");
         bundleLocation.putString("locationData", locationJSON);
         todayFragment.setArguments(bundleLocation);
 
-        RecyclerViewFragment tomorrowFragment = new RecyclerViewFragment();
+        ForecastRecyclerFragment tomorrowFragment = new ForecastRecyclerFragment();
         Bundle bundleLocation2 = new Bundle();
         bundleLocation2.putString("type", "tomorrow");
         bundleLocation2.putString("locationData", locationJSON);
         tomorrowFragment.setArguments(bundleLocation2);
 
-        RecyclerViewFragment laterFragment = new RecyclerViewFragment();
+        ForecastRecyclerFragment laterFragment = new ForecastRecyclerFragment();
         Bundle bundleLocation3 = new Bundle();
         bundleLocation3.putString("type", "later");
         bundleLocation3.putString("locationData", locationJSON);
         laterFragment.setArguments(bundleLocation3);
 
-        mPagerAdapter.addFragment(todayFragment, "Today");
-        mPagerAdapter.addFragment(tomorrowFragment, "Tomorrow");
-        mPagerAdapter.addFragment(laterFragment, "Later");
-        mPager.setAdapter(mPagerAdapter);
+        pagerAdapter.addFragment(todayFragment, "Today");
+        pagerAdapter.addFragment(tomorrowFragment, "Tomorrow");
+        pagerAdapter.addFragment(laterFragment, "Later");
+        pager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mPager);
+        tabLayout.setupWithViewPager(pager);
     }
 
     private void setupCurrentForecastBar() {
-        mLastUpdate = (TextView) findViewById(R.id.lastUpdate);
-        mCurrentWeatherIconText = (TextView) findViewById(R.id.currentWeatherIcon);
-        mCurrentTempText = (TextView) findViewById(R.id.currentTemperature);
-        mCurrentWeatherDescrText = (TextView) findViewById(R.id.currentWeatherDescription);
-        mCurrentPressureText = (TextView) findViewById(R.id.currentPressure);
-        mCurrentHumidityText = (TextView) findViewById(R.id.currentHumidity);
-        mCurrentWindSpeedText = (TextView) findViewById(R.id.currentWind);
-        mSunriseText = (TextView) findViewById(R.id.todaySunrise);
-        mSunsetText = (TextView) findViewById(R.id.todaySunset);
+        TextView lastUpdate1 = (TextView) findViewById(R.id.lastUpdate);
+        TextView currentWeatherIconText = (TextView) findViewById(R.id.currentWeatherIcon);
+        TextView currentTempText = (TextView) findViewById(R.id.currentTemperature);
+        TextView currentWeatherDescrText = (TextView) findViewById(R.id.currentWeatherDescription);
+        TextView currentPressureText = (TextView) findViewById(R.id.currentPressure);
+        TextView currentHumidityText = (TextView) findViewById(R.id.currentHumidity);
+        TextView currentWindSpeedText = (TextView) findViewById(R.id.currentWind);
+        TextView sunriseText = (TextView) findViewById(R.id.todaySunrise);
+        TextView sunsetText = (TextView) findViewById(R.id.todaySunset);
 
         String lastUpdate = Utils.getStandardTime(mLocation.getTimeStamp());
         String currentWeatherIcon = mLocation.getCurrentWeatherForecast().getWeatherIcon();
@@ -198,16 +189,16 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
         String currentWindSpeed = mLocation.getCurrentWeatherForecast().getWind_mph() + " Mph";
 
         Typeface weatherFont = Typeface.createFromAsset(getAssets(), "font/weathericons.ttf");
-        mCurrentWeatherIconText.setTypeface(weatherFont);
-        mCurrentWeatherIconText.setText(currentWeatherIcon);
-        mLastUpdate.setText("Last Update: \n" + lastUpdate);
-        mCurrentTempText.setText(currentTemp);
-        mCurrentWeatherDescrText.setText(currentWeatherDescr);
-        mCurrentWindSpeedText.setText("Wind: " + currentWindSpeed);
-        mCurrentPressureText.setText("Pressure: " + currentPressure);
-        mCurrentHumidityText.setText("Humidity: " + currentHumidity);
-        mSunriseText.setText("Sunrise: " + sunriseTime);
-        mSunsetText.setText("Sunset: " + sunsetTime);
+        currentWeatherIconText.setTypeface(weatherFont);
+        currentWeatherIconText.setText(currentWeatherIcon);
+        lastUpdate1.setText("Last Update: \n" + lastUpdate);
+        currentTempText.setText(currentTemp);
+        currentWeatherDescrText.setText(currentWeatherDescr);
+        currentWindSpeedText.setText("Wind: " + currentWindSpeed);
+        currentPressureText.setText("Pressure: " + currentPressure);
+        currentHumidityText.setText("Humidity: " + currentHumidity);
+        sunriseText.setText("Sunrise: " + sunriseTime);
+        sunsetText.setText("Sunset: " + sunsetTime);
     }
 
     private void saveLocationData(Location location) {
@@ -216,10 +207,10 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
         mSharedPreferences.edit().putString(location.getCoordinates(), locationJSON).apply();
     }
 
-    private void isTimeToUpdate(){
+    private void isTimeToUpdate(long elapsedTime){
         long timeElapsed =
                 (Calendar.getInstance().getTimeInMillis() - mLocation.getTimeStamp().getTimeInMillis());
-        if(timeElapsed >= 3600000){
+        if(timeElapsed >= elapsedTime){
             new WeatherDataLookup(this, this).execute(mLocation);
         }
     }
