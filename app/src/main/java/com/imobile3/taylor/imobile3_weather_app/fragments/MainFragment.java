@@ -17,9 +17,6 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -72,7 +69,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         if (DEBUG) Log.d(CLASS_TAG, "onCreate(Bundle)");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
 
         mLocationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -99,28 +95,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         super.onActivityCreated(savedInstanceState);
 
         if (mIsTaskRunning) {
-            mProgressDialog = ProgressDialog.show(getActivity(), "Fetching data", "Please wait...");
+            mProgressDialog = ProgressDialog.show(getActivity(), "Downloading data", "Please wait...");
         }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Do something that differs the Activity's menu here
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_location:
-                Log.i("TEST", "Location Button clicked!");
-                return true;
-            default:
-                break;
-        }
-        return false;
     }
 
     @Override
@@ -148,15 +124,15 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     @Override
-    public void onTaskStarted() {
-        if (DEBUG) Log.d(CLASS_TAG, "onTaskStarted()");
+    public void onLocationDataTaskStarted() {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskStarted()");
         mIsTaskRunning = true;
-        mProgressDialog = ProgressDialog.show(getActivity(), "Fetching data", "Please wait...");
+        mProgressDialog = ProgressDialog.show(getActivity(), "Downloading data", "Please wait...");
     }
 
     @Override
-    public void onTaskFailed() {
-        Utils.showToast(getActivity(), "The location you entered could not be found.");
+    public void onLocationDataTaskFailed() {
+        Utils.showToast(getActivity(), "The location you entered could not be found");
 
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
@@ -165,8 +141,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     @Override
-    public void onTaskFinished(Location location) {
-        if (DEBUG) Log.d(CLASS_TAG, "onTaskFinished()");
+    public void onLocationDataTaskFinished(Location location) {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskFinished()");
 
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
@@ -176,8 +152,24 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     @Override
+    public void onWeatherDataTaskStarted() {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskStarted()");
+        mIsTaskRunning = true;
+        mProgressDialog = ProgressDialog.show(getActivity(), "Downloading data", "Please wait...");
+    }
+
+    @Override
+    public void onWeatherDataTaskFailed() {
+        Utils.showToast(getActivity(), "Data download failed. Please check that you have an internet connection");
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    @Override
     public void onWeatherDataTaskFinished(Location location) {
-        if (DEBUG) Log.d(CLASS_TAG, "onTaskFinished()");
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskFinished()");
 
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
