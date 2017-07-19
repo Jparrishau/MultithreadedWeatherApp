@@ -29,7 +29,7 @@ public class Utils {
 
     public static String militaryToStandard(String rawTimestamp) throws ParseException {
         SimpleDateFormat inputFormatter = new SimpleDateFormat("HHmm");
-        SimpleDateFormat outputFormatter = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat outputFormatter = new SimpleDateFormat("h:mm a");
 
         Date dateToFormat = inputFormatter.parse(rawTimestamp);
         String formattedTimestamp = outputFormatter.format(dateToFormat);
@@ -45,7 +45,7 @@ public class Utils {
     }
 
     public static String getStandardTime(Calendar calendar){
-        SimpleDateFormat outputFormatter = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat outputFormatter = new SimpleDateFormat("h:mm a");
         Date dateToFormat = calendar.getTime();
 
         return outputFormatter.format(dateToFormat);
