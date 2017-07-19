@@ -1,17 +1,28 @@
 package com.imobile3.taylor.imobile3_weather_app.activities;
 
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.imobile3.taylor.imobile3_weather_app.ForecastLocationListener;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.fragments.MainFragment;
+import com.imobile3.taylor.imobile3_weather_app.tasks.LocationDataLookup;
+
+import static com.imobile3.taylor.imobile3_weather_app.R.string.location;
 
 /**
  * MainActvity is responsible for loading its corresponding fragment
@@ -74,12 +85,16 @@ public class MainActivity extends AppCompatActivity {
     //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                //Do something
+                return true;
+            case R.id.action_location:
+                mMainFragment.addLocationByGPS();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -17,6 +17,9 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -68,6 +71,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         if (DEBUG) Log.d(CLASS_TAG, "onCreate(Bundle)");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
 
         mLocationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -96,6 +100,26 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         if (mIsTaskRunning) {
             mProgressDialog = ProgressDialog.show(getActivity(), "Fetching data", "Please wait...");
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Do something that differs the Activity's menu here
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_location:
+                Log.i("TEST", "Location Button clicked!");
+                return true;
+            default:
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -278,20 +302,25 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             String location = locationText.getText().toString();
 
             //If locationField is empty, use GPS location instead
-            if (location.matches("")) {
-                LocationListener locationListener = new ForecastLocationListener();
-
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
-                android.location.Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                location = loc.getLatitude() + "," + loc.getLongitude();
+            if (!location.matches("")) {
+                new LocationDataLookup(MainFragment.this).execute(location);
             }
-            new LocationDataLookup(MainFragment.this).execute(location);
         }
     };
+
+    public void addLocationByGPS(){
+        LocationListener locationListener = new ForecastLocationListener();
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
+        android.location.Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        String location = loc.getLatitude() + "," + loc.getLongitude();
+
+        new LocationDataLookup(MainFragment.this).execute(location);
+    }
 }
