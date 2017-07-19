@@ -37,6 +37,7 @@ import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListen
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
 import com.imobile3.taylor.imobile3_weather_app.tasks.WeatherDataLookup;
 import com.imobile3.taylor.imobile3_weather_app.tasks.LocationDataLookup;
+import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -151,6 +152,16 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         if (DEBUG) Log.d(CLASS_TAG, "onTaskStarted()");
         mIsTaskRunning = true;
         mProgressDialog = ProgressDialog.show(getActivity(), "Fetching data", "Please wait...");
+    }
+
+    @Override
+    public void onTaskFailed() {
+        Utils.showToast(getActivity(), "The location you entered could not be found.");
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+        mIsTaskRunning = false;
     }
 
     @Override
