@@ -17,7 +17,6 @@ import java.util.HashMap;
 /**
  * Created by taylorp on 7/17/2017.
  */
-//Split up the parsing to mLocation object from the return of the JSON data. Shouldnt need to use GSON.
 public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<String, JSONObject> > {
     private WeatherDataTaskListener mListener;
     private Context mContext;
@@ -31,7 +30,7 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
     @Override
     public void onPreExecute() {
         super.onPreExecute();
-        mListener.onTaskStarted();
+        mListener.onWeatherDataTaskStarted();
     }
 
     @Override
@@ -39,27 +38,20 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
         HashMap<String, JSONObject> weatherData = new HashMap<>();
         mLocation = args[0];
 
-        //Put these somewhere else later
+        //Put this somewhere else later
         final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
 
-            /*
-                Do this some cleaner way later, possibly with loop.
-            */
-        //URL for WUnderground API Call
-        String weatherURL_10DAY = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "forecast10day" + "/q/" + mLocation.getCoordinates() + ".json";
-        //URL for WUnderground API Call
+        /*
+            Do this some cleaner way later, possibly with loop.
+        */
         String weatherURL_Conditions = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
                 + "/" + "conditions" + "/q/" + mLocation.getCoordinates() + ".json";
-        //URL for WUnderground API Call
         String weatherURL_Astronomy = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
                 + "/" + "astronomy" + "/q/" + mLocation.getCoordinates() + ".json";
-        //URL for WUnderground API Call
         String weatherURL_Hourly10Day = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
                 + "/" + "hourly10day" + "/q/" + mLocation.getCoordinates() + ".json";
 
         try {
-            weatherData.put("FORECAST_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_10DAY));
             weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
             weatherData.put("FORECAST_ASTRONOMY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Astronomy));
             weatherData.put("FORECAST_HOURLY_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Hourly10Day));
@@ -69,13 +61,17 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
             e.printStackTrace();
         }
         //This causes app to crash. Find a way to handle this.
-        //Need to add new exception above?
         return null;
     }
 
     @Override
     public void onPostExecute(HashMap<String, JSONObject> weatherData) {
-        Location location = new WeatherDataParser(mLocation, mContext).parseJSONWeatherData(weatherData);
-        mListener.onWeatherDataTaskFinished(location);
+        if (weatherData != null) {
+            Location location = new WeatherDataParser(mLocation, mContext).parseJSONWeatherData(weatherData);
+            mListener.onWeatherDataTaskFinished(location);
+        }
+        else {
+            mListener.onWeatherDataTaskFailed();
+        }
     }
 }

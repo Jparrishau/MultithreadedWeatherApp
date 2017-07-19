@@ -30,7 +30,7 @@ public class LocationDataLookup extends AsyncTask<String, String, Location> {
     @Override
     public void onPreExecute() {
         super.onPreExecute();
-        listener.onTaskStarted();
+        listener.onLocationDataTaskStarted();
     }
 
     @Override
@@ -43,9 +43,9 @@ public class LocationDataLookup extends AsyncTask<String, String, Location> {
     @Override
     public void onPostExecute(Location location) {
         if(location != null)
-            listener.onTaskFinished(location);
+            listener.onLocationDataTaskFinished(location);
         else
-            listener.onTaskFailed();
+            listener.onLocationDataTaskFailed();
     }
 
     public Location invoke(String locationString) {
