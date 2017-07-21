@@ -18,10 +18,10 @@ import java.io.IOException;
  */
 public class LocationDataLookup extends AsyncTask<String, String, Location> {
     private final LocationDataTaskListener listener;
+    private String mFailureType;
 
-    private Location location;
-    private String city;
-    private String state;
+    private String mCity;
+    private String mState;
 
     public LocationDataLookup(LocationDataTaskListener mListener) {
         this.listener = mListener;
@@ -45,7 +45,7 @@ public class LocationDataLookup extends AsyncTask<String, String, Location> {
         if(location != null)
             listener.onLocationDataTaskFinished(location);
         else
-            listener.onLocationDataTaskFailed();
+            listener.onLocationDataTaskFailed(getFailureType());
     }
 
     public Location invoke(String locationString) {
@@ -55,16 +55,17 @@ public class LocationDataLookup extends AsyncTask<String, String, Location> {
         String geocodeURL = "http://maps.googleapis.com/maps/api/geocode/json?address=" + coordinates + "&sensor=true";
 
         try {
-            parseLocationData(geocodeURL);
-        } catch (JSONException | IOException e) {
-            //GoogleApi request failed, return user to mLocation page?
-            //Internet could be off?
-            e.printStackTrace();
+            return parseLocationData(geocodeURL);
+        } catch (JSONException e) {
+            setFailureType("JSONException");
         }
-        return location;
+        catch (IOException e){
+            setFailureType("IOException");
+        }
+        return null;
     }
 
-    private void parseLocationData(String geocodeURL) throws IOException, JSONException {
+    private Location parseLocationData(String geocodeURL) throws IOException, JSONException {
         //Request geocode for JSONObject containing user input mLocation data
         JSONObject locationLookup = new HttpJSONRequest().getJSONFromUrl(geocodeURL);
 
@@ -82,17 +83,25 @@ public class LocationDataLookup extends AsyncTask<String, String, Location> {
         for (int i = 0; i < address_compontents.length(); i++) {
             if (address_compontents.getJSONObject(i).getJSONArray("types")
                     .getString(0).equals("locality")) {
-                city = address_compontents.getJSONObject(i).getString("long_name");
+                mCity = address_compontents.getJSONObject(i).getString("long_name");
             }
             if (address_compontents.getJSONObject(i).getJSONArray("types")
                     .getString(0).equals("administrative_area_level_1")) {
-                state = address_compontents.getJSONObject(i).getString("short_name");
+                mState = address_compontents.getJSONObject(i).getString("short_name");
             }
         }
         String latitude = geometryComponents.getString("lat");
         String longitude = geometryComponents.getString("lng");
         String formatted_address = locationJSON.getString("formatted_address");
 
-        location = new Location(latitude, longitude, city, state, formatted_address);
+        return new Location(latitude, longitude, mCity, mState, formatted_address);
+    }
+
+    public String getFailureType() {
+        return mFailureType;
+    }
+
+    public void setFailureType(String failureType) {
+        mFailureType = failureType;
     }
 }
