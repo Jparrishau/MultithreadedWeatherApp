@@ -55,11 +55,8 @@ public class Location implements Parcelable, Serializable {
         setState(state);
     }
 
-    public String getFormattedTime(String formatString){
-        if (mTimeStamp != null)
-            return Utils.getFormattedTime(formatString, mTimeStamp);
-        else
-            return null;
+    public String getUpdateTime(){
+        return Utils.getStandardTime(mTimeStamp);
     }
 
     public void updateTimeStamp(){
@@ -153,21 +150,8 @@ public class Location implements Parcelable, Serializable {
     }
 
     /*
-       End Make Parcelable
+       Begin Make Parcelable
     */
-
-    @Override
-    public String toString() {
-        return "Location{" +
-                ", Latitude='" + getLatitude() + '\'' +
-                ", Longitude='" + getLongitude() + '\'' +
-                ", Coordinates='" + getCoordinates() + '\'' +
-                 ", Address='" + getFormatted_address() + '\'' +
-                ", City=" + getCity() + '\'' +
-                ", State='" + getState() +
-                '}';
-    }
-
 
     @Override
     public int describeContents() {
@@ -214,4 +198,25 @@ public class Location implements Parcelable, Serializable {
             return new Location[size];
         }
     };
+
+    /*
+      End Make Parcelable
+   */
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "mTimeStamp=" + mTimeStamp +
+                ", mLatitude='" + mLatitude + '\'' +
+                ", mLongitude='" + mLongitude + '\'' +
+                ", mCoordinates='" + mCoordinates + '\'' +
+                ", mCity='" + mCity + '\'' +
+                ", mState='" + mState + '\'' +
+                ", mFormatted_address='" + mFormatted_address + '\'' +
+                ", mHourlyWeatherForecastsToday=" + mHourlyWeatherForecastsToday +
+                ", mHourlyWeatherForecastsTomorrow=" + mHourlyWeatherForecastsTomorrow +
+                ", mHourlyWeatherForecastsLater=" + mHourlyWeatherForecastsLater +
+                ", mCurrentWeatherForecast=" + mCurrentWeatherForecast +
+                '}';
+    }
 }
