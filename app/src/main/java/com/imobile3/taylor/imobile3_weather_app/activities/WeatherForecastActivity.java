@@ -30,9 +30,6 @@ import java.util.Calendar;
  * WeatherForecastActivity is responsible for loading its corresponding fragment
  * as well as initializes the toolbar and its menus.
  *
- * Issue 1: Toolbar is showing on all activities but menu options are not?
- * Possible Solutions: Unsure where problem is coming from. Further testing required.
- *
  * @author Taylor Parrish
  * @since 8/23/2016
  */
@@ -97,8 +94,6 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
                 //Do something
                 return true;
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -109,17 +104,21 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
     }
 
     @Override
-    public void onWeatherDataTaskFailed() {
-        Utils.showToast(this, "Could not lookup data. Please check that you have an internet connection");
-
+    public void onWeatherDataTaskFailed(String failureType) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
+
+        if(failureType.equals("IOException")) {
+            Utils.showToast(this, "Failed to connect to host. Please check that you have an internet connection");
+        }
+        else {
+            Utils.showToast(this, "The weather data could not be found. Please try again later");
         }
     }
 
     @Override
     public void onWeatherDataTaskFinished(Location location) {
-        location.updateTimeStamp();
         refreshUI(location);
 
         if (mProgressDialog != null) {
@@ -129,13 +128,13 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
 
     private void refreshUI(Location location) {
         mLocation = location;
+        mLocation.updateTimeStamp();
+        saveLocationData(location);
         setupForecastPager();
         setupCurrentForecastBar();
-        saveLocationData(location);
     }
 
     private void setupForecastPager() {
-        // Instantiate a ViewPager and a PagerAdapter.
         ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         String locationJSON = new Gson().toJson(mLocation);
@@ -178,32 +177,31 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
         TextView sunriseText = (TextView) findViewById(R.id.todaySunrise);
         TextView sunsetText = (TextView) findViewById(R.id.todaySunset);
 
-        String lastUpdate = Utils.getStandardTime(mLocation.getTimeStamp());
+        String lastUpdate = "Last Update: " + "\n" + mLocation.getUpdateTime();
         String currentWeatherIcon = mLocation.getCurrentWeatherForecast().getWeatherIcon();
         String currentTemp = mLocation.getCurrentWeatherForecast().getTemp_F() + " °F";
         String currentWeatherDescr = mLocation.getCurrentWeatherForecast().getWeather_description();
-        String currentPressure = mLocation.getCurrentWeatherForecast().getPressure_mb() + " hPa";
-        String currentHumidity = mLocation.getCurrentWeatherForecast().getHumidity();
-        String sunriseTime = mLocation.getCurrentWeatherForecast().getSunriseTime();
-        String sunsetTime = mLocation.getCurrentWeatherForecast().getSunsetTime();
-        String currentWindSpeed = mLocation.getCurrentWeatherForecast().getWind_mph() + " Mph";
+        String currentPressure = "Pressure: " + mLocation.getCurrentWeatherForecast().getPressure_mb() + " hPa";
+        String currentHumidity = "Humidity: " +  mLocation.getCurrentWeatherForecast().getHumidity();
+        String sunriseTime = "Sunrise: " + mLocation.getCurrentWeatherForecast().getSunriseTime();
+        String sunsetTime = "Sunset: " + mLocation.getCurrentWeatherForecast().getSunsetTime();
+        String currentWindSpeed = "Wind: " + mLocation.getCurrentWeatherForecast().getWind_mph() + " Mph";
 
         Typeface weatherFont = Typeface.createFromAsset(getAssets(), "font/weathericons.ttf");
         currentWeatherIconText.setTypeface(weatherFont);
         currentWeatherIconText.setText(currentWeatherIcon);
-        lastUpdate1.setText("Last Update: \n" + lastUpdate);
+        lastUpdate1.setText(lastUpdate);
         currentTempText.setText(currentTemp);
         currentWeatherDescrText.setText(currentWeatherDescr);
-        currentWindSpeedText.setText("Wind: " + currentWindSpeed);
-        currentPressureText.setText("Pressure: " + currentPressure);
-        currentHumidityText.setText("Humidity: " + currentHumidity);
-        sunriseText.setText("Sunrise: " + sunriseTime);
-        sunsetText.setText("Sunset: " + sunsetTime);
+        currentWindSpeedText.setText(currentWindSpeed);
+        currentPressureText.setText(currentPressure);
+        currentHumidityText.setText(currentHumidity);
+        sunriseText.setText(sunriseTime);
+        sunsetText.setText(sunsetTime);
     }
 
     private void saveLocationData(Location location) {
-        Gson gson = new Gson();
-        String locationJSON = gson.toJson(location);
+        String locationJSON = new Gson().toJson(location);
         mSharedPreferences.edit().putString(location.getCoordinates(), locationJSON).apply();
     }
 
@@ -215,6 +213,3 @@ public class WeatherForecastActivity extends AppCompatActivity implements Weathe
         }
     }
 }
-
-
-
