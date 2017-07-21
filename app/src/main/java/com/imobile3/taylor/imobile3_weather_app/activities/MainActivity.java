@@ -1,40 +1,34 @@
 package com.imobile3.taylor.imobile3_weather_app.activities;
 
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 
-import com.imobile3.taylor.imobile3_weather_app.ForecastLocationListener;
 import com.imobile3.taylor.imobile3_weather_app.R;
+import com.imobile3.taylor.imobile3_weather_app.fragments.LocationDialogFragment;
 import com.imobile3.taylor.imobile3_weather_app.fragments.MainFragment;
-import com.imobile3.taylor.imobile3_weather_app.tasks.LocationDataLookup;
-
-import static com.imobile3.taylor.imobile3_weather_app.R.string.location;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 /**
  * MainActvity is responsible for loading its corresponding fragment
  * as well as initializes the toolbar and its menus.
  *
- * Issue 1: Toolbar is showing on all activities but menu options are not?
- * Possible Solutions: Unsure where problem is coming from. Further testing required.
- *
  * @author Taylor Parrish
  * @since 8/23/2016
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationDialogFragment.SubmitCancelListener {
     private static final String CLASS_TAG = MainActivity.class.getSimpleName();
     private static final boolean DEBUG = true;
 
@@ -68,34 +62,76 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Location Dialog
+                searchCitiesDialog();
             }
         });
 
     }
 
-    //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onLocationValidationDialogSubmit(Location location) {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationValidationDialogSubmit()");
+        mMainFragment.executeWeatherDataLookup(location);
+    }
+
+    @Override
+    public void onLocationValidationDialogCancel() {
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                //Do something
                 return true;
             case R.id.action_location:
-                mMainFragment.addLocationByGPS();
+                 if(mMainFragment.checkLocationProviderEnabled()) {
+                     mMainFragment.addLocationByGPS();
+                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private void searchCitiesDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setMaxLines(1);
+        input.setHint("City, State or Zipcode");
+        input.setSingleLine();
+        FrameLayout container = new FrameLayout(this);
+        FrameLayout.LayoutParams params =
+                new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        input.setLayoutParams(params);
+        container.addView(input);
+        alertDialog.setTitle("Search for a location");
+        alertDialog.setView(container);
+        alertDialog.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String result = input.getText().toString();
+                if (!result.isEmpty()) {
+                    mMainFragment.lookupLocation(result);
+                }
+            }
+        });
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Cancelled
+            }
+        });
+        AlertDialog dialog = alertDialog.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+    }
 }
-
-
