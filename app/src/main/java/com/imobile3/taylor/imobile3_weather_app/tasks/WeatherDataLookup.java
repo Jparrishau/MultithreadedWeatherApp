@@ -20,7 +20,9 @@ import java.util.HashMap;
 public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<String, JSONObject> > {
     private WeatherDataTaskListener mListener;
     private Context mContext;
-    Location mLocation;
+    private String mFailureType;
+
+    private Location mLocation;
 
     public WeatherDataLookup(WeatherDataTaskListener listener, Context context) {
         this.mListener = listener;
@@ -38,7 +40,7 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
         HashMap<String, JSONObject> weatherData = new HashMap<>();
         mLocation = args[0];
 
-        //Put this somewhere else later
+        //Put this somewhere else later?
         final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
 
         /*
@@ -52,15 +54,16 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
                 + "/" + "hourly10day" + "/q/" + mLocation.getCoordinates() + ".json";
 
         try {
-            weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
             weatherData.put("FORECAST_ASTRONOMY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Astronomy));
+            weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
             weatherData.put("FORECAST_HOURLY_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Hourly10Day));
             return weatherData;
-        } catch (IOException | JSONException e) {
-            //Need to handle this properly. Network may not be enabled/working.
-            e.printStackTrace();
+        } catch (JSONException e) {
+            setFailureType("JSONException");
         }
-        //This causes app to crash. Find a way to handle this.
+        catch (IOException e){
+            setFailureType("IOException");
+        }
         return null;
     }
 
@@ -71,7 +74,15 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
             mListener.onWeatherDataTaskFinished(location);
         }
         else {
-            mListener.onWeatherDataTaskFailed();
+            mListener.onWeatherDataTaskFailed(getFailureType());
         }
+    }
+
+    public String getFailureType() {
+        return mFailureType;
+    }
+
+    public void setFailureType(String failureType) {
+        mFailureType = failureType;
     }
 }
