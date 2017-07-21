@@ -1,17 +1,10 @@
 package com.imobile3.taylor.imobile3_weather_app.fragments;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -25,7 +18,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.imobile3.taylor.imobile3_weather_app.ForecastLocationListener;
+
+import com.imobile3.taylor.imobile3_weather_app.GPS;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.activities.WeatherForecastActivity;
 import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
@@ -44,10 +38,9 @@ import java.util.Map;
  * it runs a background task to find location details and passes them to the
  * Simpleforecast activity/fragment.
  *
- * Issue 1: Need to get sharedpreference on change listener updating pastLocationsListView without refresh.
- * Possible Solutions: Still researching. Will add current temperature as well in future.
- * Issue 2: If Fragment is recreated after failed location lookup sharedpreferences is erased.
- * Possible Solutions: Need to handle exception better. RevertLocation method probably the issue.
+ * Should probably move some code to the activity level, I originally used
+ * fragment to learn about them, but I dont think one should be used here,
+ * except for if I convert the list to a recyclerview and recyclerfragment.
  *
  * @author Taylor Parrish
  * @since 8/29/2016
@@ -56,12 +49,13 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     private static final String CLASS_TAG = MainFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
+    private GPS gpsProvider;
+
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
 
     private boolean mIsTaskRunning = false;
     private ProgressDialog mProgressDialog;
 
-    private LocationManager mLocationManager;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -70,8 +64,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        mLocationManager = (LocationManager)
-                getActivity().getSystemService(Context.LOCATION_SERVICE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
@@ -80,19 +72,15 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                              Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
-        View root = inflater.inflate(R.layout.fragment_main, container, false);
-
-        Button fetchDataButton = (Button) root.findViewById(R.id.fetchDataButton);
-        fetchDataButton.setOnClickListener(fetchDataButtonListener);
-        fetchDataButton.setTransformationMethod(null);
-
-        return root;
+        return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onActivityCreated(Bundle)");
         super.onActivityCreated(savedInstanceState);
+
+        gpsProvider  = GPS.sharedInstance(getActivity());
 
         if (mIsTaskRunning) {
             mProgressDialog = ProgressDialog.show(getActivity(), "Downloading data", "Please wait...");
@@ -103,7 +91,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public void onStart() {
         if (DEBUG) Log.d(CLASS_TAG, "onStart()");
         super.onStart();
-        checkLocationProvidersEnabled();
     }
 
     @Override
@@ -131,13 +118,18 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     @Override
-    public void onLocationDataTaskFailed() {
-        Utils.showToast(getActivity(), "The location you entered could not be found");
-
+    public void onLocationDataTaskFailed(String failureType) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         mIsTaskRunning = false;
+
+        if(failureType.equals("IOException")) {
+            Utils.showToast(getActivity(), "Failed to connect to host. Please check that you have an internet connection");
+        }
+        else {
+            Utils.showToast(getActivity(), "The location you entered could not be found");
+        }
     }
 
     @Override
@@ -159,11 +151,16 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     @Override
-    public void onWeatherDataTaskFailed() {
-        Utils.showToast(getActivity(), "Data download failed. Please check that you have an internet connection");
-
+    public void onWeatherDataTaskFailed(String failureType) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
+
+        if(failureType.equals("IOException")) {
+            Utils.showToast(getActivity(), "Failed to connect to host. Please check that you have an internet connection");
+        }
+        else {
+            Utils.showToast(getActivity(), "The weather data could not be found. Please try again later");
         }
     }
 
@@ -196,9 +193,8 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     private void setUpPastLocationListView(final ArrayList<Location> locations) {
-        final ListView previousLocationsList = (ListView) getView().findViewById(R.id.pastLocationsList);
+        final ListView previousLocationsList = (ListView) getActivity().findViewById(R.id.pastLocationsList);
 
-        /*Go to on press*/
         previousLocationsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -210,7 +206,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final Location tempLocation = locations.get(i);
-                //I should add a function in Location model that does this for me.
                 final String locationText = tempLocation.getCity() + ", " + tempLocation.getState();
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -222,6 +217,7 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         //The key is the coordinates now, not the city. This doesn't work.
                         mSharedPreferences.edit().remove(tempLocation.getCoordinates()).apply();
+                        refreshPastLocations();
                     }
                 });
                 dialog.setNegativeButton(getActivity().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
@@ -249,81 +245,42 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     }
 
     private void setupLocationValidationDialog(final Location location) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        Bundle locationAddressBundle = new Bundle();
+        String locationJSON =  new Gson().toJson(location);
 
-        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                new WeatherDataLookup(MainFragment.this, getContext()).execute(location);
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog. Exit dialog.
-            }
-        });
+        locationAddressBundle.putString("locationJSON", locationJSON);
 
-        AlertDialog locationConfirmationDialog = builder.create();
-        locationConfirmationDialog.setTitle("Is the information below correct?");
-        locationConfirmationDialog.setMessage(location.getFormatted_address());
-        locationConfirmationDialog.show();
+        LocationDialogFragment locationDialogFragment = new LocationDialogFragment();
+        locationDialogFragment.setArguments(locationAddressBundle);
+        locationDialogFragment.show(getActivity().getSupportFragmentManager(), "tag");
     }
 
-    private void checkLocationProvidersEnabled() {
-        boolean gps_enabled =
-                mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    public void executeWeatherDataLookup(Location location){
+        new WeatherDataLookup(MainFragment.this, getContext()).execute(location);
+    }
 
-        if (!gps_enabled) {
-            enableGPSDialog();
+    public boolean checkLocationProviderEnabled() {
+        if (!gpsProvider.canGetLocation()){
+            gpsProvider.showSettingsAlert();
+            return false;
         }
+        return true;
     }
 
-    private void enableGPSDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setCancelable(false);
-        dialog.setTitle(getActivity().getResources().getString(R.string.gps_warning_title));
-        dialog.setMessage(getActivity().getResources().getString(R.string.gps_not_enabled));
-        dialog.setPositiveButton(getActivity().getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                getActivity().startActivity(myIntent);
-            }
-        });
-        dialog.setNegativeButton(getActivity().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                getActivity().finish();
-                System.exit(0);
-            }
-        });
-        dialog.show();
+    public void lookupLocation(String location){
+        new LocationDataLookup(MainFragment.this).execute(location);
     }
-
-    View.OnClickListener fetchDataButtonListener = new View.OnClickListener() {
-        public void onClick(View view) {
-            EditText locationText = (EditText) getActivity().findViewById(R.id.locationField);
-            String location = locationText.getText().toString();
-
-            //If locationField is empty, use GPS location instead
-            if (!location.matches("")) {
-                new LocationDataLookup(MainFragment.this).execute(location);
-            }
-        }
-    };
 
     public void addLocationByGPS(){
-        LocationListener locationListener = new ForecastLocationListener();
+        android.location.Location loc = gpsProvider.getLastKnownLocation();
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if(loc != null) {
+            String location = loc.getLatitude() + "," + loc.getLongitude();
+            new LocationDataLookup(MainFragment.this).execute(location);
         }
-        mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
-        android.location.Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        String location = loc.getLatitude() + "," + loc.getLongitude();
-
-        new LocationDataLookup(MainFragment.this).execute(location);
+        else{
+            //This can be more specific and let the user know if the app has location permissions
+            Utils.showToast(getActivity(), "Failed to find GPS location");
+        }
     }
 }
