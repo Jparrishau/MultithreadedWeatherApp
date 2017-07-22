@@ -1,7 +1,10 @@
 package com.imobile3.taylor.imobile3_weather_app.activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +19,19 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
+import com.google.gson.Gson;
+import com.imobile3.taylor.imobile3_weather_app.GPS;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.fragments.LocationDialogFragment;
 import com.imobile3.taylor.imobile3_weather_app.fragments.MainFragment;
+import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
+import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
+import com.imobile3.taylor.imobile3_weather_app.tasks.LocationDataLookup;
+import com.imobile3.taylor.imobile3_weather_app.tasks.WeatherDataLookup;
+import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
+
+import static com.imobile3.taylor.imobile3_weather_app.utilities.Utils.saveLocationData;
 
 /**
  * MainActvity is responsible for loading its corresponding fragment
@@ -28,18 +40,26 @@ import com.imobile3.taylor.imobile3_weather_app.models.Location;
  * @author Taylor Parrish
  * @since 8/23/2016
  */
-public class MainActivity extends AppCompatActivity implements LocationDialogFragment.SubmitCancelListener {
+public class MainActivity extends AppCompatActivity implements LocationDialogFragment.SubmitCancelListener,
+        WeatherDataTaskListener, LocationDataTaskListener, GPS.LocationPermissionResponseListener {
     private static final String CLASS_TAG = MainActivity.class.getSimpleName();
     private static final boolean DEBUG = true;
 
+    private GPS gpsProvider;
+
     private static final String TAG_MAIN_FRAGMENT = "main_fragment";
     private MainFragment mMainFragment;
+
+    private boolean mIsTaskRunning = false;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreate(Bundle)");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        gpsProvider  = GPS.sharedInstance(this);
+        gpsProvider.requestLocationPermission(this);
 
         if (savedInstanceState == null) {
             mMainFragment = new MainFragment();
@@ -67,12 +87,85 @@ public class MainActivity extends AppCompatActivity implements LocationDialogFra
             }
         });
 
+        if (mIsTaskRunning) {
+            mProgressDialog = ProgressDialog.show(this, "Downloading data", "Please wait...");
+        }
+
+    }
+
+    @Override
+    public void onLocationDataTaskStarted() {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskStarted()");
+        mIsTaskRunning = true;
+        mProgressDialog = ProgressDialog.show(this, "Downloading data", "Please wait...");
+    }
+
+    @Override
+    public void onLocationDataTaskFailed(String failureType) {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+        mIsTaskRunning = false;
+
+        if(failureType.equals("IOException")) {
+            Utils.showToast(this, "Failed to connect to host. Please check that you have an internet connection");
+        }
+        else {
+            Utils.showToast(this, "The location you entered could not be found");
+        }
+    }
+
+    @Override
+    public void onLocationDataTaskFinished(Location location) {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskFinished()");
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+        mIsTaskRunning = false;
+        setupLocationValidationDialog(location);
+    }
+
+    @Override
+    public void onWeatherDataTaskStarted() {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskStarted()");
+        mIsTaskRunning = true;
+        mProgressDialog = ProgressDialog.show(this, "Downloading data", "Please wait...");
+    }
+
+    @Override
+    public void onWeatherDataTaskFailed(String failureType) {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+
+        if(failureType.equals("IOException")) {
+            Utils.showToast(this, "Failed to connect to host. Please check that you have an internet connection");
+        }
+        else {
+            Utils.showToast(this, "The weather data could not be found. Please try again later");
+        }
+    }
+
+    @Override
+    public void onWeatherDataTaskFinished(Location location) {
+        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskFinished()");
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+        mIsTaskRunning = false;
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        saveLocationData(sharedPreferences, location);
+        mMainFragment.refreshPastLocations();
     }
 
     @Override
     public void onLocationValidationDialogSubmit(Location location) {
         if (DEBUG) Log.d(CLASS_TAG, "onLocationValidationDialogSubmit()");
-        mMainFragment.executeWeatherDataLookup(location);
+        executeWeatherDataLookup(location);
     }
 
     @Override
@@ -92,8 +185,8 @@ public class MainActivity extends AppCompatActivity implements LocationDialogFra
             case R.id.action_settings:
                 return true;
             case R.id.action_location:
-                 if(mMainFragment.checkLocationProviderEnabled()) {
-                     mMainFragment.addLocationByGPS();
+                 if(checkLocationProviderEnabled()) {
+                     addLocationByGPS();
                  }
                 return true;
             default:
@@ -121,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements LocationDialogFra
             public void onClick(DialogInterface dialog, int whichButton) {
                 String result = input.getText().toString();
                 if (!result.isEmpty()) {
-                    mMainFragment.lookupLocation(result);
+                    lookupLocation(result);
                 }
             }
         });
@@ -134,4 +227,51 @@ public class MainActivity extends AppCompatActivity implements LocationDialogFra
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
     }
+
+    public void executeWeatherDataLookup(Location location){
+        new WeatherDataLookup(this, this).execute(location);
+    }
+
+    public void lookupLocation(String location){
+        new LocationDataLookup(this).execute(location);
+    }
+
+    public void addLocationByGPS(){
+        android.location.Location loc = gpsProvider.getLastKnownLocation();
+
+        if(loc != null) {
+            String location = loc.getLatitude() + "," + loc.getLongitude();
+            new LocationDataLookup(this).execute(location);
+        }
+        else if(!gpsProvider.isPermissionEnabled()){
+            gpsProvider.requestLocationPermission(this);
+        }
+        else{
+            Utils.showToast(this, "Failed to find Location.");
+        }
+    }
+
+    private void setupLocationValidationDialog(final Location location) {
+        Bundle locationAddressBundle = new Bundle();
+        String locationJSON =  new Gson().toJson(location);
+
+        locationAddressBundle.putString("locationJSON", locationJSON);
+
+        LocationDialogFragment locationDialogFragment = new LocationDialogFragment();
+        locationDialogFragment.setArguments(locationAddressBundle);
+        locationDialogFragment.show(getSupportFragmentManager(), "tag");
+    }
+
+    public boolean checkLocationProviderEnabled() {
+        if (!gpsProvider.canGetLocation()){
+            gpsProvider.showSettingsAlert();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onResponse(Boolean permissionGranted) {
+    }
+
 }

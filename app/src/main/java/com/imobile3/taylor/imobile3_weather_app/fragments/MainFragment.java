@@ -1,6 +1,5 @@
 package com.imobile3.taylor.imobile3_weather_app.fragments;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,22 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
 
-import com.imobile3.taylor.imobile3_weather_app.GPS;
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.activities.WeatherForecastActivity;
 import com.imobile3.taylor.imobile3_weather_app.adapters.PastLocationsAdapter;
-import com.imobile3.taylor.imobile3_weather_app.interfaces.LocationDataTaskListener;
-import com.imobile3.taylor.imobile3_weather_app.interfaces.WeatherDataTaskListener;
 import com.imobile3.taylor.imobile3_weather_app.models.Location;
-import com.imobile3.taylor.imobile3_weather_app.tasks.WeatherDataLookup;
-import com.imobile3.taylor.imobile3_weather_app.tasks.LocationDataLookup;
-import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -45,16 +36,11 @@ import java.util.Map;
  * @author Taylor Parrish
  * @since 8/29/2016
  */
-public class MainFragment extends Fragment implements LocationDataTaskListener, WeatherDataTaskListener {
+public class MainFragment extends Fragment {
     private static final String CLASS_TAG = MainFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private GPS gpsProvider;
-
     public final static String TAG_LOCATION_BUNDLE = "locationBundle";
-
-    private boolean mIsTaskRunning = false;
-    private ProgressDialog mProgressDialog;
 
     private SharedPreferences mSharedPreferences;
 
@@ -79,12 +65,6 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public void onActivityCreated(Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onActivityCreated(Bundle)");
         super.onActivityCreated(savedInstanceState);
-
-        gpsProvider  = GPS.sharedInstance(getActivity());
-
-        if (mIsTaskRunning) {
-            mProgressDialog = ProgressDialog.show(getActivity(), "Downloading data", "Please wait...");
-        }
     }
 
     @Override
@@ -104,82 +84,9 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
     public void onDetach() {
         if (DEBUG) Log.d(CLASS_TAG, "onDetach()");
         super.onDetach();
-
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
     }
 
-    @Override
-    public void onLocationDataTaskStarted() {
-        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskStarted()");
-        mIsTaskRunning = true;
-        mProgressDialog = ProgressDialog.show(getActivity(), "Downloading data", "Please wait...");
-    }
-
-    @Override
-    public void onLocationDataTaskFailed(String failureType) {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-        mIsTaskRunning = false;
-
-        if(failureType.equals("IOException")) {
-            Utils.showToast(getActivity(), "Failed to connect to host. Please check that you have an internet connection");
-        }
-        else {
-            Utils.showToast(getActivity(), "The location you entered could not be found");
-        }
-    }
-
-    @Override
-    public void onLocationDataTaskFinished(Location location) {
-        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskFinished()");
-
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-        mIsTaskRunning = false;
-        setupLocationValidationDialog(location);
-    }
-
-    @Override
-    public void onWeatherDataTaskStarted() {
-        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskStarted()");
-        mIsTaskRunning = true;
-        mProgressDialog = ProgressDialog.show(getActivity(), "Downloading data", "Please wait...");
-    }
-
-    @Override
-    public void onWeatherDataTaskFailed(String failureType) {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-
-        if(failureType.equals("IOException")) {
-            Utils.showToast(getActivity(), "Failed to connect to host. Please check that you have an internet connection");
-        }
-        else {
-            Utils.showToast(getActivity(), "The weather data could not be found. Please try again later");
-        }
-    }
-
-    @Override
-    public void onWeatherDataTaskFinished(Location location) {
-        if (DEBUG) Log.d(CLASS_TAG, "onLocationDataTaskFinished()");
-
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-        mIsTaskRunning = false;
-
-        Gson gson = new Gson();
-        String locationJSON = gson.toJson(location);
-        mSharedPreferences.edit().putString(location.getCoordinates(), locationJSON).apply();
-        refreshPastLocations();
-    }
-
-    private void refreshPastLocations() {
+    public void refreshPastLocations() {
         if(mSharedPreferences.getAll() != null) {
             ArrayList<Location> locations = new ArrayList<>();
 
@@ -201,12 +108,13 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
                 startForecastActivity(locations.get(position));
             }
         });
+
         /* Delete on hold */
         previousLocationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final Location tempLocation = locations.get(i);
-                final String locationText = tempLocation.getCity() + ", " + tempLocation.getState();
+                final String locationText = tempLocation.getCityState();
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setCancelable(false);
@@ -242,45 +150,5 @@ public class MainFragment extends Fragment implements LocationDataTaskListener, 
         locationBundle.putParcelable(TAG_LOCATION_BUNDLE, locationToDisplay);
         mSimpleForecastIntent.putExtras(locationBundle);
         startActivity(mSimpleForecastIntent);
-    }
-
-    private void setupLocationValidationDialog(final Location location) {
-        Bundle locationAddressBundle = new Bundle();
-        String locationJSON =  new Gson().toJson(location);
-
-        locationAddressBundle.putString("locationJSON", locationJSON);
-
-        LocationDialogFragment locationDialogFragment = new LocationDialogFragment();
-        locationDialogFragment.setArguments(locationAddressBundle);
-        locationDialogFragment.show(getActivity().getSupportFragmentManager(), "tag");
-    }
-
-    public void executeWeatherDataLookup(Location location){
-        new WeatherDataLookup(MainFragment.this, getContext()).execute(location);
-    }
-
-    public boolean checkLocationProviderEnabled() {
-        if (!gpsProvider.canGetLocation()){
-            gpsProvider.showSettingsAlert();
-            return false;
-        }
-        return true;
-    }
-
-    public void lookupLocation(String location){
-        new LocationDataLookup(MainFragment.this).execute(location);
-    }
-
-    public void addLocationByGPS(){
-        android.location.Location loc = gpsProvider.getLastKnownLocation();
-
-        if(loc != null) {
-            String location = loc.getLatitude() + "," + loc.getLongitude();
-            new LocationDataLookup(MainFragment.this).execute(location);
-        }
-        else{
-            //This can be more specific and let the user know if the app has location permissions
-            Utils.showToast(getActivity(), "Failed to find GPS location");
-        }
     }
 }
