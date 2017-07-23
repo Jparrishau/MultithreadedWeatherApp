@@ -1,16 +1,15 @@
 package com.imobile3.taylor.imobile3_weather_app.models;
 
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
-
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 /**
  * An object model containing relevant location data used to search for weather data.
@@ -27,7 +26,7 @@ public class Location implements Parcelable, Serializable {
     private String mState;
     private String mFormatted_address;
 
-    //Convert to map later if we can make it parcelable/serializable
+    //Convert to hashmap later if we can make it parcelable/serializable
     private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsToday = new ArrayList<>();
     private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsTomorrow = new ArrayList<>();
     private ArrayList<HourlyWeatherForecast> mHourlyWeatherForecastsLater = new ArrayList<>();
@@ -55,8 +54,20 @@ public class Location implements Parcelable, Serializable {
         setState(state);
     }
 
+    public void saveLocationData(SharedPreferences sharedPreferences) {
+        String locationJSON = new Gson().toJson(this);
+        sharedPreferences.edit().putString(this.getCityState(), locationJSON).apply();
+    }
+
+    public String getCityState(){
+        if(getState() == null || getState().equals("")){
+            return getCity();
+        }
+        return getCity() + ", " + getState();
+    }
+
     public String getUpdateTime(){
-        return Utils.getStandardTime(mTimeStamp);
+        return Utils.getStandardTimeFormat(mTimeStamp);
     }
 
     public void updateTimeStamp(){
@@ -152,7 +163,6 @@ public class Location implements Parcelable, Serializable {
     /*
        Begin Make Parcelable
     */
-
     @Override
     public int describeContents() {
         return 0;
