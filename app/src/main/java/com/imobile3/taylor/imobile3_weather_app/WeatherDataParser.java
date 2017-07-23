@@ -1,6 +1,7 @@
 package com.imobile3.taylor.imobile3_weather_app;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.imobile3.taylor.imobile3_weather_app.models.CurrentWeatherForecast;
 import com.imobile3.taylor.imobile3_weather_app.models.HourlyWeatherForecast;
@@ -16,9 +17,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by taylorp on 7/18/2017.
+ *
+ * @author Taylor Parrish
+ * @since 7/18/2017
  */
 
 public class WeatherDataParser {
@@ -30,11 +35,10 @@ public class WeatherDataParser {
         this.mContext = context;
     }
 
-    //Parses JSON Data into its respective model objects
     public Location parseJSONWeatherData(HashMap<String, JSONObject> weatherData) {
-        JSONObject hourly10DAYWeatherForecastData = weatherData.get("FORECAST_HOURLY_10DAY");
-        JSONObject currentWeatherForecastData = weatherData.get("FORECAST_OBSERVATION_CURR");
-        JSONObject astronomyWeatherForecastData = weatherData.get("FORECAST_ASTRONOMY");
+        JSONObject hourly10DAYWeatherForecastData = weatherData.get("hourly10day");
+        JSONObject currentWeatherForecastData = weatherData.get("conditions");
+        JSONObject astronomyWeatherForecastData = weatherData.get("astronomy");
 
         try {
             HashMap<String, ArrayList<HourlyWeatherForecast>> hourlyWeatherForecasts =
@@ -63,7 +67,7 @@ public class WeatherDataParser {
         ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsTomorrow = new ArrayList<>();
         ArrayList<HourlyWeatherForecast> hourlyWeatherForecastsLater = new ArrayList<>();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a z  MMMMM dd, yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a z  MMMMM dd, yyyy", Locale.US);
         JSONArray hourly_forecast_data = hourly10DAYWeatherForecastData.getJSONArray("hourly_forecast");
         for (int i = 0; i < hourly_forecast_data.length(); i++) {
             JSONObject hourly_forecast = hourly_forecast_data.getJSONObject(i);
@@ -78,7 +82,6 @@ public class WeatherDataParser {
             String feelslike = hourly_forecast.getJSONObject("feelslike").getString("english");
             String humidity = hourly_forecast.getString("humidity");
             String icon = getIcon(hourly_forecast.getString("icon"));
-
 
             int currentDayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
             int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
@@ -104,9 +107,6 @@ public class WeatherDataParser {
 
     private CurrentWeatherForecast parseCurrentWeatherForecast(JSONObject currentWeatherForecastData,
                                                                JSONObject astronomyWeatherForecastData) throws JSONException, ParseException {
-        // Getting JSON Wunderground Simpleforecast data
-        CurrentWeatherForecast currentWeatherForecast;
-
         JSONObject observation_data = currentWeatherForecastData.getJSONObject("current_observation");
         JSONObject astronomy_data = astronomyWeatherForecastData.getJSONObject("sun_phase");
         JSONObject sunrise = astronomy_data.getJSONObject("sunrise");
@@ -130,7 +130,7 @@ public class WeatherDataParser {
         double windKPH = observation_data.getDouble("wind_kph");
         double windGustKPH = observation_data.getDouble("wind_gust_kph");
 
-        currentWeatherForecast =
+        CurrentWeatherForecast currentWeatherForecast =
                 new CurrentWeatherForecast(weatherIcon, weatherDescr, tempText, tempF,
                         tempC, humidity, windText, windDir,
                         windDegree, pressureMB, pressureIN, windMPH, windGustMPH,
@@ -140,7 +140,7 @@ public class WeatherDataParser {
     }
 
     private String getIcon(String icon) {
-        String iconString = "";
+        String iconString;
 
         switch (icon) {
             case "chanceflurries":
