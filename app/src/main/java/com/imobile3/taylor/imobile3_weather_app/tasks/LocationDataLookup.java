@@ -15,11 +15,13 @@ import java.io.IOException;
 
 /**
  * Created by taylorp on 7/17/2017.
+ *
+ * @author Taylor Parrish
+ * @since 7/17/2017
  */
 public class LocationDataLookup extends AsyncTask<String, String, Location> {
     private final LocationDataTaskListener listener;
     private String mFailureType;
-
     private String mCity;
     private String mState;
 
