@@ -1,7 +1,11 @@
 package com.imobile3.taylor.imobile3_weather_app.utilities;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,7 +48,7 @@ public class Utils {
         return formattedTime;
     }
 
-    public static String getStandardTime(Calendar calendar){
+    public static String getStandardTimeFormat(Calendar calendar){
         SimpleDateFormat outputFormatter = new SimpleDateFormat("h:mm a");
         Date dateToFormat = calendar.getTime();
 
