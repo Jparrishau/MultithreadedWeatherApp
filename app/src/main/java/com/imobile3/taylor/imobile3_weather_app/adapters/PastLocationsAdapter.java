@@ -32,7 +32,8 @@ public class PastLocationsAdapter extends BaseAdapter {
 
         Map<String, ?> keys = pastLocations;
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            Location location = new Gson().fromJson(entry.getValue().toString(), Location.class);
+            Location location =
+                    new Gson().fromJson(entry.getValue().toString(), Location.class);
             mPastLocations.add(location);
         }
 
