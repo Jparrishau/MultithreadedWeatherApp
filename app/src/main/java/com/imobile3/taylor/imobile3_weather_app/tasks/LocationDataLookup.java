@@ -50,7 +50,7 @@ public class LocationDataLookup extends AsyncTask<String, String, Location> {
             listener.onLocationDataTaskFailed(getFailureType());
     }
 
-    public Location invoke(String locationString) {
+    private Location invoke(String locationString) {
         String coordinates;
 
         coordinates = Utils.removeWhitespace(locationString);
