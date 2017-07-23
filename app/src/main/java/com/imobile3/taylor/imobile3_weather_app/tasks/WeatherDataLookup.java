@@ -17,12 +17,10 @@ import java.util.HashMap;
 /**
  * Created by taylorp on 7/17/2017.
  */
-public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<String, JSONObject> > {
+public class WeatherDataLookup extends AsyncTask<Location, String, Location> {
     private WeatherDataTaskListener mListener;
     private Context mContext;
     private String mFailureType;
-
-    private Location mLocation;
 
     public WeatherDataLookup(WeatherDataTaskListener listener, Context context) {
         this.mListener = listener;
@@ -36,28 +34,20 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
     }
 
     @Override
-    public HashMap<String, JSONObject> doInBackground(Location... args) {
+    public Location doInBackground(Location... args) {
+        Location location = args[0];
         HashMap<String, JSONObject> weatherData = new HashMap<>();
-        mLocation = args[0];
+        String[] dataFeatures = {"conditions", "astronomy", "hourly10day"};
 
-        //Put this somewhere else later?
-        final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7";
-
-        /*
-            Do this some cleaner way later, possibly with loop.
-        */
-        String weatherURL_Conditions = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "conditions" + "/q/" + mLocation.getCoordinates() + ".json";
-        String weatherURL_Astronomy = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "astronomy" + "/q/" + mLocation.getCoordinates() + ".json";
-        String weatherURL_Hourly10Day = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
-                + "/" + "hourly10day" + "/q/" + mLocation.getCoordinates() + ".json";
-
+        final String WUNDERGROUND_API_KEY = "20a88f5fc4c597d7"; //Put this somewhere else global, resource string?
         try {
-            weatherData.put("FORECAST_ASTRONOMY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Astronomy));
-            weatherData.put("FORECAST_OBSERVATION_CURR", new HttpJSONRequest().getJSONFromUrl(weatherURL_Conditions));
-            weatherData.put("FORECAST_HOURLY_10DAY", new HttpJSONRequest().getJSONFromUrl(weatherURL_Hourly10Day));
-            return weatherData;
+            for(int i = 0; i < dataFeatures.length; i++){
+               String url = "http://api.wunderground.com/api/" + WUNDERGROUND_API_KEY
+                        + "/" + dataFeatures[i] + "/q/" + location.getCoordinates() + ".json";
+                weatherData.put(dataFeatures[i],
+                        new HttpJSONRequest().getJSONFromUrl(url));
+            }
+            return  new WeatherDataParser(location, mContext).parseJSONWeatherData(weatherData);
         } catch (JSONException e) {
             setFailureType("JSONException");
         }
@@ -68,9 +58,8 @@ public class WeatherDataLookup extends AsyncTask<Location, String, HashMap<Strin
     }
 
     @Override
-    public void onPostExecute(HashMap<String, JSONObject> weatherData) {
-        if (weatherData != null) {
-            Location location = new WeatherDataParser(mLocation, mContext).parseJSONWeatherData(weatherData);
+    public void onPostExecute(Location location) {
+        if (location != null) {
             mListener.onWeatherDataTaskFinished(location);
         }
         else {
