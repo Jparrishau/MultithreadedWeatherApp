@@ -31,8 +31,6 @@ import com.imobile3.taylor.imobile3_weather_app.tasks.LocationDataLookup;
 import com.imobile3.taylor.imobile3_weather_app.tasks.WeatherDataLookup;
 import com.imobile3.taylor.imobile3_weather_app.utilities.Utils;
 
-import static com.imobile3.taylor.imobile3_weather_app.utilities.Utils.saveLocationData;
-
 /**
  * MainActvity is responsible for loading its corresponding fragment
  * as well as initializes the toolbar and its menus.
@@ -158,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements LocationDialogFra
 
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
-        saveLocationData(sharedPreferences, location);
+        location.saveLocationData(sharedPreferences);
         mMainFragment.refreshPastLocations();
     }
 
