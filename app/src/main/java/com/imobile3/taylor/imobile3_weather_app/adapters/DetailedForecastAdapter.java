@@ -9,21 +9,22 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
-import com.imobile3.taylor.imobile3_weather_app.models.DetailedWeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
 
 import java.util.ArrayList;
 
 /**
- * Created by Taylor Parrish on 8/23/2016.
- *
  * Adapter responsible for setting up the listview displayed by
  * the DetailedForecastFragment.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class DetailedForecastAdapter extends BaseAdapter {
-    ArrayList<DetailedWeatherItem> detailWeatherItems;
+    ArrayList<DailyDetailedWeatherItem> detailWeatherItems;
     private LayoutInflater inflater = null;
 
-    public DetailedForecastAdapter(Activity context, ArrayList<DetailedWeatherItem> detailWeatherItems) {
+    public DetailedForecastAdapter(Activity context, ArrayList<DailyDetailedWeatherItem> detailWeatherItems) {
         super();
         setDetailWeatherItems(detailWeatherItems);
         inflater = (LayoutInflater) context
@@ -68,10 +69,10 @@ public class DetailedForecastAdapter extends BaseAdapter {
 
         weekdayText.setText(weekday);
         descriptionText.setText(description);
-        popText.setText(pop);
+        popText.setText(pop + "%");
     }
 
-    public void setDetailWeatherItems(ArrayList<DetailedWeatherItem> detailWeatherItems) {
+    public void setDetailWeatherItems(ArrayList<DailyDetailedWeatherItem> detailWeatherItems) {
         this.detailWeatherItems = detailWeatherItems;
     }
 }

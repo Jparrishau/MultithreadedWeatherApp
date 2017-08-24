@@ -1,43 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:id="@+id/root_layout"
+              tools:context=".activities.MainActivity">
 
     <include layout="@layout/app_toolbar" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        >
 
         <Button
             android:id="@+id/fetchDataButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/locationField"
+            android:layout_centerHorizontal="true"
+            android:backgroundTint="@color/darkTheme_colorPrimary"
+            android:elevation="2dp"
             android:text="@string/fetch_weather_data"
-            android:layout_centerHorizontal="true" />
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/text_light"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/locationField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_location"
             android:layout_alignEnd="@+id/fetchDataButton"
             android:layout_alignLeft="@+id/fetchDataButton"
             android:layout_alignRight="@+id/fetchDataButton"
             android:layout_alignStart="@+id/fetchDataButton"
-            android:inputType="textPostalAddress" />
+            android:hint="@string/enter_location"
+            android:inputType="textPostalAddress"
+            android:textAlignment="center"/>
 
         <ListView
             android:id="@+id/pastLocationsList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fetchDataButton"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/fab_margin"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:tint="@android:color/white"
+            app:backgroundTint="@color/colorPrimary"
+            app:elevation="1dp"
+            app:rippleColor="@android:color/background_dark"
+            app:srcCompat="@android:drawable/ic_input_add"/>
     </RelativeLayout>
 
 </LinearLayout>

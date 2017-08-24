@@ -12,13 +12,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by Taylor Parrish on 8/23/2016.
- *
  * Created an HTTPConnection from URL String
  * Returns a JSONObject containing requested data
  *
- * Issues: If no internet is enabled will throw exception. UnkownHostException probably.
+ * Issues: If no internet is enabled will throw exception. UnknownHostException probably.
  * Solution: Send exception back to calling method and present warning and option to turn on internet.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class HttpJSONRequest {
 

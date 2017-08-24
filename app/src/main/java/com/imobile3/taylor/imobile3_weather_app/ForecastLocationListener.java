@@ -5,9 +5,10 @@ import android.location.LocationListener;
 import android.os.Bundle;
 
 /**
- * Created by Taylor Parrish on 8/23/2016.
- *
  * A location listner used to listen for location events.
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public final class ForecastLocationListener implements LocationListener{
 

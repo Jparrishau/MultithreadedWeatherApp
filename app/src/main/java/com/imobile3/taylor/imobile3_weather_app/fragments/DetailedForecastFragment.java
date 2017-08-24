@@ -1,8 +1,8 @@
 package com.imobile3.taylor.imobile3_weather_app.fragments;
 
-import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,18 +11,21 @@ import android.widget.ListView;
 
 import com.imobile3.taylor.imobile3_weather_app.R;
 import com.imobile3.taylor.imobile3_weather_app.adapters.DetailedForecastAdapter;
-import com.imobile3.taylor.imobile3_weather_app.models.DetailedWeatherItem;
+import com.imobile3.taylor.imobile3_weather_app.models.DailyDetailedWeatherItem;
 
 import java.util.ArrayList;
 
 /**
- * Created by Taylor Parrish on 8/29/2016.
- *
  * DetailedForecastFragment is responsible for setting up
  * the detailed weather information into a list and displaying it to the user.
+ *
+ * @author Taylor Parrish
+ * @since 8/29/2016
  */
 public class DetailedForecastFragment extends Fragment {
     private static final String CLASS_TAG = DetailedForecastFragment.class.getSimpleName();
+
+    public final static String TAG_EXTRA_DETAIL_ITEMS = "detailWeatherItems";
 
     private static final boolean DEBUG = true;
 
@@ -37,11 +40,11 @@ public class DetailedForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         if (DEBUG) Log.d(CLASS_TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle)");
 
-        View root = inflater.inflate(R.layout.forecast_details_list, container, false);
+        View root = inflater.inflate(R.layout.fragment_forecast_details, container, false);
 
         //Get weatherItems arraylist to pass to detailedListview
-        ArrayList<DetailedWeatherItem> detailWeatherItems = getActivity().getIntent()
-                .getParcelableArrayListExtra(SimpleForecastFragment.TAG_EXTRA_DETAIL_ITEMS);
+        ArrayList<DailyDetailedWeatherItem> detailWeatherItems = getActivity().getIntent()
+                .getParcelableArrayListExtra(TAG_EXTRA_DETAIL_ITEMS);
 
         ListView detailListview = (ListView) root.findViewById(R.id.detailForecastListView);
 

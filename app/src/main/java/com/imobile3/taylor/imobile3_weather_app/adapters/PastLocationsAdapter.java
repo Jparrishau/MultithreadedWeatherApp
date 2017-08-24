@@ -8,19 +8,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.imobile3.taylor.imobile3_weather_app.R;
+import com.imobile3.taylor.imobile3_weather_app.models.Location;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Taylor Parrish on 8/2/2016.
- *
  * Adapter for setting up the listview displayed by
  * the pastLocastionsListView
+ *
+ * @author Taylor Parrish
+ * @since 8/23/2016
  */
 public class PastLocationsAdapter extends BaseAdapter {
-    private ArrayList<String> mPastLocations;
+    private ArrayList<Location> mPastLocations;
     private LayoutInflater mInflater;
 
     public PastLocationsAdapter(Activity context, Map<String, ?> pastLocations) {
@@ -29,7 +32,9 @@ public class PastLocationsAdapter extends BaseAdapter {
 
         Map<String, ?> keys = pastLocations;
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            mPastLocations.add(entry.getKey());
+            Location location =
+                    new Gson().fromJson(entry.getValue().toString(), Location.class);
+            mPastLocations.add(location);
         }
 
         mInflater = (LayoutInflater) context
@@ -39,7 +44,7 @@ public class PastLocationsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View convertedView = convertView;
         if (convertView == null) {
-            convertedView = mInflater.inflate(R.layout.row_pastlocation_list, null);
+            convertedView = mInflater.inflate(R.layout.row_pastlocation_item, null);
         }
         setupLocationListView(position, convertedView);
 
@@ -50,11 +55,11 @@ public class PastLocationsAdapter extends BaseAdapter {
         TextView cityText = (TextView) convertView.findViewById(R.id.cityText);
         TextView degreeText = (TextView) convertView.findViewById(R.id.degreeText);
 
-        String city = mPastLocations.get(position);
-        String degree = "90˚ F";
+        String city = mPastLocations.get(position).getCity();
+        Double degree = mPastLocations.get(position).getCurrentWeatherForecast().getTemp_F();
 
         cityText.setText(city);
-        degreeText.setText(degree);
+        degreeText.setText(degree + " °F");
     }
 
     @Override
